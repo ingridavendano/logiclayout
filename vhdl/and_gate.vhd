@@ -24,10 +24,10 @@ begin
 	begin
 		-- compare to truth table
 		if ((x='1') and (y='1')) then
-		F <= '1';
-	else
-		F <= '0';
-	end if;
+			F <= '1';
+		else
+			F <= '0';
+		end if;
 	end process;
 
 end behav1;
