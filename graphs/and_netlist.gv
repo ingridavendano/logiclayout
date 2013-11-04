@@ -1,0 +1,7 @@
+digraph Netlist {
+	rankdir = LR;
+
+	x -> AND;
+	y -> AND;
+	AND -> F;
+}
