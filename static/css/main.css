@@ -1,0 +1,25 @@
+h2 {
+    color: red;
+}
+
+body {
+    background-color: #eee;
+}
+
+form.signin {
+    width: 330px;
+    margin: 50px auto;
+}
+
+form.signin input.form-control {
+    margin-bottom: 5px;
+}
+
+form.signin input.btn {
+    margin-top: 15px;
+}
+
+.users {
+    width: 330px;
+    margin: 50px;
+}
