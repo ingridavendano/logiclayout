@@ -1,0 +1,40 @@
+digraph Netlist {
+	rankdir = LR;
+
+
+
+	subgraph cluster0 {
+		node [style=filled,color=white];
+		cell1 [label = "cell"];
+
+		style=filled;
+		color=blue;
+		pin1 -> cell1;
+
+		subgraph cluster1 {
+			node [style=filled,color=white];
+			style=filled;
+			color=white;
+			cell1;
+		}
+		pin2 -> cell1 -> output_pin;
+
+		label = "Cell 1";
+		
+	}
+
+	i1 -> cell1:a;
+	12 -> cell1:b;
+
+	c -> output_pin
+
+
+	output_pin -> d
+	d -> AND;
+	e -> AND;
+	o -> OR;
+	d -> OR;
+	AND -> XOR;
+	OR -> XOR;
+	XOR -> f
+}
