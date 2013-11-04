@@ -7,35 +7,29 @@ class Circuit:
 		self.name = name 
 
 
-class Netlist(Circuit):
-	ports = None
-	modules = None
-	nets = None
-
-
 class Module(Circuit):
-	netlist = None
-	submodules = None
-	cells = None
-	ports = None
+	in_ports = []
+	out_ports = []
 
-class Port(Circuit):
-	netlist = None
-	module = None
-	direction = None
+	def __init__(self, code):
+		# gets the name of the module
+		first_line = code[0].split()
+		self.name = first_line[1]
 
+		# separates in and out ports
+		for line in code[1:-1]:
+			if ":" in line: 
+				# creats list of name and direction of ports
+				ports = line.split(":")
+				name = ports[0].split()[-1]
+				direction = ports[1].split()[0]
 
-class Cell(Circuit):
-	netlist = None
-	in_pins = None
-	out_pins = None
-	logic = None
-
-class Pin(Circuit):
-	netlist = None
-	signal = None
-	ins = None
-	outs = None
-	ports = None
-	nets = None
-
+				if direction == "in":
+					self.in_ports.append(name)
+				elif direction == "out":
+					self.out_ports.append(name)
+	
+	def show(self):
+		print "Module name:", self.name
+		print "   IN ports:", self.in_ports
+		print "  OUT ports:", self.out_ports
