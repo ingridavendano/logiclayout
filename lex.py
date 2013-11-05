@@ -3,12 +3,17 @@
 # Lexer file that reads in VHDL code and parses it. 
 
 from netlist import Module
+# import make_graphviz
+# import make_json
 
-FILENAME = "vhdl/and_gate.vhd"
+## SPECIAL VARIABLES ##########################################################
+FILE_NAME = "and_gate"
+FILE_PATH = "hdl/vhdl/" + FILE_NAME + ".vhd"
 COMMENTED_CODE = "--"
 
-## READIN AND FILTERING CODE ####################################
 
+
+## READIN AND FILTERING CODE ##################################################
 def separate_sections(code):
 	definition = [] 
 	behavior = []
@@ -35,10 +40,11 @@ def separate_sections(code):
 		if architecture_section: 
 			behavior.append(line)
 
-	def_class = Module(definition)
-	def_class.show()
+	mod = Module(definition)
+	mod.show()
+	
 
-	return definition, behavior
+	return mod
 
 
 
@@ -74,11 +80,13 @@ def read(file_name):
 	return lines_of_code
 
 
-## MAIN #########################################################
+## MAIN #######################################################################
 def main():
-	vhdl = read(FILENAME)
+	vhdl = read(FILE_PATH)
 	vhdl = filter_code(vhdl)
-	definition, behavior = separate_sections(vhdl)
+	module = separate_sections(vhdl)
+	make_graphviz.make_graphviz_file(module, FILE_NAME)
+	make_json.make_json_file(module, FILE_NAME)
 
 
 if __name__ == "__main__":
