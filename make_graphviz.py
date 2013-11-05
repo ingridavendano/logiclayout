@@ -2,26 +2,27 @@
 
 # This file creates Graphviz dot files of digital logic from VHDL.
 
-# import lex.py
 
-from sys import argv
+###############################################################################
+def make_graphviz_file(netlist, filename):
 
+	filename = "./graphs/" + filename + ".gv"
+	graphviz = open(filename, 'w')
 
+	base = """digraph Netlist {
+	rankdir = LR;
 
+	"""
+	graphviz.write(base)
 
+	for in_port in netlist.in_ports:
+		line = "\t" + in_port + " -> " + netlist.name + ";\n"
+		graphviz.write(line)
 
+	for out_port in netlist.out_ports:
+		line = "\t" + netlist.name  + " -> " + out_port + ";\n"
+		graphviz.write(line)
 
-## MAIN #########################################################
-def main():
-	script, filename = argv
+	graphviz.write("}\n")
 
-	print filename[0]
-
-	# filename = "/graphs/" + filename + ".gv"
-	# graphviz = open(filename, 'w')
-
-	# f.close()
-
-
-if __name__ == "__main__":
-	main()
+	graphviz.close()
