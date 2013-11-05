@@ -18,9 +18,11 @@ class Module(Circuit):
 
 		# separates in and out ports
 		for line in code[1:-1]:
+
+			# creats two lists of name and direction of ports
 			if ":" in line: 
-				# creats list of name and direction of ports
 				ports = line.split(":")
+				
 				name = ports[0].split()[-1]
 				direction = ports[1].split()[0]
 
