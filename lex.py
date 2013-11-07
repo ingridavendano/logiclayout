@@ -3,8 +3,8 @@
 # Lexer file that reads in VHDL code and parses it. 
 
 from netlist import Module
-# import make_graphviz
-# import make_json
+import make_graphviz
+import make_json
 
 ## SPECIAL VARIABLES ##########################################################
 FILE_NAME = "and_gate"
