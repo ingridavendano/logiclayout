@@ -18,7 +18,7 @@ t_NAME = r'[a-zA-z_][a-zA-Z0-9_]*'
 t_AND = r'\*'
 t_OR = r'\+'
 t_NOT = r'!'
-t_XOR = r'\^'
+t_XOR = r'\@'
 t_EQUALS = r'='
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
@@ -29,10 +29,10 @@ t_RPAREN = r'\)'
 def t_BINARY(t):
 	r'[01]+'
 	try:
-		t.value = bin(int(t.value))
+		t.value = bool(int(t.value))
 	except ValueError:
 		print "Binary value %d is too large." % t.value
-		t.value = bin(int(0))
+		t.value = bool(int(0))
 	return t
 
 # tokens to ignore
@@ -55,8 +55,7 @@ lex.lex()
 
 # parsing rules
 precedence = (
-	('left','OR', 'AND'),
-	('left', 'XOR'),
+	('left','OR', 'AND', 'XOR'),
 	('right', 'NOT'),
 	)
 
@@ -77,7 +76,7 @@ def p_expression_binop(t):
 				  | expression XOR expression'''
 	if 	 t[2] == '+': t[0] = (t[1] or  t[3])
 	elif t[2] == '*': t[0] = (t[1] and t[3])
-	elif t[2] == '^': t[0] = (t[1] !=  t[3])
+	elif t[2] == '@': t[0] = (t[1] !=  t[3])
 
 def p_expression_not(t):
 	'expression : NOT expression'
@@ -97,7 +96,7 @@ def p_expression_name(t):
 		t[0] = names[t[1]]
 	except LookupError:
 		print "Undefined name '%s'!" % t[1]
-		t[0] = bin(int(0))
+		t[0] = bool(int(0))
 
 def p_error(t):
 	print "Syntax error at '%s'." % t.value
