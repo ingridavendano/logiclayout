@@ -5,9 +5,9 @@ _tabversion = '3.2'
 
 _lr_method = 'LALR'
 
-_lr_signature = '\x147*7\x83\x1a\xff\xb66\x80\xc0\x82\xd1\xda\t\xa3'
+_lr_signature = '\xd4\xd0R\x07\x86TZ\x9a\xa6\x85\x13\x05\xec\xcc\x1b\xf2'
     
-_lr_action_items = {'AND':([1,2,6,8,9,10,14,15,16,17,18,],[-8,-9,11,-9,11,-6,11,-7,-4,-5,-3,]),'BINARY':([0,3,5,7,11,12,13,],[1,1,1,1,1,1,1,]),'RPAREN':([1,8,9,10,15,16,17,18,],[-8,-9,15,-6,-7,-4,-5,-3,]),'NAME':([0,3,5,7,11,12,13,],[2,8,8,8,8,8,8,]),'EQUALS':([2,],[7,]),'LPAREN':([0,3,5,7,11,12,13,],[3,3,3,3,3,3,3,]),'NOT':([0,3,5,7,11,12,13,],[5,5,5,5,5,5,5,]),'XOR':([1,2,6,8,9,10,14,15,16,17,18,],[-8,-9,12,-9,12,-6,12,-7,-4,-5,-3,]),'OR':([1,2,6,8,9,10,14,15,16,17,18,],[-8,-9,13,-9,13,-6,13,-7,-4,-5,-3,]),'$end':([1,2,4,6,8,10,14,15,16,17,18,],[-8,-9,0,-2,-9,-6,-1,-7,-4,-5,-3,]),}
+_lr_action_items = {'AND':([1,3,4,7,8,9,11,15,16,17,18,19,],[-8,-9,-10,12,-10,12,-3,-7,12,-5,-6,-4,]),'BINARY':([0,2,6,10,12,13,14,],[1,1,1,1,1,1,1,]),'XOR':([1,3,4,7,8,9,11,15,16,17,18,19,],[-8,-9,-10,13,-10,13,-3,-7,13,-5,-6,-4,]),'NUMBER':([0,2,6,10,12,13,14,],[3,3,3,3,3,3,3,]),'OR':([1,3,4,7,8,9,11,15,16,17,18,19,],[-8,-9,-10,14,-10,14,-3,-7,14,-5,-6,-4,]),'EQUALS':([4,],[10,]),'LPAREN':([0,2,6,10,12,13,14,],[2,2,2,2,2,2,2,]),'NOT':([0,2,6,10,12,13,14,],[6,6,6,6,6,6,6,]),'RPAREN':([1,3,8,9,11,15,17,18,19,],[-8,-9,-10,15,-3,-7,-5,-6,-4,]),'ID':([0,2,6,10,12,13,14,],[4,8,8,8,8,8,8,]),'$end':([1,3,4,5,7,8,11,15,16,17,18,19,],[-8,-9,-10,0,-2,-10,-3,-7,-1,-5,-6,-4,]),}
 
 _lr_action = { }
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,3,5,7,11,12,13,],[6,9,10,14,16,17,18,]),'statement':([0,],[4,]),}
+_lr_goto_items = {'expression':([0,2,6,10,12,13,14,],[7,9,11,16,17,18,19,]),'statement':([0,],[5,]),}
 
 _lr_goto = { }
 for _k, _v in _lr_goto_items.items():
@@ -26,13 +26,14 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> statement","S'",1,None,None,None),
-  ('statement -> NAME EQUALS expression','statement',3,'p_statement_assign','digital_logic.py',66),
-  ('statement -> expression','statement',1,'p_statement_expr','digital_logic.py',70),
-  ('expression -> expression OR expression','expression',3,'p_expression_binop','digital_logic.py',74),
-  ('expression -> expression AND expression','expression',3,'p_expression_binop','digital_logic.py',75),
-  ('expression -> expression XOR expression','expression',3,'p_expression_binop','digital_logic.py',76),
-  ('expression -> NOT expression','expression',2,'p_expression_not','digital_logic.py',82),
-  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','digital_logic.py',86),
-  ('expression -> BINARY','expression',1,'p_expression_binary','digital_logic.py',90),
-  ('expression -> NAME','expression',1,'p_expression_name','digital_logic.py',94),
+  ('statement -> ID EQUALS expression','statement',3,'p_statement_assign','/Users/Inga/Projects/circuit-design-webapp/logic_tokens.py',109),
+  ('statement -> expression','statement',1,'p_statement_expr','/Users/Inga/Projects/circuit-design-webapp/logic_tokens.py',113),
+  ('expression -> NOT expression','expression',2,'p_expression_not','/Users/Inga/Projects/circuit-design-webapp/logic_tokens.py',117),
+  ('expression -> expression OR expression','expression',3,'p_expression_or','/Users/Inga/Projects/circuit-design-webapp/logic_tokens.py',121),
+  ('expression -> expression AND expression','expression',3,'p_expression_and','/Users/Inga/Projects/circuit-design-webapp/logic_tokens.py',125),
+  ('expression -> expression XOR expression','expression',3,'p_expression_xor','/Users/Inga/Projects/circuit-design-webapp/logic_tokens.py',129),
+  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','/Users/Inga/Projects/circuit-design-webapp/logic_tokens.py',133),
+  ('expression -> BINARY','expression',1,'p_expression_binary','/Users/Inga/Projects/circuit-design-webapp/logic_tokens.py',137),
+  ('expression -> NUMBER','expression',1,'p_expression_number','/Users/Inga/Projects/circuit-design-webapp/logic_tokens.py',141),
+  ('expression -> ID','expression',1,'p_expression_id','/Users/Inga/Projects/circuit-design-webapp/logic_tokens.py',145),
 ]

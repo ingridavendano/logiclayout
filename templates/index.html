@@ -1,4 +1,17 @@
 {% extends 'master.html' %}
-	{% block body %}
+{% block body %}
 
-	{% endblock %}
+<p>
+	Type in a <a href="http://en.wikipedia.org/wiki/Boolean_algebra">Boolean Alegbra</a> expression. Please use <code>&</code> for AND, <code>|</code> for OR, <code>~</code> for NOT, <code>^</code> for XOR.
+</p>
+
+<form action="/logic" method="POST">
+	<div class="input-group">
+		<span class="input-group-addon">f=</span>
+		<input type="text" class="form-control" name="logic-expression" placeholder="Logic expression">
+	</div>
+</form>
+
+
+
+{% endblock %}

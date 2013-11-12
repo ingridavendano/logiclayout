@@ -5,20 +5,24 @@
 # Reads in digital logic expressions into tokens and parses it. 
 # -----------------------------------------------------------------------------
 
+reserved = {
+	'and' : 'AND',
+}
 
-tokens = (
+
+tokens = [
 	'NAME', 'BINARY',
-	'AND', 'OR', 'NOT', 'XOR', 
+	'OR', 'NOT', 'XOR', 
 	'EQUALS', 'LPAREN', 'RPAREN',
-	)
+	] + list(reserved.values())
 
 
 # tokens 
-t_NAME = r'[a-zA-z_][a-zA-Z0-9_]*'
-t_AND = r'\*'
-t_OR = r'\+'
-t_NOT = r'!'
-t_XOR = r'\@'
+t_NAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
+t_AND = r'\&'
+t_OR = r'\|'
+t_NOT = r'~'
+t_XOR = r'\^'
 t_EQUALS = r'='
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
@@ -27,7 +31,7 @@ t_RPAREN = r'\)'
 
 # just in case a '1' or '0' is used
 def t_BINARY(t):
-	r'[01]+'
+	r'(b0)[01]+'
 	try:
 		t.value = bool(int(t.value))
 	except ValueError:
@@ -74,9 +78,9 @@ def p_expression_binop(t):
 	'''expression : expression OR expression
 				  | expression AND expression
 				  | expression XOR expression'''
-	if 	 t[2] == '+': t[0] = (t[1] or  t[3])
-	elif t[2] == '*': t[0] = (t[1] and t[3])
-	elif t[2] == '@': t[0] = (t[1] !=  t[3])
+	if 	 t[2] == '|': t[0] = (t[1] or  t[3])
+	elif t[2] == 'and': t[0] = (t[1] and t[3])
+	elif t[2] == '^': t[0] = (t[1] !=  t[3])
 
 def p_expression_not(t):
 	'expression : NOT expression'
