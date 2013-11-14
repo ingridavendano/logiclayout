@@ -9,40 +9,30 @@ import unittest
 import sys
 
 sys.path.insert(0,"..")
-from logic_tokens import Token
+from logic_tokens import NodeToken
 
-a = Token("a")
-b = Token("b")
-c = Token("c")
-d = Token("d")
-e = Token("e")
-f = Token("f")
+a = NodeToken("a", "LITERAL")
+b = NodeToken("b", "AND")
+c = NodeToken("c", "OR")
+d = NodeToken("d", "EQUALS")
+e = NodeToken("e", "FOO")
+f = NodeToken("f", "BAR")
 list_tokens = [a, b, c, d, e, f]
 
 class TestTokens(unittest.TestCase):
-
+	a <= b
+	a <= c
+	a <= d
 	def test_children(self):
-		"""> check the relationship of children tokens using '<=' """
-
-		a <= b
-		a <= c
-		a <= d
-		f <= e
-
-		# for tok in list_tokens:
-		# 	print tok, "and parents", tok.parents, "has children", tok.children
-		# # f <= d
-		# f <= a
+		"""> check the relationship of children in a token """
 		self.assertIn(b, a)
 		self.assertIn(c, a)
+		self.assertIn(d, a)
 
-		# # print d.parents
-		# print "b in a"
-		# print b in a
-		# self.assertIn(b, a)
-		# b <= [c, d]
-		# self.assertIn(c, b)
-		# self.assertIn(d, b)
+	def test_parents(self):
+		""" check the relationship of parents of a token """
+		self.assertIn(a, d.parents)
+
 
 
 

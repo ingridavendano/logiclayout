@@ -5,15 +5,14 @@
 # List of grammar specifications for tokens of boolean alegbra expressions. 
 # -----------------------------------------------------------------------------
 
-import logic_lex 
-# from logic_lex import *
-from logic_token import NodeToken
+import lexer 
+from token import Node
 import ply.yacc as yacc
 
 # -----------------------------------------------------------------------------
 
-# grabs token map
-tokens = logic_lex.tokens
+# grabs token map from lexer
+tokens = lexer.tokens
 
 # parsing rules
 precedence = (
@@ -39,8 +38,8 @@ def p_statement_assign(t):
 	'statement : ID EQUALS expression'
 	print 11
 
-	variable = NodeToken(t[1], "ID")
-	equals = NodeToken(t[2], "EQUALS")
+	variable = Node(t[1], "ID")
+	equals = Node(t[2], "EQUALS")
 
 	if isinstance(t[3], int):
 		expr = literal_nodes[t[3]]
@@ -80,7 +79,7 @@ def p_expression_or(t):
 	if t[1] == t[3]:
 		t[0] = t[1]
 	else:
-		or_node = NodeToken(t[2],"OR")
+		or_node = Node(t[2],"OR")
 		or_node.left(t[1])
 		or_node.right(t[3])
 
@@ -101,7 +100,7 @@ def p_expression_and(t):
 	if t[1] == t[3]:
 		t[0] = t[1]
 	else: 
-		and_node = NodeToken(t[2],"AND")
+		and_node = Node(t[2],"AND")
 		and_node.left(t[1])
 		and_node.right(t[3])
 
@@ -133,7 +132,7 @@ def p_expression_value(t):
 				  | FALSE'''
 	# t[0] = nodes[t[]]
 	print 8
-	base = NodeToken(t[1], "LITERAL", base=True)
+	base = Node(t[1], "LITERAL", base=True)
 	literal_nodes[t[1]] = base
 	nodes.append(base)
 	t[0] = t[1] 
@@ -155,16 +154,15 @@ def p_error(t):
 
 # -----------------------------------------------------------------------------
 
-parser = yacc.yacc()
+yacc_parser = yacc.yacc()
 
 # -----------------------------------------------------------------------------
 
 def parse(data, node_tokens=[], debug=0):
-	parser.error = 0
+	yacc_parser.error = 0
 
 	list_node_tokens = node_tokens
-	parsed_data = parser.parse(data)
-	# print "parsed_data", parsed_data
+	yacc_parser.parse(data)
 
 
 
@@ -172,7 +170,7 @@ def parse(data, node_tokens=[], debug=0):
 	# print "data", type(parsed_data)
 	# print "pinfo", type(parser.)
 
-	if parser.error:
+	if yacc_parser.error:
 		return None
 
 	print nodes

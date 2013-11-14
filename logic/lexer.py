@@ -52,12 +52,8 @@ t_RBRACKET		= r'\]'
 t_LBRACE		= r'\{'
 t_RBRACE		= r'\}'
 
-# COMMENTED OUT TO TEST NEW LINES
 # tokens to ignore
 t_ignore		= " \t"
-
-# tokens to ignore
-# t_ignore		= " \t\n"
 
 # binary
 def t_BIN(t):
@@ -79,20 +75,19 @@ def t_INT(t):
 		t.value = int(0)
 	return t
 
-
+# true value considered on
 def t_TRUE(t):
 	r'([tT][rR][uU][eE])' 
 	t.value = int(1)
 	return t
 
-
+# false value considered off
 def t_FALSE(t):
 	r'([fF][aA][lL][sS][eE])'
 	t.value = int(0)
 	return t
 
-# COMMENTED OUT TO TEST NEW LINES 
-# # new lines
+# new lines
 def t_newline(t):
 	r'\n+'
 	t.lexer.lineno += t.value.count("\n")
@@ -106,25 +101,17 @@ def t_error(t):
 
 lexer = lex.lex()
 
-def run_input(expression):
-	lexer.input(expression)
+# def run_input(expression):
+# 	lexer.input(expression)
+# 	lextokens = []
 
-	formatted_tokens = []
-	lextokens = []
-	# i = 0
-	while True:
-		token = lexer.token()
-		if not token:
-			break
-		lextokens.append(token)
+# 	while True:
+# 		token = lexer.token()
+# 		if not token:
+# 			break
+# 		lextokens.append(token)
 
-		# formatted_tokens += [(token.type, token.value,)]
-		# print i, token.type, token.value, token.lexpos
-		# i += 1
-	# print "####", lexer.lextokens
-
-	return lextokens
-	# return lexer
+# 	return lextokens
 
 # if __name__ == "__main__":
 # 	lex.runmain(lexer)
