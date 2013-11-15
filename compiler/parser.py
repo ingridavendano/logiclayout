@@ -122,7 +122,6 @@ def p_expression_group(t):
 	'''expression : LPAREN   expression RPAREN
 				  | LBRACE   expression RBRACE
 				  | LBRACKET expression RBRACKET'''
-	print 7
 	t[0] = t[2]
 
 def p_expression_value(t):
@@ -137,17 +136,16 @@ def p_expression_value(t):
 	nodes.append(base)
 	t[0] = t[1] 
 
-
 def p_expression_id(t):
 	'expression : ID'
 	print 9
 	try:
-		# t[0] = ids[t[1]]
 		t[0] = id_nodes[t[1]]
 		print "id", t[1], id_nodes[t[1]]
 	except LookupError:
 		print "Undefined name '%s'!" % t[1]
-		t[0] = bool(int(0))
+		node_without_value = Node(t[1],'UNDEFINED_VAR',base=True)
+		t[0] = node_without_value
 
 def p_error(t):
 	print "Syntax error at '%s'." % t.value

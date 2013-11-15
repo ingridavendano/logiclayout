@@ -5,18 +5,20 @@
 # Tests digital logic expression compiler.
 # -----------------------------------------------------------------------------
 
-# import lexer
-# import parser
 import run
 import unittest
 
 # -----------------------------------------------------------------------------
 
-class TestLogicTokens(unittest.TestCase):
+class TestExpressions(unittest.TestCase):
+	""" """
 
-	def test_binary(self):
-		""" Test if binary expressions work. """
+	def test_single_assigned_expressions(self):
+		""" """
+		pass
 
+	def test_multiple_assigned_expressions(self):
+		"""  """
 
 		data = ["a = 0", 
 				"b = 1", 
@@ -26,15 +28,10 @@ class TestLogicTokens(unittest.TestCase):
 				"f", 
 				"g = b * c",
 				"g"]
-		# data = ["f = [(a*b)+(c*d)]"]
-# 		data = ["""a = 1
-# b = 0"""]
-
-		# data = ["a = 1", "b = 0", "c = a + b", "c"]
-		# data = ["a = 1", "b = 0"]
-		# data = ["a = 1", "a"]
+				
 		node_tokens = []
 		found_tokens = []
+
 		for d in data:
 			print "*"*10, d
 			run.parse(d, node_tokens)
@@ -42,6 +39,98 @@ class TestLogicTokens(unittest.TestCase):
 		
 		# print found_tokens
 
+	def test_single_unassigned_expressions(self):
+		""" """
+		pass
+
+	def test_multiple_unassigned_expressions(self):
+		""" """
+		# data = ["f = [(a*b)+(c*d)]"]
+		pass
+
+
+class TestTokens(unittest.TestCase):
+	""" """
+
+	def test_root_node(self):
+		""" """
+		pass
+
+	def test_terminal_nodes(self):
+		""" """
+		pass
+
+	def test_nonterminal_nodes(self):
+		""" """
+		pass
+
+	def test_depth_of_node_tree(self):
+		""" """
+		pass
+
+	def test_node_locations(self):
+		""" """
+		pass
+
+	def test_node_children_relationships(self):
+		""" """
+		pass
+
+	def test_node_parent_relationships(self):
+		""" """
+		pass
+
+
+class TestParser(unittest.TestCase):
+	""" """
+
+	def test_equals(self):
+		""" """
+		pass
+
+	def test_not(self):
+		""" """
+		pass
+
+	def test_and(self):
+		""" """
+		pass
+
+	def test_or(self):
+		""" """
+		pass
+
+	def test_literals(self):
+		""" """
+		pass
+
+
+class TestLexer(unittest.TestCase):
+	""" """
+
+	def test_id_token(self):
+		""" """
+		pass
+
+	def test_binary_token(self):
+		""" """
+		pass
+
+	def test_integer_token(self):
+		""" """
+		pass
+
+	def test_boolean_tokens(self):
+		""" """
+		pass
+
+	def test_delimiter_tokens(self):
+		""" """
+		pass
+
+	def test_operator_tokens(self):
+		""" """
+		pass
 
 
 if __name__ == '__main__':

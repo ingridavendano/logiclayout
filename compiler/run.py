@@ -32,12 +32,6 @@ def parse(data, node_tokens=[], debug=0):
 	list_node_tokens = node_tokens
 	yacc_parser.parse(data)
 
-
-
-	# print "type", instance(parser)
-	# print "data", type(parsed_data)
-	# print "pinfo", type(parser.)
-
 	if yacc_parser.error:
 		return None
 
