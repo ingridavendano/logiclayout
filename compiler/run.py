@@ -26,7 +26,7 @@ import parser
 
 yacc_parser = parser.yacc_parser
 
-def parse(data, node_tokens=[], debug=0):
+def parse_on(data, node_tokens=[], debug=0):
 	yacc_parser.error = 0
 
 	list_node_tokens = node_tokens

@@ -20,24 +20,36 @@ class TestExpressions(unittest.TestCase):
 	def test_multiple_assigned_expressions(self):
 		"""  """
 
-		data = ["a = 0", 
-				"b = 1", 
-				"c = 1", 
-				"d = 0", 
-				"f = [(a*b)+(c*d)]", 
-				"f", 
-				"g = b * c",
-				"g"]
-				
-		node_tokens = []
-		found_tokens = []
+		# data = ["a = 0", 
+		# 		"b = 1", 
+		# 		"c = 1", 
+		# 		"d = 0", 
+		# 		"f = [(a*b)+(c*d)]", 
+		# 		"f", 
+		# 		"g = b * c",
+		# 		"g"]
 
-		for d in data:
-			print "*"*10, d
-			run.parse(d, node_tokens)
-			# found_tokens += logic_lex.run_input(d)
+		# node_tokens = []
+		# found_tokens = []
+
+		# for d in data:
+		# 	print "*"*10, d
+		# 	run.parse(d, node_tokens)
+		# 	# found_tokens += logic_lex.run_input(d)
 		
-		# print found_tokens
+		# # print found_tokens
+
+	def test_literal_expressions(self):
+		""" Testing expressions that are only literals. """ 
+
+		for expr in ['1', 'false', '24', 'TRUE', '0b11']:
+			run.parse_on(expr)
+
+	def test_unassigned_single_variable_expressions(self):
+		""" Testing unassgined single variable expressions. """ 
+
+		for expr in ['a', 'bb', 'C']:
+			run.parse_on(expr)
 
 	def test_single_unassigned_expressions(self):
 		""" """
