@@ -1,68 +1,62 @@
 # -----------------------------------------------------------------------------
 # token.py
-# Created by Ingrid Avendano 11/12/13.
+# Created by Ingrid Avendano 11/17/13.
 #
-# Description the Node classes for boolean algebra tokens.
+# Node classes for boolean algebra tokens with left and right children.
 # -----------------------------------------------------------------------------
 
 # token class template
 class Node(object):
 	""" Basic node class for tokens. """ 
 
-	def __init__(self, *child):
+	def __init__(self, left=None, right=None):
 		""" Lets a node set its children immediately when made. """
-		self.expr = None
-		self.children = []
-		self.children += child
+		self.left = left
+		self.right = right
 
 	def __repr__(self):
 		""" What is displayed when a node is represented. """
-		return "Node( %s )" % self.kind
+		return "Node(%s)" % self.kind
 
 	def __contains__(self, other):
 		""" Checks if other Node is a child 'in' this Node object. """
-		return True if other in self.children else False
-		
-	def __iter__(self):
-		""" Returns list of children when iter(self). """
-		return iter(self.children)
-
-	def add_child(self, child):
-		""" Adds a new child to node. """
-		if child not in self.children:
-			self.children += [child]
+		return True if other in [self.left, self.right] else False
 
 
 class Root(Node):
 	""" Root nodes represent the top of a tree of a tree of nodes. """
 	kind = "EXPR"
-	pass
 
 class Equals(Node):
-	""" Equals  """ 
+	""" Equals node.  """ 
 	kind = "EQUALS"
-	pass
 
 class Not(Node):
+	""" Not node. """ 
 	kind = 'NOT'
 
 class And(Node):
+	""" And node. """ 
 	kind = 'AND'
-	pass
 
 class Or(Node):
+	""" Or node. """ 
 	kind = 'OR'
-	pass
 
 class Xor(Node):
+	""" Xor node. """ 
 	kind = 'XOR'
-	pass 
 
 class Id(Node):
+	""" Id node. """ 
 	kind = 'ID'
-	pass
+	def __init__(self, expr, child=None):
+		self.expr = expr
+		self.child = child
+
 
 class Literal(object):
+	""" Literal node composed of integers, binary and boolean values. """ 
 	kind = "LITERAL"
 
 	def __init__(self, expr):

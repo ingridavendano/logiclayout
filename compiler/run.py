@@ -5,7 +5,7 @@
 # Run compiler file by sending it a digital logic expression.
 # -----------------------------------------------------------------------------
 
-import parser
+import parser_binary
 
 # -----------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ import parser
 # if __name__ == "__main__":
 # 	lex.runmain(lexer)
 
-yacc_parser = parser.yacc_parser
+yacc_parser = parser_binary.yacc_parser
 
 def parse_on(data, node_tokens=[], debug=0):
 	yacc_parser.error = 0
@@ -35,5 +35,5 @@ def parse_on(data, node_tokens=[], debug=0):
 	if yacc_parser.error:
 		return None
 
-	print parser.nodes
+	print parser_binary.root
 

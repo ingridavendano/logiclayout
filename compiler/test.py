@@ -43,12 +43,15 @@ class TestExpressions(unittest.TestCase):
 		""" Testing expressions that are only literals. """ 
 
 		for expr in ['1', 'false', '24', 'TRUE', '0b11']:
+			print "test:", expr
 			run.parse_on(expr)
+
 
 	def test_unassigned_single_variable_expressions(self):
 		""" Testing unassgined single variable expressions. """ 
-
+		pass
 		for expr in ['a', 'bb', 'C']:
+			print "test:", expr
 			run.parse_on(expr)
 
 	def test_single_unassigned_expressions(self):
