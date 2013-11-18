@@ -8,7 +8,7 @@
 import ply.lex as lex
 import lexer
 import parser
-import optimizer
+import optimize
 
 # -----------------------------------------------------------------------------
 
@@ -50,13 +50,21 @@ def parse_on(data, node_tokens=[], debug=0, print_tree=1):
 		return None
 
 	# print parser.root
-
+	parse_tree_root = None
 	if print_tree:
 		for root_node in parser.root:
-			print "*"*80
-			print "TREE:"
-			optimizer.print_parse_tree(root_node)
+			# print "*"*80
+			# print "TREE:"
+			# optimizer.print_parse_tree(root_node)
 
+			print "#"*80
+
+			parse_tree_root = optimize.reorganize(root_node)
+
+			optimize.print_tree(parse_tree_root)
+		print "#"*80
+
+	return parse_tree_root
 
 def clear_parser():
 	parser.root = []

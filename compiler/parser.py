@@ -28,9 +28,6 @@ root = []
 
 def p_statement_assign(t):
 	'statement : ID EQUALS expression'
-	print 'EQUALS'
-	
-
 	if type(t[1]) == str:
 		id_node = Id(t[1])
 		equals_node = Equals(id_node, t[3])
@@ -44,12 +41,10 @@ def p_statement_assign(t):
 
 def p_statement_expr(t):
 	'statement : expression'
-	print 'EXPR'
 	root.append(t[1])
 
 def p_expression_not(t):
 	'expression : NOT expression'
-	print 'NOT'
 	not_node = Not(t[2])
 	t[0] = not_node
 
@@ -57,21 +52,18 @@ def p_expression_or(t):
 	'''expression : expression OR expression
 			  	  | ID OR expression'''
 	# 'expression : expression OR expression'
-	print 'OR'
 	or_node = Or(t[1], t[3])
 	t[0] = or_node
 
 def p_expression_and(t):
 	'''expression : expression AND expression
 			  	  | ID AND expression'''
-	print 'AND'
 	and_node = And(t[1], t[3])
 	t[0] = and_node
 
 def p_expression_xor(t):
 	'''expression : expression XOR expression	
 			  	  | ID XOR expression'''
-	print 'XOR'
 	xor_node = Xor(t[1], t[3])
 	t[0] = xor_node
 
@@ -86,7 +78,6 @@ def p_expression_literal(t):
 				  | INT
 				  | TRUE
 				  | FALSE'''
-	print 'LITERAL'
 	t[0] = Literal(t[1])
 
 def p_expression_id(t):

@@ -16,7 +16,7 @@ class Token(object):
 		self.right = right
 
 	def __repr__(self):
-		""" What is displayed when a node is represented. """
+		""" What is displayed when a token is represented. """
 		return "%s(%r)" % (self.kind, self.expr)
 
 	def __contains__(self, other):
@@ -42,10 +42,10 @@ class Not(Token):
 	""" Not node. """ 
 	kind = 'NOT'
 	expr = '~'
-	left = None
+	right = None
 
 	def __init__(self, child=None):
-		self.right = child
+		self.left = child
 
 class And(Token):
 	""" And node. """ 
@@ -68,11 +68,13 @@ class Id(Token):
 
 	def __init__(self, expr, child=None):
 		self.expr = expr
-		self.right = child
-		self.left = None
+		self.left = child
+		self.right = None
+
+		if child == None:
+			self.base = True
 
 
-		
 # -----------------------------------------------------------------------------
 
 class Literal(Token):
@@ -80,6 +82,7 @@ class Literal(Token):
 	kind = 'LITERAL'
 	left = None
 	right = None
+	base = True
 
 	def __init__(self, expr=None):
 		self.expr = expr

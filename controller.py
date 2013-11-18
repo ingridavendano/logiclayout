@@ -16,8 +16,9 @@ def logic():
 	print "#"*80
 	expression =  str("f = "+expression)
 	print expression
-	model.compile_expr(expression)
+	json = model.compile_expr(expression)
 	return render_template("logic_expression.html", expression=expression)
+	# return json
 
 if __name__ == "__main__":
 	app.run(debug=True)
