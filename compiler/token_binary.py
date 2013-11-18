@@ -9,27 +9,37 @@
 class Node(object):
 	""" Basic node class for tokens. """ 
 
-	def __init__(self, left=None, right=None):
+	def __init__(self, left=None, right=None, expr=None):
 		""" Lets a node set its children immediately when made. """
 		self.left = left
 		self.right = right
+		self.expr = expr
 
 	def __repr__(self):
 		""" What is displayed when a node is represented. """
-		return "Node(%s)" % self.kind
+		return "%s('%r')" % (self.kind, self.expr)
 
 	def __contains__(self, other):
 		""" Checks if other Node is a child 'in' this Node object. """
 		return True if other in [self.left, self.right] else False
 
+	def set_left(self, child):
+		""" Set left child of node. """	
+		self.left(child)
+
+	def set_right(self, child):
+		""" Set right child of node. """
+		self.right(child)
+
 
 class Root(Node):
 	""" Root nodes represent the top of a tree of a tree of nodes. """
-	kind = "EXPR"
+	kind = 'EXPR'
 
 class Equals(Node):
 	""" Equals node.  """ 
-	kind = "EQUALS"
+	kind = 'EQUALS'
+	expr = '='
 
 class Not(Node):
 	""" Not node. """ 
@@ -54,10 +64,9 @@ class Id(Node):
 		self.expr = expr
 		self.child = child
 
-
-class Literal(object):
+class Literal(Node):
 	""" Literal node composed of integers, binary and boolean values. """ 
-	kind = "LITERAL"
+	kind = 'LITERAL'
 
 	def __init__(self, expr):
 		self.expr = expr
