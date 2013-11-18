@@ -32,10 +32,21 @@ tokens = [
 t_ID			= r'[a-zA-Z_][a-zA-Z0-9_]*'
 
 # logic operators 
-t_NOT			= r'(([Nn][Oo][Tt])|~|!)'
-t_AND			= r'(([An][Nn][Dd])|(\&{1,2})|\*)'
-t_OR			= r'(([Oo][Rr])|\|{1,2}|\+)'
-t_XOR			= r'\^'
+def t_NOT(t):
+	r'([nN][oO][tT])|~|!'
+	return t
+
+def t_AND(t):
+	r'([aA][nN][dD])|(\&{1,2})|\*'
+	return t
+
+def t_OR(t):
+	r'([oO][rR])|\|{1,2}|\+'
+	return t
+
+def t_XOR(t):
+	r'([xX][oO][rR])|\^'
+	return t
 
 # assignments
 t_EQUALS		= r'='
@@ -71,13 +82,12 @@ def t_INT(t):
 		t.value = int(0)
 	return t
 
-# true value considered on
+# booleans 
 def t_TRUE(t):
 	r'([tT][rR][uU][eE])' 
 	t.value = int(1)
-	return t
+	return t 
 
-# false value considered off
 def t_FALSE(t):
 	r'([fF][aA][lL][sS][eE])'
 	t.value = int(0)

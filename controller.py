@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, request, session, url_for
-# import model
+import model
 
 app = Flask(__name__)
 app.secret_key = "honeybooboochild"
@@ -14,7 +14,9 @@ def index():
 def logic():
 	expression = request.form["logic-expression"]
 	print "#"*80
+	expression =  str("f = "+expression)
 	print expression
+	model.compile_expr(expression)
 	return render_template("logic_expression.html", expression=expression)
 
 if __name__ == "__main__":
