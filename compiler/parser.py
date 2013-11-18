@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 
 import lexer 
-from token import *
+from grammar import *
 
 # -----------------------------------------------------------------------------
 
@@ -62,13 +62,15 @@ def p_expression_or(t):
 	t[0] = or_node
 
 def p_expression_and(t):
-	'expression : expression AND expression'
+	'''expression : expression AND expression
+			  	  | ID AND expression'''
 	print 'AND'
 	and_node = And(t[1], t[3])
 	t[0] = and_node
 
 def p_expression_xor(t):
-	'expression : expression XOR expression'
+	'''expression : expression XOR expression	
+			  	  | ID XOR expression'''
 	print 'XOR'
 	xor_node = Xor(t[1], t[3])
 	t[0] = xor_node
@@ -89,12 +91,11 @@ def p_expression_literal(t):
 
 def p_expression_id(t):
 	'expression : ID'
-	# print 'ID'
 	try:
 		variable = ids[t[1]]
 		id_node = Id(t[1], variable)
 	except LookupError:
-		print "Undefined name '%s'!" % t[1]
+		# print "Undefined name '%s'!" % t[1]
 		dummy_variable = Literal()
 		id_node = Id(t[1], dummy_variable)
 	t[0] = id_node
