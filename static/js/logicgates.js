@@ -47,13 +47,13 @@ function drawNotGate(ctx, x, y, scale, color) {
 	ctx.lineWidth = 3*scale;
 
 	var height = 40*scale;
-	var length = 60*scale;
-	var radius = 8*scale; 
+	var length = height*1.5;
+	var radius = height*0.2; 
 
 	// not gate drawn to the scale where x, y are in the center
 	notGate(ctx, x, y, height, length);
 	notCircleSymbol(ctx, x + length/2, y, radius);
-	centerPoint(ctx, x, y, scale);
+	// centerPoint(ctx, x, y, scale);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -62,7 +62,7 @@ function drawNotGate(ctx, x, y, scale, color) {
 function andGate(ctx, x, y, height, length) {
 	ctx.save();
 	ctx.beginPath();
-	ctx.arc(x - length/6, y, height, 1.5*Math.PI, 0.5*Math.PI, false);
+	ctx.arc(x, y, height, 1.5*Math.PI, 0.5*Math.PI, false);
 	ctx.lineTo(x - length*0.75, y + height);
 	ctx.lineTo(x - length*0.75, y - height);
 	ctx.closePath()
@@ -75,12 +75,12 @@ function andGate(ctx, x, y, height, length) {
 function drawAndGate(ctx, x, y, scale, color) {
 	ctx.fillStyle = color;
 	ctx.lineWidth = 3*scale;
-
+	
 	var height = 40*scale;
 	var length = 60*scale;
 
 	andGate(ctx, x, y, height, length);
-	centerPoint(ctx, x, y, scale);
+	// centerPoint(ctx, x, y, scale);
 }
 
 // create a nand gate out of and gate and not symbol
@@ -93,15 +93,14 @@ function drawNandGate(ctx, x, y, scale, color) {
 	var radius = 8*scale; 
 
 	andGate(ctx, x, y, height, length);
-	notCircleSymbol(ctx, x + length/2, y, radius);
+	notCircleSymbol(ctx, x + height, y, radius);
 	centerPoint(ctx, x, y, scale);
 }
 
 /* ------------------------------------------------------------------------- */
 
 function orGate(ctx, x, y, height, length) {
-	var scale = 1;
-	var offset = -5;
+	ctx.save();
 	ctx.beginPath();
 	ctx.moveTo(x - length*0.75, y + height);
 	ctx.quadraticCurveTo(x + length/4, y + height, x + length*0.75, y);
@@ -110,6 +109,7 @@ function orGate(ctx, x, y, height, length) {
 	ctx.bezierCurveTo(x - length/4, y - height/2, x - length/4, y + height/2, x - length*0.75, y + height);
 	ctx.fill();
 	ctx.stroke();
+	ctx.restore();
 }
 
 function drawOrGate(ctx, x, y, scale, color) {
@@ -120,77 +120,63 @@ function drawOrGate(ctx, x, y, scale, color) {
 	var length = 60*scale;
 
 	orGate(ctx, x, y, height, length);
-	centerPoint(ctx, x, y, scale);
-}
-
-function drawOrGate2(ctx, x, y, scale, color) {
-	ctx.fillStyle = color;
-
-	// setting up stroke for gate
-	ctx.lineWidth = 5*scale;
-	ctx.strokeStyle = "rgb(0,0,0)";
-
-	var offset = -5;
-	ctx.beginPath();
-	ctx.moveTo(x-75*scale-offset, y+50*scale);
-	ctx.quadraticCurveTo(x, y+50*scale, x+50*scale, y);
-	ctx.quadraticCurveTo(x, y-50*scale, x-75*scale-offset, y-50*scale);
-	ctx.moveTo(x-75*scale-offset, y-50*scale);
-	ctx.bezierCurveTo(x-35*scale, y-25*scale, x-35*scale, y+25*scale, x-75*scale-offset, y+50*scale);
-
-	ctx.fill();
-	ctx.stroke();
+	// centerPoint(ctx, x, y, scale);
 }
 
 function drawNorGate(ctx, x, y, scale, color) {
-	drawOrGate(ctx, x, y, scale, color);
 	ctx.fillStyle = color;
+	ctx.lineWidth = 3*scale;
 
-	// setting up stroke for gate
-	ctx.lineWidth = 5*scale;
-	ctx.strokeStyle = "rgb(0,0,0)";
+	var height = 40*scale;
+	var length = 60*scale;
+	var radius = 8*scale; 
 
-	// circle at the front of the not gate
-	ctx.beginPath();
-	ctx.arc(x+10*scale+52, y, 12*scale, 0, 2*Math.PI, false);
-	ctx.closePath();
-	ctx.fill();
-	ctx.stroke();
+	orGate(ctx, x, y, height, length);
+	notCircleSymbol(ctx, x + length*0.75, y, radius);
+	centerPoint(ctx, x, y, scale);
 }
 
 /* ------------------------------------------------------------------------- */
 
-function drawXorGate(ctx, x, y, scale, color) {
-	drawOrGate(ctx, x, y, scale, color);
-	ctx.fillStyle = color;
+function xorGate(ctx, x, y, height, length) {
+	var offset = height/10;
 
-	// setting up stroke for gate
-	ctx.lineWidth = 5*scale;
-	ctx.strokeStyle = "rgb(0,0,0)";
+	orGate(ctx, x, y, height, length);
 
-	var xOffset = 15;
-	var yOffset = 0;
-	ctx.moveTo(x-75*scale-xOffset, y-50*scale+yOffset);
-	ctx.bezierCurveTo(x-35*scale-xOffset, y-25*scale, x-35*scale-xOffset, y+25*scale, x-75*scale-xOffset, y+50*scale-yOffset);
+	ctx.save();
+	ctx.beginPath();
+	ctx.moveTo(x - length-offset, y - height);
+	ctx.bezierCurveTo(x - length/2, y - height/2, x - length/2, y + height/2, x - length -offset, y + height);
 	ctx.stroke();
+	ctx.restore();
+
+}
+
+function drawXorGate(ctx, x, y, scale, color) {
+	ctx.fillStyle = color;
+	ctx.lineWidth = 3*scale;
+
+	var height = 40*scale;
+	var length = 60*scale;
+
+	xorGate(ctx, x, y, height, length);
+	// centerPoint(ctx, x, y, scale);
 }
 
 function drawNxorGate(ctx, x, y, scale, color) {
-	drawXorGate(ctx, x, y, scale, color);
 	ctx.fillStyle = color;
+	ctx.lineWidth = 3*scale;
 
-	// setting up stroke for gate
-	ctx.lineWidth = 5*scale;
-	ctx.strokeStyle = "rgb(0,0,0)";
+	var height = 40*scale;
+	var length = 60*scale;
+	var radius = 8*scale;
 
-	// circle at the front of the not gate
-	ctx.beginPath();
-	ctx.arc(x+10*scale+52, y, 12*scale, 0, 2*Math.PI, false);
-	ctx.closePath();
-	ctx.fill();
-	ctx.stroke();
+	xorGate(ctx, x, y, height, length);
+	notCircleSymbol(ctx, x + length*0.75, y, radius);
+	// centerPoint(ctx, x, y, scale);
 }
 
+/* ------------------------------------------------------------------------- */
 
 
 function draw(x, y, scale) {
@@ -199,35 +185,20 @@ function draw(x, y, scale) {
 
 	if (canvas.getContext) {
 		var ctx = canvas.getContext('2d');
-
 		ctx.strokeStyle = "#404040";
-
-		// setting up stroke for gate
-		
-		// ctx.strokeStyle = "rgb(0,0,0)";
-
-		// drawNotGate(ctx, x+600, y+100, scale, "#E5CCFF");
-		// ctx.stroke();
-
-		// drawAndGate(ctx, x, y, scale, "#FFFFCC");
-		// drawNandGate(ctx, x, y+200, scale, "#CCFFFF");
-
-		// drawOrGate(ctx, x+200, y, scale, "#FFCCE5");
-		// drawNorGate(ctx, x+200, y+200, scale, "#CCCCFF");
-
-		// drawXorGate(ctx, x+400, y, scale, "#FFE5CC");
-		// drawNxorGate(ctx, x+400, y+200, scale, "#CCFFCC");
-
-		// drawAndGate(ctx, x, y, scale, "#E5CCFF");
-
-
 	
-		// drawAndGate(ctx, x, y, scale, "#F0FFF0");
-		// drawNandGate(ctx, x, y, scale, "#F0FFF0");
-		// drawNotGate(ctx, x, y, scale, "#F0FFF0");
-		drawOrGate(ctx, x, y, scale, "#F0FFF0");
+		drawAndGate(ctx, x, y, scale, "#F0FFF0");
+		drawNandGate(ctx, x, y+200, scale, "#F0FFF0");
+	
+		drawOrGate(ctx, x+150, y, scale, "#F0FFF0");
+		drawNorGate(ctx, x+150, y+200, scale, "#F0FFF0");
 
-		drawOrGate2(ctx, x+200, y+100, scale, "#F0FFF0");
+		drawXorGate(ctx, x+320, y, scale, "#F0FFF0");
+		drawNxorGate(ctx, x+320, y+200, scale, "#F0FFF0");
+
+		drawNotGate(ctx, x+450, y+100, scale, "#F0FFF0");
+
+		// drawOrGate2(ctx, x+200, y+100, scale, "#F0FFF0");
 
 
 		

@@ -4,6 +4,7 @@
 #
 # Building blocks to make abstract syntax tree.
 # -----------------------------------------------------------------------------
+import json
 
 class Node(object):
 	def __init__(self, token):
@@ -33,6 +34,18 @@ class Node(object):
 	def add(self, *children):
 		self.children += children
 
+class NodeEncoder(json.JSONEncoder):
+	def default(self, obj):
+		if isinstance(obj, Node):
+			return {
+				'base': obj.base,
+				'expr': obj.expr,
+				'children': [
+					self.default(child) for child in obj.children
+				]
+			}	
+		else:
+			return json.JSONEncoder.default(self, obj)
 
 
 class Tree(object):

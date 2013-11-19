@@ -53,7 +53,7 @@ def reorganize(root):
 					new_node.children += new_child.children
 				else: 
 					new_node.add(new_child)
-		elif root.kind == 'ID':
+		elif root.kind == 'ID' or root.kind == 'LITERAL':
 			new_node.base = True
 
 	return new_node

@@ -53,9 +53,9 @@ def parse_on(data, node_tokens=[], debug=0, print_tree=1):
 	parse_tree_root = None
 	if print_tree:
 		for root_node in parser.root:
-			# print "*"*80
-			# print "TREE:"
-			# optimizer.print_parse_tree(root_node)
+			print "*"*80
+			print "TREE:"
+			optimize.print_parse_tree(root_node)
 
 			print "#"*80
 
