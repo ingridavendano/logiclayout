@@ -23,29 +23,15 @@ def compile_expr(expr):
 
 
 def prep_json(root):
-
-	if not root.base: 
-		root_module = []
-
-		children = []
-
-		for child in root.children:
-			print "parent", root, "children", child
-			if child.base:
-				print "base!", child
-				children.append(str(child))
-			else:
-				child_module = make_json(child)
-				children.append(child_module)
-
-		root_module.append((root, children))
-
-		return root_module
-	# return root
+	
+	if not root.base:
+		pass
+	else:
+		return str(root)
 
 def make_json(root):
 	module = prep_json(root)
 	print module
 
-	for start in module:
-		pass
+	# for start in module:
+	# 	pass

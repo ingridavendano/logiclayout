@@ -12,8 +12,14 @@
 	</div>
 </form>
 
+<canvas id="schematic" width="1280" height="600"></canvas>
+
+<script src="../static/js/logicgates.js"></script>
 <script type="text/javascript">
-	$.ajax("/ajax")
+
+	$(function() {
+		draw(100,100, 1);
+	})
 </script>
 
 

@@ -8,6 +8,7 @@
 from tree import *
 
 def print_parse_tree(root_node, indent=0):
+	""" Print node tree where each node has left and right child. """
 	print '\t'*indent, ' ', root_node
 	indent += 1
 
@@ -20,6 +21,7 @@ def print_parse_tree(root_node, indent=0):
 
 
 def print_tree(node, indent=0):
+	""" Print a node tree that has children. """
 	print '\t'*indent, node
 	indent += 1
 
