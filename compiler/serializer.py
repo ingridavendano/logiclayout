@@ -34,17 +34,15 @@ class NodeEncoder(json.JSONEncoder):
 
 		def pin(node):
 			return {
-				'type': "pin",
+				'type': 'pin',
 				'name': node.expr
 			}
 
-
 		if isinstance(tree, Tree):
-			print "*"*80
 			return {
-				'expr': tree.expr,
+				'type': 'function',
 				'output': unknown_node(tree.root),
-				'tree': unknown_node(tree.root.children[0])
+				'inputs': unknown_node(tree.root.children[0])
 			}	
 		else:
 			return json.JSONEncoder.default(self, tree)
@@ -53,8 +51,13 @@ class NodeEncoder(json.JSONEncoder):
 
 def to_json(tree):
 	""" Converts a Node Tree to JSON. """
-	print "*"*80
 
-	json_module = json.dumps(tree, cls=NodeEncoder)
+	json_string = json.dumps(
+		tree, 
+		cls=NodeEncoder, 
+		sort_keys=True, 
+		indent=4, 
+		separators=(',', ': ')
+		)
 
-	print json_module
+	return json_string
