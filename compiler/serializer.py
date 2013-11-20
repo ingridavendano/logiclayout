@@ -22,7 +22,7 @@ class NodeEncoder(json.JSONEncoder):
 				elif node.gate:
 					return gate(node)
 
-		def gate(self, node):
+		def gate(node):
 			return {
 				'type': node.expr,
 				'weight': node.weight,
@@ -32,7 +32,7 @@ class NodeEncoder(json.JSONEncoder):
 				]
 			}
 
-		def pin(self, node):
+		def pin(node):
 			return {
 				'type': "pin",
 				'name': node.expr
@@ -40,28 +40,21 @@ class NodeEncoder(json.JSONEncoder):
 
 
 		if isinstance(tree, Tree):
+			print "*"*80
 			return {
 				'expr': tree.expr,
-				'tree': {
-					'output': unknown_node(tree.root),
-				},
-
-				'output': {
-					'type': "pin",
-					'name': tree.root.expr
-				},
-				'children': [
-					self.default(child) for child in node.children
-				]
+				'output': unknown_node(tree.root),
+				'tree': unknown_node(tree.root.children[0])
 			}	
 		else:
-			return json.JSONEncoder.default(self, node)
+			return json.JSONEncoder.default(self, tree)
 
 # -----------------------------------------------------------------------------
 
 def to_json(tree):
 	""" Converts a Node Tree to JSON. """
+	print "*"*80
 
-	json_module = json.dumps(tree.root, cls=NodeEncoder)
+	json_module = json.dumps(tree, cls=NodeEncoder)
 
 	print json_module
