@@ -5,10 +5,6 @@
 # Defined tokens and functions for digital logic expression using regex. 
 # -----------------------------------------------------------------------------
 
-import ply.lex as lex
-
-# -----------------------------------------------------------------------------
-
 tokens = [
 	# identifier
 	'ID',
@@ -107,4 +103,5 @@ def t_error(t):
 # Run PLY lex module that uses above functions to define tokens.
 # -----------------------------------------------------------------------------
 
+import ply.lex as lex
 lexer = lex.lex()
