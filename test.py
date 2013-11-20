@@ -10,7 +10,9 @@ if __name__ == "__main__":
 
 	# expr = "f = a * (b OR (NOT c)) xor (d | c | g) xor (s OR t)"
 	expr = "f = a * (b OR (NOT (c * (NOT i)))) xor (d | c | g) xor (s OR t) xor (NOT (a OR (NOT (u and p)))) and f"
-	run.compiler(expr)
+	tree = run.compiler(expr)
+
+	tree.print_tree()
 
 
 	# expr1 = "w = not f"
