@@ -40,7 +40,7 @@ class Equals(Token):
 	expr = '='
 
 class Not(Token):
-	""" Not node. """ 
+	""" Not node takes in only one child. """ 
 	kind = 'NOT'
 	expr = '~'
 	right = None
