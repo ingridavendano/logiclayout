@@ -1,11 +1,10 @@
 # -----------------------------------------------------------------------------
 # grammar.py
 # Created by Ingrid Avendano 11/17/13.
-#
-# Node classes for boolean algebra tokens with left and right children.
+# -----------------------------------------------------------------------------
+# General token class for boolean algebra tokens with left and right children.
 # -----------------------------------------------------------------------------
 
-# token class template
 class Token(object):
 	""" Basic node class for tokens. """ 
 	base = False
@@ -31,6 +30,8 @@ class Token(object):
 		""" Set right child of node. """
 		self.right(child)
 
+# -----------------------------------------------------------------------------
+# List of specified tokens classes below based on grammar for each token.
 # -----------------------------------------------------------------------------
 
 class Equals(Token):
@@ -70,12 +71,9 @@ class Id(Token):
 		self.expr = expr
 		self.left = child
 		self.right = None
-
+		
 		if child == None:
 			self.base = True
-
-
-# -----------------------------------------------------------------------------
 
 class Literal(Token):
 	""" Literal node composed of integers, binary and boolean values. """ 

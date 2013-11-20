@@ -1,4 +1,8 @@
-# Digital Logic Compiler
-# Author: Ingrid Avendano (ingridavendano@gmail.com)
+# -----------------------------------------------------------------------------
+# compiler
+# Created by Ingrid Avendano (ingridavendnao@gmail.com)
+# -----------------------------------------------------------------------------
+# Runs a compiler on a logic expressions.
+# -----------------------------------------------------------------------------
 
-__all__ = ['run','test']
+__all__ = ['run', 'optimize', 'serialize', 'test']

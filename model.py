@@ -16,7 +16,7 @@ from compiler import tree
 
 def compile_expr(expr):
 	run.clear_parser()
-	return run.parse_on(expr)
+	return run.compiler(expr)
 
 def make_json(root):
 	pass 

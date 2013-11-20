@@ -58,6 +58,8 @@ function drawNotGate(ctx, x, y, scale, color) {
 
 /* ------------------------------------------------------------------------- */
 
+
+
 // main body of and gate
 function andGate(ctx, x, y, height, length) {
 	ctx.save();
@@ -75,7 +77,7 @@ function andGate(ctx, x, y, height, length) {
 function drawAndGate(ctx, x, y, scale, color) {
 	ctx.fillStyle = color;
 	ctx.lineWidth = 3*scale;
-	
+
 	var height = 40*scale;
 	var length = 60*scale;
 

@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 # run.py
 # Created by Ingrid Avendano 11/14/13.
-#
+# -----------------------------------------------------------------------------
 # Run compiler file by sending it a digital logic expression.
 # -----------------------------------------------------------------------------
 
@@ -9,12 +9,58 @@ import ply.lex as lex
 import lexer
 import parser
 import optimize
+from optimize import *
+
+# -----------------------------------------------------------------------------
+# Run PLY yacc in the parser module.
+# -----------------------------------------------------------------------------
+
+yacc = parser.run_yacc
 
 # -----------------------------------------------------------------------------
 
-yacc_parser = parser.yacc_parser
+def clear_parser():
+	""" Empties root of pre-exisiting root tokens. """
+	parser.root = []
 
-# -----------------------------------------------------------------------------
+def parse_expression(expr, debug=0):
+	""" Run parser on one expression and return a tree of that expression. """
+	clear_parser()
+	yacc.error = 0
+	yacc.parse(expr)
+
+	if yacc.error:
+		return None
+
+	return Tree(parser.root[0])
+
+# def compiler_multiple(data, debug=0, print_tree=1):
+# 	""" Run compiler on a logic expression. """
+
+# 	parser_trees = []
+
+# 	for expr in data:
+# 		new_tree = parse_expression(expr)
+# 		parser_trees.append(new_tree)
+
+# 		print "*"*80
+# 		new_tree.print_tree()
+# 		print "*"*80
+# 		new_tree.print_levels()	
+# 		print "*"*80
+
+# 	return None
+
+def compiler(data, debug=0, print_tree=1):
+	""" Run compiler on a logic expression. """
+	clear_parser()
+	yacc.error = 0
+	yacc.parse(data)
+
+	if yacc.error:
+		return None
+
+	return Tree(parser.root[0])
 
 # def run_input(expression):
 # 	lexer.lexer.input(expression)
@@ -37,35 +83,4 @@ yacc_parser = parser.yacc_parser
 # 	return dummy_tokens
 
 # -----------------------------------------------------------------------------
-
-def parse_on(data, node_tokens=[], debug=0, print_tree=1):
-	yacc_parser.error = 0
-
- 	# print run_input(data)
-
-	list_node_tokens = node_tokens
-	yacc_parser.parse(data)
-
-	if yacc_parser.error:
-		return None
-
-	# print parser.root
-	parse_tree_root = None
-	if print_tree:
-		for root_node in parser.root:
-			print "*"*80
-			print "TREE:"
-			optimize.print_parse_tree(root_node)
-
-			print "#"*80
-
-			parse_tree_root = optimize.reorganize(root_node)
-
-			optimize.print_tree(parse_tree_root)
-		print "#"*80
-
-	return parse_tree_root
-
-def clear_parser():
-	parser.root = []
 
