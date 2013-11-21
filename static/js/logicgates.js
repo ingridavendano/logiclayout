@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------------
  * logicgates.js
  * Created by Ingrid Avendano on 11/18/13. 
- *	
+ * ----------------------------------------------------------------------------
  * Contains the JS Canvas functions to draw logic gates. 
  * ------------------------------------------------------------------------- */
 
@@ -180,6 +180,125 @@ function drawNxorGate(ctx, x, y, scale, color) {
 
 /* ------------------------------------------------------------------------- */
 
+function inputPin(ctx, x, y, height, length) {
+	ctx.save();
+	ctx.beginPath();
+	ctx.moveTo(x + length/2, y - height/2);
+	ctx.lineTo(x - length/2, y - height/2);
+	ctx.lineTo(x - length/2, y + height/2);
+	ctx.lineTo(x + length/2, y + height/2);
+	ctx.lineTo(x + length, y);
+	ctx.closePath()
+	ctx.fill();
+	ctx.stroke();
+	ctx.restore();
+}
+
+function outputPin(ctx, x, y, height, length) {
+	ctx.save();
+	ctx.beginPath();
+	ctx.moveTo(x - length/2, y - height/2);
+	ctx.lineTo(x + length/2, y - height/2);
+	ctx.lineTo(x + length/2, y + height/2);
+	ctx.lineTo(x - length/2, y + height/2);
+	ctx.lineTo(x - length, y);
+	ctx.closePath()
+	ctx.fill();
+	ctx.stroke();
+	ctx.restore();
+}
+
+
+function drawInput(ctx, x, y, scale, color) {
+	ctx.fillStyle = color;
+	ctx.lineWidth = 3*scale;
+
+	var height = 20*scale;
+	var length = 40*scale;
+
+	inputPin(ctx, x, y, height, length);
+	centerPoint(ctx, x, y, scale);
+}
+
+function drawOutput(ctx, x, y, scale, color) {
+	ctx.fillStyle = color;
+	ctx.lineWidth = 3*scale;
+
+	var height = 20*scale;
+	var length = 40*scale;
+
+	outputPin(ctx, x, y, height, length);
+	// centerPoint(ctx, x, y, scale);
+}
+
+/* ------------------------------------------------------------------------- */
+
+function drawXTicks(ctx, x, y) {
+	ctx.fillStyle = "#000000";
+	ctx.lineWidth = 2;
+	ctx.save();
+	ctx.moveTo(x,y-20);
+	ctx.lineTo(x,y+20);
+	ctx.closePath();
+	ctx.fill();
+	ctx.stroke();
+	ctx.restore();
+}
+
+function drawYTicks(ctx, x, y) {
+	ctx.fillStyle = "#000000";
+	ctx.lineWidth = 2;
+	ctx.save();
+	ctx.moveTo(x-20,y);
+	ctx.lineTo(x+20,y);
+	ctx.closePath();
+	ctx.fill();
+	ctx.stroke();
+	ctx.restore();
+}
+
+function outlineWindow(ctx, xWin, yWin, xTicks, yTicks) {
+	ctx.fillStyle = "#000000";
+	ctx.lineWidth = 2;
+	ctx.save();
+	ctx.moveTo(0,0);
+	ctx.lineTo(xWin,0);
+	ctx.closePath();
+	ctx.moveTo(0,0);
+	ctx.lineTo(0,yWin);
+	ctx.closePath();
+	ctx.moveTo(xWin,yWin);
+	ctx.lineTo(xWin,0);
+	ctx.closePath();
+	ctx.moveTo(xWin,yWin);
+	ctx.lineTo(0,yWin);
+	ctx.closePath();
+
+
+	var xIncrement = xWin/xTicks;
+	var yIncrement = yWin/yTicks;
+	for (var i=0; i < xTicks+1; i++) {
+		for (var j=0; j < yTicks+1; j++) {
+			drawXTicks(ctx, xIncrement*i, yIncrement*j);
+		}
+	}
+
+	
+	for (var i=0; i < yTicks+1; i++) {
+		for (var j=0; j < xTicks+1; j++) {
+			drawYTicks(ctx, xIncrement*j, yIncrement*i);
+		}
+	}
+
+	// ctx.moveTo(0,0);
+	// ctx.lineTo(0,yWin);
+	ctx.closePath();
+	ctx.fill();
+	ctx.stroke();
+	ctx.restore();
+}
+
+/* ------------------------------------------------------------------------- */
 
 function draw(x, y, scale) {
 
@@ -190,19 +309,101 @@ function draw(x, y, scale) {
 		ctx.strokeStyle = "#404040";
 	
 		drawAndGate(ctx, x, y, scale, "#F0FFF0");
-		drawNandGate(ctx, x, y+200, scale, "#F0FFF0");
+		// drawNandGate(ctx, x, y+200, scale, "#F0FFF0");
 	
-		drawOrGate(ctx, x+150, y, scale, "#F0FFF0");
-		drawNorGate(ctx, x+150, y+200, scale, "#F0FFF0");
+		// drawOrGate(ctx, x+150, y, scale, "#F0FFF0");
+		// drawNorGate(ctx, x+150, y+200, scale, "#F0FFF0");
 
-		drawXorGate(ctx, x+320, y, scale, "#F0FFF0");
-		drawNxorGate(ctx, x+320, y+200, scale, "#F0FFF0");
+		// drawXorGate(ctx, x+320, y, scale, "#F0FFF0");
+		// drawNxorGate(ctx, x+320, y+200, scale, "#F0FFF0");
 
-		drawNotGate(ctx, x+450, y+100, scale, "#F0FFF0");
+		// drawNotGate(ctx, x+450, y+100, scale, "#F0FFF0");
 
-		// drawOrGate2(ctx, x+200, y+100, scale, "#F0FFF0");
-
-
-		
+		// drawInput(ctx, x+300, y+300, scale, "#F0FFF0");
+		// drawOutput(ctx, x+300, y+100, scale, "#F0FFF0");
 	}
 }
+
+/* ------------------------------------------------------------------------- */
+
+// function gate(kind, level) {
+// 	this.kind = kind;
+// 	this.level = level;
+// }
+
+// function pin(level) {
+// 	this.level = level;
+// }
+
+// function unpack_json(node) {
+
+// 	for (var i = 0; i < node.inputs.length; i++) {
+// 		if (node.inputs[i].type == 'pin') {
+
+// 		} else if (node.inputs[i].type == 'OR') {
+
+// 		}
+// 	}
+// }
+
+// function schematic(circuit) {
+// 	this.levels = circuit.levels;
+
+
+// }
+
+function drawNodes(ctx, x, y, nodes) {
+
+}  
+
+
+function drawSchematic(xWin, yWin, circuit) {
+
+	var x = 100;
+	var y = 100;
+	var scale = 1;
+
+	// determining the x-axis
+	var levels = circuit.levels;
+	var xTicks = levels; 
+	var yTicks = circuit.weight;
+
+
+	var xIncrement = (xWin/xTicks)/2;
+	var yIncrement = (yWin/yTicks)/2;
+	var xStartingPoint = xWin - xIncrement;
+	var yStartingPoint = yWin;
+
+	var firstGate = circuit.input.type;
+	console.log(firstGate);
+
+	var canvas = document.getElementById('schematic');
+
+	if (canvas.getContext) {
+		var ctx = canvas.getContext('2d');
+		ctx.strokeStyle = "#404040";
+
+		outlineWindow(ctx, xWin, yWin, xTicks, yTicks);
+
+
+		// output
+		var outputName = circuit.output.name;
+		var outputLevel = circuit.output.level;
+		drawInput(ctx, xStartingPoint - xIncrement*outputLevel, yStartingPoint/2, scale, "#F0FFF0");
+
+		drawNodes(ctx, x, y, circuit.inputs);
+
+
+
+		// if (firstGate == 'OR') {
+		// 	drawOrGate(ctx, x+150, y+150, scale, "#F0FFF0");
+		// }
+	}
+	return false;
+}
+
+
+
+
+
+

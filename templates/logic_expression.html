@@ -9,6 +9,35 @@
 	<a href="/">New expression?</a>
 </p>
 
+<canvas id="schematic" width="1140" height="600"></canvas>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.3.9/d3.min.js"></script>
+<script src="../static/js/logicgates.js"></script>
+<script type="text/javascript">
+
+	var results = JSON.parse( '{{json | safe}}' );
+	// console.log(results);
+
+
+
+	$(function(ev) {
+
+
+		// e.g. number of inputs to destination rendering space
+		var someScale = d3.scale.linear().domain([0, 4]).range([0, 400]);
+		// draw(100,100, 1);
+		drawSchematic(1140,600,results);
+		return false;
+		
+	})
+
+</script>
+
+
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.3.9/d3.min.js"></script> -->
+<!-- <script src="../static/js/logicgates.js"></script> -->
+
+
 
 
 {% endblock %}

@@ -5,7 +5,7 @@
 	Type in a <a href="http://en.wikipedia.org/wiki/Boolean_algebra">Boolean Alegbra</a> expression. Please use <code>&</code> for AND, <code>|</code> for OR, <code>~</code> for NOT, <code>^</code> for XOR.
 </p>
 
-<form action="/logic" method="POST">
+<form action="/logic" method="POST" id="expression">
 	<div class="input-group">
 		<span class="input-group-addon">f=</span>
 		<input type="text" class="form-control" name="logic-expression" placeholder="Logic expression">
@@ -18,10 +18,19 @@
 <script src="../static/js/logicgates.js"></script>
 <script type="text/javascript">
 
-	$(function() {
+	// $("#expression").submit(function(ev){
+	// 	ev.preventDefault(); // <-- go read up what this line does too
+	// 	//ajax code goes here
+	// 	// this replaces the usual POST and refresh
+		
+	// })
+
+	$(function(ev) {
+		// ev.preventDefault();
 		// e.g. number of inputs to destination rendering space
 		var someScale = d3.scale.linear().domain([0, 4]).range([0, 400]);
 		draw(100,100, 1);
+		return false;
 	})
 </script>
 

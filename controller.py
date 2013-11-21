@@ -17,8 +17,13 @@ def logic():
 	expression =  str("f = "+expression)
 	print expression
 	json = model.compile_expr(expression)
-	return render_template("logic_expression.html", expression=expression)
+	return render_template(
+		"logic_expression.html", 
+		expression=expression, 
+		json=json)
 	# return json
+
+# @app.route("/ajax")
 
 if __name__ == "__main__":
 	app.run(debug=True)
