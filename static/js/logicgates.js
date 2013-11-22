@@ -43,6 +43,7 @@ function notGate(ctx, x, y, height, length) {
 
 // draw a not gate and establishes color
 function drawNotGate(ctx, x, y, scale, color) {
+	scale /= 2;
 	ctx.fillStyle = color;
 	ctx.lineWidth = 3*scale;
 

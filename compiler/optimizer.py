@@ -44,6 +44,18 @@ class Node(object):
 				child.parents.append(self)
 
 # -----------------------------------------------------------------------------
+# Level holds all the Nodes that are at the same level in AST.
+# -----------------------------------------------------------------------------
+
+class Level(object):
+	""" Level to hold Nodes. """
+
+	def __init__(self, depth, *clusters):
+		self.depth = depth
+		self.clusters = clusters
+
+
+# -----------------------------------------------------------------------------
 # Tree that holds all Nodes and has extra attributes listed about the tree.
 # -----------------------------------------------------------------------------
 
@@ -150,7 +162,6 @@ class Tree(object):
 		def find_clusters_by_level(node, levels):
 			""" Determines the depth of a tree based on its nodes. """
 			
-			print node, node.level
 			for child in node.children:
 				levels = find_clusters_by_level(child, levels)
 
@@ -162,10 +173,6 @@ class Tree(object):
 				if not node.pin:
 					levels[node.level+1].append(node.children)
 			return levels
-
-		def find_node_positions(node):
-			pass
-
 
 		# ---------------------------------------------------------------------
 
@@ -180,7 +187,21 @@ class Tree(object):
 		self.clusters 		= find_clusters_by_level(self.root, layers)
 		self.weight 		= self.root.weight
 
+		self.find_node_positions()
 	# -------------------------------------------------------------------------
+
+	def find_node_positions(self):
+
+		for level in self.levels:
+			print len(level)
+			for cell in level:
+		
+		# def x_y_positions(node):
+
+		# 	for child in node.children:
+
+
+
 	def print_tree(self):
 		""" Prints each Node in tree in tree like structure to console. """ 
 

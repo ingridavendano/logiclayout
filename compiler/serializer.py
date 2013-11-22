@@ -44,7 +44,7 @@ class NodeEncoder(json.JSONEncoder):
 				'kind': node.expr.lower(),
 				'weight': node.weight,
 				'size': len(node.children),
-				'level': node.level,
+				'depth': node.level,
 				'inputs': [
 					unknown_node(child) for child in node.children
 				]
@@ -55,16 +55,17 @@ class NodeEncoder(json.JSONEncoder):
 				'kind': 'input',
 				'weight': node.weight,
 				'name': node.expr, 
-				'level': node.level
+				'depth': node.level
 			}
 
 		if isinstance(tree, Tree):
 			return {
 				'kind': 'output',
-				'name': root.expr, 
-				'level': root.level,
+				'weight': tree.root.weight,
+				'name': tree.root.expr, 
+				'depth': tree.root.level,
 				'inputs': [
-					unknown_node(child) for child in root.children
+					unknown_node(child) for child in tree.root.children
 				]
 				
 			}	
@@ -116,7 +117,7 @@ class NodeEncoder(json.JSONEncoder):
 def to_json(tree):
 	""" Converts a Node Tree to JSON. """
 
-	print "*"*80
+	# print "*"*80
 	json_string = json.dumps(
 		tree, 
 		cls=NodeEncoder, 
@@ -124,6 +125,6 @@ def to_json(tree):
 		# indent=4,
 		# separators=(',', ': ')
 		)
-	print json_string
+	# print json_string
 
 	return json_string
