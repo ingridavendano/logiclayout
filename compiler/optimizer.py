@@ -6,13 +6,16 @@
 # -----------------------------------------------------------------------------
 
 class Node(object):
-	def __init__(self, token, pin=False, gate=False):
+	def __init__(self, token, pin=False, gate=False, root=False):
 		self.parents = []
 		self.children = []
 		self.gate = gate
 		self.pin = pin
+		self.root = root
 		self.level = 0
 		self.weight = 0
+		self.x = 0
+		self.y = 0
 
 		if token.kind == 'LITERAL':
 			if token.expr == None:
@@ -50,9 +53,9 @@ class Tree(object):
 	def __init__(self, root_token, expression=""):
 		""" Takes a root Token from parser and converts it to Node tree. """
 
-		# ----------------------------------------------------------------------
+		# ---------------------------------------------------------------------
 		# Go through Tokens and convert them to Nodes, find depth of tree.
-		# ----------------------------------------------------------------------
+		# ---------------------------------------------------------------------
 
 		def reorganize(token): 
 			""" Organize tree of Nodes out of tokens and gives depth. """
@@ -61,7 +64,7 @@ class Tree(object):
 			if token.kind == 'EQUALS':
 
 				# asssign left Token as the new_node which is now top of tree
-				new_node = Node(token.left, pin=True)
+				new_node = Node(token.left, pin=True, root=True)
 
 				# recursively go through new_node to find children
 				new_child_node = reorganize(token.right)
@@ -115,7 +118,7 @@ class Tree(object):
 			list_of_nodes.append(node)
 
 			# adds weight of 1 if this is a pin Node
-			weight = 1 if node.pin else 0
+			weight = 1 if (node.pin and not node.root) else 0
 
 			for child in node.children:
 				list_of_nodes = find_nodes(child, list_of_nodes)
@@ -144,7 +147,28 @@ class Tree(object):
 
 			return levels
 
+		def find_clusters_by_level(node, levels):
+			""" Determines the depth of a tree based on its nodes. """
+			
+			print node, node.level
+			for child in node.children:
+				levels = find_clusters_by_level(child, levels)
+
+			# this should not be an okay way to do this
+			if node.level == 0:
+				levels[0] = [[node],]
+				levels[1].append(node.children)
+			else:
+				if not node.pin:
+					levels[node.level+1].append(node.children)
+			return levels
+
+		def find_node_positions(node):
+			pass
+
+
 		# ---------------------------------------------------------------------
+
 		self.expr 			= expression
 		self.root 			= reorganize(root_token)
 		self.depth 			= find_depth(self.root) + 1
@@ -152,8 +176,11 @@ class Tree(object):
 		self.nonterminals 	= find_base_nodes(self.nodes, True)
 		self.terminals 		= find_base_nodes(self.nodes, False)
 		self.levels 		= find_levels(self.nodes, self.depth)
+		layers				= [[] for i in range(self.depth)]
+		self.clusters 		= find_clusters_by_level(self.root, layers)
 		self.weight 		= self.root.weight
 
+	# -------------------------------------------------------------------------
 	def print_tree(self):
 		""" Prints each Node in tree in tree like structure to console. """ 
 

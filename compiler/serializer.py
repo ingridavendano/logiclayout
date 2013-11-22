@@ -15,6 +15,23 @@ class NodeEncoder(json.JSONEncoder):
 	
 	def default(self, tree):
 
+		# def unknown_node(node):
+		# 	if isinstance(node, Node):
+		# 		return {
+		# 			'name': node.expr,
+		# 			'weight': node.weight,
+		# 			'size': len(node.children),
+		# 			'type': pin(node) if node.pin else gate(node)
+		# 		}
+
+		# def gate(node):
+		# 	return {
+		# 		node.expr.lower()
+		# 		}
+
+		# def pin(node):
+		# 	return 'pin'
+
 		def unknown_node(node):
 			if isinstance(node, Node):
 				if node.pin:
@@ -24,7 +41,7 @@ class NodeEncoder(json.JSONEncoder):
 
 		def gate(node):
 			return {
-				'type': node.expr,
+				'kind': node.expr.lower(),
 				'weight': node.weight,
 				'size': len(node.children),
 				'level': node.level,
@@ -35,21 +52,64 @@ class NodeEncoder(json.JSONEncoder):
 
 		def pin(node):
 			return {
-				'type': 'pin',
+				'kind': 'input',
+				'weight': node.weight,
 				'name': node.expr, 
 				'level': node.level
 			}
 
 		if isinstance(tree, Tree):
 			return {
-				'type': 'function',
-				'output': unknown_node(tree.root),
-				'input': unknown_node(tree.root.children[0]),
-				'weight': tree.weight,
-				'levels': tree.depth,
+				'kind': 'output',
+				'name': root.expr, 
+				'level': root.level,
+				'inputs': [
+					unknown_node(child) for child in root.children
+				]
+				
 			}	
 		else:
 			return json.JSONEncoder.default(self, tree)
+
+		# def unknown_node(node):
+		# 	if isinstance(node, Node):
+		# 		# if node.pin:
+		# 		# 	return pin(node)
+		# 		# elif node.gate:
+		# 		# 	return gate(node)
+
+		# 		return {
+		# 			'name': node.expr,
+		# 			'weight': node.weight,
+		# 			'size': len(node.children),
+		# 			'type': pin(node) if node.pin else gate(node)
+		# 		}	
+
+		# def gate(node):
+		# 	return node.expr.lower()
+
+		# def pin(node):
+		# 	return 'pin'
+
+		# def nodes_in_cluster(nodes):
+		# 	return [unknown_node(node) for node in nodes] 
+
+		# def clusters_in_levels(cluster):
+		# 	# print nodes, len(nodes)
+		# 	return [nodes_in_cluster(nodes) for nodes in cluster] 
+			
+
+		# if isinstance(tree, Tree):
+		# 	print tree.levels
+		# 	return {
+		# 		'depth': tree.depth,
+		# 		'weight': tree.weight,
+		# 		'levels': [
+		# 			clusters_in_levels(level) for level in tree.levels
+		# 		]
+		# 	}	
+		# else:
+		# 	return json.JSONEncoder.default(self, tree)
 
 # -----------------------------------------------------------------------------
 
@@ -61,6 +121,7 @@ def to_json(tree):
 		tree, 
 		cls=NodeEncoder, 
 		# sort_keys=True, 
+		# indent=4,
 		# separators=(',', ': ')
 		)
 	print json_string

@@ -217,7 +217,7 @@ function drawInput(ctx, x, y, scale, color) {
 	var length = 40*scale;
 
 	inputPin(ctx, x, y, height, length);
-	centerPoint(ctx, x, y, scale);
+	// centerPoint(ctx, x, y, scale);
 }
 
 function drawOutput(ctx, x, y, scale, color) {
@@ -234,58 +234,47 @@ function drawOutput(ctx, x, y, scale, color) {
 /* ------------------------------------------------------------------------- */
 
 function drawXTicks(ctx, x, y) {
-	ctx.fillStyle = "#000000";
-	ctx.lineWidth = 2;
+	ctx.strokeStyle = "#CCFFFF";
+	ctx.lineWidth = 1/2;
 	ctx.save();
-	ctx.moveTo(x,y-20);
-	ctx.lineTo(x,y+20);
-	ctx.closePath();
+	ctx.moveTo(x,y-4);
+	ctx.lineTo(x,y+4);
 	ctx.fill();
 	ctx.stroke();
 	ctx.restore();
 }
 
 function drawYTicks(ctx, x, y) {
-	ctx.fillStyle = "#000000";
-	ctx.lineWidth = 2;
+	ctx.strokeStyle = "#CCCCFF";
+	ctx.lineWidth = 1/2;
 	ctx.save();
-	ctx.moveTo(x-20,y);
-	ctx.lineTo(x+20,y);
-	ctx.closePath();
+	ctx.moveTo(x-4,y);
+	ctx.lineTo(x+4,y);
 	ctx.fill();
 	ctx.stroke();
 	ctx.restore();
 }
 
 function outlineWindow(ctx, xWin, yWin, xTicks, yTicks) {
-	ctx.fillStyle = "#000000";
+	ctx.strokeStyle = "#000000";
 	ctx.lineWidth = 2;
 	ctx.save();
-	ctx.moveTo(0,0);
-	ctx.lineTo(xWin,0);
+	ctx.strokeRect(0,0,xWin,yWin);
 	ctx.closePath();
-	ctx.moveTo(0,0);
-	ctx.lineTo(0,yWin);
-	ctx.closePath();
-	ctx.moveTo(xWin,yWin);
-	ctx.lineTo(xWin,0);
-	ctx.closePath();
-	ctx.moveTo(xWin,yWin);
-	ctx.lineTo(0,yWin);
-	ctx.closePath();
+	ctx.restore();
 
 
 	var xIncrement = xWin/xTicks;
 	var yIncrement = yWin/yTicks;
-	for (var i=0; i < xTicks+1; i++) {
-		for (var j=0; j < yTicks+1; j++) {
+	for (var i=1; i < xTicks; i++) {
+		for (var j=1; j < yTicks; j++) {
 			drawXTicks(ctx, xIncrement*i, yIncrement*j);
 		}
 	}
 
 	
-	for (var i=0; i < yTicks+1; i++) {
-		for (var j=0; j < xTicks+1; j++) {
+	for (var i=1; i < yTicks; i++) {
+		for (var j=1; j < xTicks; j++) {
 			drawYTicks(ctx, xIncrement*j, yIncrement*i);
 		}
 	}
@@ -300,6 +289,35 @@ function outlineWindow(ctx, xWin, yWin, xTicks, yTicks) {
 
 /* ------------------------------------------------------------------------- */
 
+function drawNodes(ctx, x, y, size, kind) {
+	ctx.fillStyle = "#CC99FF";
+	// ctx.lineWidth = 2;
+	// ctx.save();
+	// ctx.moveTo(x-size/2,y-size/2);
+	// ctx.lineTo(x-size/2,y+size/2);
+	// ctx.lineTo(x+size/2,y+size/2);
+	// ctx.lineTo(x+size/2,y-size/2);
+	// ctx.closePath();
+	// ctx.fill();
+	// ctx.stroke();
+	// ctx.restore();
+
+	if (kind == 'and') {
+		drawAndGate(ctx, x, y, size, "#F0FFF0");
+	} else if (kind == 'or') {
+		drawOrGate(ctx, x, y, size, "#F0FFF0");
+	} else if (kind == 'xor') {
+		drawXorGate(ctx, x, y, size, "#F0FFF0");
+	} else if (kind == 'pin') {
+		drawInput(ctx, x, y, size, "#bde5b9");
+	} else if (kind == 'output') {
+		drawOutput(ctx, x, y, size, "#bde5b9");
+	} else if (kind == 'not') {
+		drawNotGate(ctx, x, y, size, "#F0FFF0");
+	}
+}  
+
+
 function draw(x, y, scale) {
 
 	var canvas = document.getElementById('schematic')
@@ -309,6 +327,7 @@ function draw(x, y, scale) {
 		ctx.strokeStyle = "#404040";
 	
 		drawAndGate(ctx, x, y, scale, "#F0FFF0");
+		drawNodes(ctx, 400, 400, 20);
 		// drawNandGate(ctx, x, y+200, scale, "#F0FFF0");
 	
 		// drawOrGate(ctx, x+150, y, scale, "#F0FFF0");
@@ -326,56 +345,23 @@ function draw(x, y, scale) {
 
 /* ------------------------------------------------------------------------- */
 
-// function gate(kind, level) {
-// 	this.kind = kind;
-// 	this.level = level;
-// }
-
-// function pin(level) {
-// 	this.level = level;
-// }
-
-// function unpack_json(node) {
-
-// 	for (var i = 0; i < node.inputs.length; i++) {
-// 		if (node.inputs[i].type == 'pin') {
-
-// 		} else if (node.inputs[i].type == 'OR') {
-
-// 		}
-// 	}
-// }
-
-// function schematic(circuit) {
-// 	this.levels = circuit.levels;
-
-
-// }
-
-function drawNodes(ctx, x, y, nodes) {
-
-}  
-
-
 function drawSchematic(xWin, yWin, circuit) {
-
-	var x = 100;
-	var y = 100;
+	// var x = 100;
+	// var y = 100;
 	var scale = 1;
 
 	// determining the x-axis
-	var levels = circuit.levels;
-	var xTicks = levels; 
+	var xTicks = circuit.depth; 
 	var yTicks = circuit.weight;
 
 
-	var xIncrement = (xWin/xTicks)/2;
-	var yIncrement = (yWin/yTicks)/2;
-	var xStartingPoint = xWin - xIncrement;
-	var yStartingPoint = yWin;
+	var xIncrement = (xWin/xTicks);
+	var yIncrement = (yWin/yTicks);
+	var xStartingPoint = xWin - xIncrement/2;
+	
 
-	var firstGate = circuit.input.type;
-	console.log(firstGate);
+	var xNodeIncr = xIncrement/2;
+	var	yNodeIncr = yIncrement/2;
 
 	var canvas = document.getElementById('schematic');
 
@@ -385,15 +371,40 @@ function drawSchematic(xWin, yWin, circuit) {
 
 		outlineWindow(ctx, xWin, yWin, xTicks, yTicks);
 
+		// run through each level
+		for (var i=0; i<circuit.depth; i++) {
 
-		// output
-		var outputName = circuit.output.name;
-		var outputLevel = circuit.output.level;
-		drawInput(ctx, xStartingPoint - xIncrement*outputLevel, yStartingPoint/2, scale, "#F0FFF0");
+			var x = xStartingPoint - i*xIncrement;
+			var yStartingPoint = 0;
+		
 
-		drawNodes(ctx, x, y, circuit.inputs);
+			// run through each cluster
+			for (var j=0; j<circuit.levels[i].length; j++) {
 
+				// var yTempIncr = 
+				// run through nodes in cluser
+				for (var k=0; k<circuit.levels[i][j].length; k++) {
+					console.log(circuit.levels[i][j][k].name);
+					console.log(circuit.levels[i][j][k].weight);
 
+					var y = yStartingPoint + (circuit.levels[i][j][k].weight * yIncrement)/2;
+
+					var kind = circuit.levels[i][j][k].type;
+					if (circuit.levels[i][j][k].level == 0) {
+						kind = 'output';
+					}
+
+					drawNodes(ctx, x, y, 0.5, kind);
+
+					yStartingPoint += circuit.levels[i][j][k].weight*yIncrement;
+
+				}
+
+				
+			}
+		}
+
+		
 
 		// if (firstGate == 'OR') {
 		// 	drawOrGate(ctx, x+150, y+150, scale, "#F0FFF0");
@@ -401,6 +412,52 @@ function drawSchematic(xWin, yWin, circuit) {
 	}
 	return false;
 }
+
+
+// function drawSchematic(xWin, yWin, circuit) {
+
+// 	var x = 100;
+// 	var y = 100;
+// 	var scale = 1;
+
+// 	// determining the x-axis
+// 	var levels = circuit.levels;
+// 	var xTicks = levels; 
+// 	var yTicks = circuit.weight;
+
+
+// 	var xIncrement = (xWin/xTicks)/2;
+// 	var yIncrement = (yWin/yTicks)/2;
+// 	var xStartingPoint = xWin - xIncrement;
+// 	var yStartingPoint = yWin;
+
+// 	var firstGate = circuit.input.type;
+// 	console.log(firstGate);
+
+// 	var canvas = document.getElementById('schematic');
+
+// 	if (canvas.getContext) {
+// 		var ctx = canvas.getContext('2d');
+// 		ctx.strokeStyle = "#404040";
+
+// 		outlineWindow(ctx, xWin, yWin, xTicks, yTicks);
+
+
+// 		// output
+// 		var outputName = circuit.output.name;
+// 		var outputLevel = circuit.output.level;
+// 		drawInput(ctx, xStartingPoint - xIncrement*outputLevel, yStartingPoint/2, scale, "#F0FFF0");
+
+// 		drawNodes(ctx, x, y, circuit.inputs);
+
+
+
+// 		// if (firstGate == 'OR') {
+// 		// 	drawOrGate(ctx, x+150, y+150, scale, "#F0FFF0");
+// 		// }
+// 	}
+// 	return false;
+// }
 
 
 
