@@ -44,7 +44,7 @@ class Node(object):
 				child.parents.append(self)
 
 # -----------------------------------------------------------------------------
-# Level holds all the Nodes that are at the same level in AST.
+# Cluster and Level hold Nodes that are at the same level in AST.
 # -----------------------------------------------------------------------------
 
 class Level(object):
