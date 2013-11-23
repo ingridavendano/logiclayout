@@ -6,29 +6,35 @@
 # -----------------------------------------------------------------------------
 
 class Node(object):
-	def __init__(self, token, pin=False, gate=False, root=False):
-		self.parents = []
+	def __init__(self, token, pin=False, gate=False, root=False, weight=0):
+		self.cell = None
 		self.children = []
 		self.gate = gate
 		self.pin = pin
 		self.root = root
+		self.weight = weight
 		self.level = 0
 		self.x = 0
-		self.y = 0
+		self.y = 0 
+		self.y_min = 0 
+		self.y_max = 0
 
 		if token.kind == 'LITERAL':
 			if token.expr == None:
 				self.expr = '0'
 			else:
 				self.expr = '1'
-			self.weight = 1
 		elif token.kind == 'ID':
 			self.expr = token.expr
-			self.weight = 1
 		else:
-			self.gate = True
 			self.expr = token.kind
-			self.weight = 0
+
+		if self.root:
+			self.kind = 'output'
+		elif self.pin: 
+			self.kind = 'input'
+		else: 
+			self.kind = token.kind.lower()
 
 	def __repr__(self):
 		""" What is displayed when a node is represented. """
@@ -41,13 +47,19 @@ class Node(object):
 	def add(self, *children):
 		self.children += children
 
-		print children
-		for child in children:
-			print self, child
+	def calculate_weight(self):
+		for child in self.children:
 			self.weight += child.weight
-			if self not in child.parents:
-				child.parents.append(self)
-		print " ", self, "--->", self.weight
+
+	def calculate_y(self, y_min, y_max):
+		self.y_min = y_min
+		self.y_max = y_max
+		self.y = y_min + (y_max - y_min)/2
+
+	# def calculate_y(self,):
+	# 	self.y = (self.y_max - self.y_min)/2
+
+
 
 # -----------------------------------------------------------------------------
 # Cluster and Level hold Nodes that are at the same level in AST.
@@ -56,13 +68,47 @@ class Node(object):
 class Cell(object):
 	""" Cluster is a group of children of a Node. """
 
-	def __init__(self, depth, *nodes):
-		self.depth = depth
-		self.nodes = list(nodes)
+	def __init__(self, depth, y_min, y_max, nodes):
+		self.x = depth
+		self.nodes = nodes
+
+		ticks = 0
+		# connects each Node to the cell it belongs to
+		for node in nodes:
+			ticks += node.weight 
 
 		# this is for determining y-axis positions
-		self.y_min = 0
-		self.y_max = 0
+		self.y_min = y_min
+		self.y_max = y_max
+
+		num_of_nodes = len(nodes)
+		y_increment = (y_max - y_min)/ticks
+		# y_mid_increment = y_increment/2
+
+		# print "*"*5
+		y_temp_min = y_min
+
+		# print "NODES",nodes
+		# for node in nodes:
+		# 	node.y_min = y_temp_min
+		# 	node.y_max = y_temp_min + y_increment*node.weight
+
+		# 	node.calculate_y()
+		# 	y_temp_min = node.y_max
+
+		# 	print node, node.y
+
+		# for i in range(len(nodes)):
+		# 	nodes[i].y_min = i*y_increment
+		# 	nodes[i].y_max = (i+1)*y_increment
+
+		# 	nodes[i].y = nodes[i].y_min + y_mid_increment
+
+		# 	print nodes[i], nodes[i].y
+
+	def __repr__(self):
+		""" What is displayed when a node is represented. """
+		return "%r (%r,%r)" % (self.nodes, self.y_min, self.y_max)
 
 	def print_nodes(self):
 		print "y depth", self.depth
@@ -110,7 +156,6 @@ class Tree(object):
 
 				# asssign left Token as output pin
 				new_node = Node(token.left, pin=True, root=True)
-				self.nodes.append(new_node)
 
 				# recursively go through new_node to find children
 				new_child_node = convert(token.right, depth + 1)
@@ -119,8 +164,7 @@ class Tree(object):
 			elif token.kind == 'ID' or token.kind == 'LITERAL':
 
 				# must be an input pin
-				new_node = Node(token, pin=True)
-				# self.nodes.append(new_node)
+				new_node = Node(token, pin=True, weight=1)
 
 				# determines depth of tree
 				self.depth = depth if depth > self.depth else self.depth
@@ -131,7 +175,7 @@ class Tree(object):
 				# recursively checks for right Tokens
 				if token.right:
 					new_child_node = convert(token.right, depth + 1)
-					new_node.add(new_child_node)
+					new_node.children += [new_child_node]
 				
 				# recursively checks for left Tokens
 				if token.left:
@@ -140,15 +184,14 @@ class Tree(object):
 					# left child Token might be the same kind as root Token
 					# if so, don't add the child Token, just add its children
 					if token.left.kind == token.kind:
-						print "@#$%^&*()*&^%$#@$%^&*()(_*&^%$#$%^&*()*&^%$#"
 						new_child_node = convert(token.left, depth)
 						new_node.children += new_child_node.children
 					else: 
 						new_child_node = convert(token.left, depth + 1)
-						new_node.add(new_child_node)
+						new_node.children += [new_child_node]
 
 
-				
+			new_node.calculate_weight()
 			return new_node
 
 		# def find_depth(node, depth=0):
@@ -174,29 +217,76 @@ class Tree(object):
 
 		# 	return deepest_depth
 
-		# def find_cells(node):
-		# 	""" Determine which cells each node belongs in. """
-
-		# 	if len(node.children) > 0:
-
-		# 		for child in node.children:
-		# 		find_cells(child)
-
-		# 	else:
+		def find_cells(node, depth, y_min, y_max):
+			""" Determine which cells each node belongs in. """
+			node.calculate_y(y_min, y_max)
+			node.level = depth 
+			node.x = depth 
+			self.nodes.append(node)
 
 
+			# self.x = depth
+			# self.nodes = nodes
 
-			# sets the weight for node based on children
-			node.weight = weight
+			# ticks = 0
+			# # connects each Node to the cell it belongs to
+			# for node in nodes:
+			# 	ticks += node.weight 
 
-			return list_of_nodes
+			# # this is for determining y-axis positions
+			# self.y_min = y_min
+			# self.y_max = y_max
 
-		def find_base_nodes(nodes, base):
-			base_nodes = []
+			# num_of_nodes = len(nodes)
+			# y_increment = (y_max - y_min)/ticks
+			# # y_mid_increment = y_increment/2
 
-			for node in nodes:
-				if node.pin == base:
-					base_nodes.append(node)
+			# print "*"*5
+			# y_temp_min = y_min
+
+			# # print "NODES",nodes
+			# for node in nodes:
+			# 	node.y_min = y_temp_min
+			# 	node.y_max = y_temp_min + y_increment*node.weight
+
+			# 	node.calculate_y()
+			# 	y_temp_min = node.y_max
+
+			# 	print node, node.y
+
+
+			if len(node.children) > 0:
+				ticks = node.weight
+				increment = (y_max - y_min)/ticks
+				print node, y_min, y_max, ticks,  (y_max - y_min), increment
+
+				temp_y_min = y_min
+				for child in node.children:
+					
+					cell_y_min = temp_y_min
+					cell_y_max = temp_y_min + (child.weight*increment)
+					print "   ", child, child.weight, cell_y_min, cell_y_max
+
+					find_cells(child, depth - 1, cell_y_min, cell_y_max)
+					temp_y_min = cell_y_max
+
+				x_depth = node.level - 1
+				y_depth = len(self.levels[x_depth])
+
+				new_cell = Cell(y_depth, y_min, y_max, node.children)
+				self.levels[x_depth].append(new_cell)
+
+
+
+			# else:
+			# 	pass
+
+		# def find_base_nodes(nodes, base):
+		# 	base_nodes = []
+
+		# 	for node in nodes:
+		# 		if node.pin == base:
+		# 			base_nodes.append(node)
 
 
 
@@ -229,9 +319,13 @@ class Tree(object):
 
 		self.expr 			= expression
 		self.root 			= convert(root_token)
-		self.levels 		= [[] for i in range(self.depth)]
 
-		# find_cells()
+
+		self.levels = [ [] for i in range(self.depth + 1)]
+		first_cell = Cell(self.depth - 1, 0.0, 1.0, [self.root])
+
+		self.levels[self.depth - 1].append(first_cell)
+		find_cells(self.root, self.depth - 1, 0.0, 1.0)
 
 		# self.nodes 			= find_nodes(self.root)
 		# self.nonterminals 	= find_base_nodes(self.nodes, True)
@@ -272,11 +366,15 @@ class Tree(object):
 	def print_nodes(self):
 		""" Prints a life of each Node to console. """ 
 		print "Number of nodes:", len(self.nodes)
+		print "node", "\tx\t\ty"
 		for node in self.nodes:
-			print node, node.gate, node.weight
+			print node, '\t', node.y_min, '\t', node.y_max, '\t\t', node.y
 
 	def print_levels(self):
-		for level in self.levels:
-			print level.print_level()
-		# for i in range(self.depth):
-			# print i, self.levels[i]
+		# pass
+		# for level in self.levels:
+		# 	print level
+			# print level.print_level()
+
+		for i in range(self.depth):
+			print i, self.levels[i]

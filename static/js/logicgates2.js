@@ -5,28 +5,6 @@
  * Contains the JS Canvas functions to draw logic gates. 
  * ------------------------------------------------------------------------- */
 
-function drawXTicks(ctx, x, y) {
-	ctx.lineWidth = 1/2;
-	ctx.save();
-	ctx.moveTo(x,y-4);
-	ctx.lineTo(x,y+4);
-	ctx.fill();
-	ctx.stroke();
-	ctx.restore();
-}
-
-function drawYTicks(ctx, x, y) {
-	// ctx.lineWidth = 1/2;/
-	ctx.save();
-	ctx.moveTo(x-4,y);
-	ctx.lineTo(x+4,y);
-	ctx.fill();
-	ctx.stroke();
-	ctx.restore();
-}
-
-/* ------------------------------------------------------------------------- */
-
 // visual reference point to where the center of a gate is
 function centerPoint(ctx, x, y, scale) {
 	ctx.save();
@@ -87,67 +65,26 @@ function drawNotGate(ctx, x, y, scale, color) {
 function andGate(ctx, x, y, height, length) {
 	ctx.save();
 	ctx.beginPath();
-	ctx.arc(x, y, height/2, 1.5*Math.PI, 0.5*Math.PI, false);
-	ctx.lineTo(x - length*0.75, y + height/2);
-	ctx.lineTo(x - length*0.75, y - height/2);
+	ctx.arc(x, y, height, 1.5*Math.PI, 0.5*Math.PI, false);
+	ctx.lineTo(x - length*0.75, y + height);
+	ctx.lineTo(x - length*0.75, y - height);
 	ctx.closePath()
 	ctx.fill();
 	ctx.stroke();
 	ctx.restore();
 }
 
-// create a nand gate out of and gate and not symbol
-function drawAndGate(ctx, x, y, scale, color, inputs) {
+// draw an and gate and give it color
+function drawAndGate(ctx, x, y, scale, color) {
 	ctx.fillStyle = color;
 	ctx.lineWidth = 3*scale;
 
-	var increment = 30*scale;
-	var height = increment*inputs;
-	var length = height;
-	var radius = height*0.2;
-	var mid_increment = increment/2;
-
-	var outputPoints = [];
-
-	for (var i=0; i < inputs; i++){
-		var tick_y = (y - height/2) + mid_increment + increment*i;
-		var tick_x = x - length*0.75;
-		drawYTicks(ctx, tick_x, tick_y);
-	} 
-
-	
+	var height = 40*scale;
+	var length = 60*scale;
 
 	andGate(ctx, x, y, height, length);
-	centerPoint(ctx, x, y, scale);
-
-	// drawYTicks(ctx, x, y)
+	// centerPoint(ctx, x, y, scale);
 }
-
-// // main body of and gate
-// function andGate(ctx, x, y, height, length) {
-// 	ctx.save();
-// 	ctx.beginPath();
-// 	ctx.arc(x, y, height, 1.5*Math.PI, 0.5*Math.PI, false);
-// 	ctx.lineTo(x - length*0.75, y + height);
-// 	ctx.lineTo(x - length*0.75, y - height);
-// 	ctx.closePath()
-// 	ctx.fill();
-// 	ctx.stroke();
-// 	ctx.restore();
-// }
-
-
-// // draw an and gate and give it color
-// function drawAndGate(ctx, x, y, scale, color) {
-// 	ctx.fillStyle = color;
-// 	ctx.lineWidth = 3*scale;
-
-// 	var height = 40*scale;
-// 	var length = 60*scale;
-
-// 	andGate(ctx, x, y, height, length);
-// 	// centerPoint(ctx, x, y, scale);
-// }
 
 // create a nand gate out of and gate and not symbol
 function drawNandGate(ctx, x, y, scale, color) {
@@ -297,6 +234,28 @@ function drawOutput(ctx, x, y, scale, color) {
 
 /* ------------------------------------------------------------------------- */
 
+function drawXTicks(ctx, x, y) {
+	ctx.strokeStyle = "#CCFFFF";
+	ctx.lineWidth = 1/2;
+	ctx.save();
+	ctx.moveTo(x,y-4);
+	ctx.lineTo(x,y+4);
+	ctx.fill();
+	ctx.stroke();
+	ctx.restore();
+}
+
+function drawYTicks(ctx, x, y) {
+	ctx.strokeStyle = "#CCCCFF";
+	ctx.lineWidth = 1/2;
+	ctx.save();
+	ctx.moveTo(x-4,y);
+	ctx.lineTo(x+4,y);
+	ctx.fill();
+	ctx.stroke();
+	ctx.restore();
+}
+
 function outlineWindow(ctx, xWin, yWin, xTicks, yTicks) {
 	ctx.strokeStyle = "#000000";
 	ctx.lineWidth = 2;
@@ -305,7 +264,7 @@ function outlineWindow(ctx, xWin, yWin, xTicks, yTicks) {
 	ctx.closePath();
 	ctx.restore();
 
-	ctx.strokeStyle = "#CCCCFF";
+
 	var xIncrement = xWin/xTicks;
 	var yIncrement = yWin/yTicks;
 	for (var i=1; i < xTicks; i++) {
@@ -368,10 +327,9 @@ function draw(x, y, scale) {
 		var ctx = canvas.getContext('2d');
 		ctx.strokeStyle = "#404040";
 	
-		drawInput(ctx, x+20, y, scale, "#ff6c48");
-		drawInput(ctx, x+20, y+40, scale, "#ff6c48");
-		// drawAndGate(ctx, x+200, y+20, scale, "#ff4980");
-		drawAndGate(ctx, x+200, y+20, scale, "#ff4980", 3);
+		drawInput(ctx, x, y, scale, "#ff6c48");
+		drawInput(ctx, x, y, scale, "#ff6c48");
+		drawAndGate(ctx, x+200, y+20, scale, "#ff4980");
 		// drawNodes(ctx, 400, 400, 20);
 		// drawNandGate(ctx, x, y+200, scale, "#F0FFF0");
 	
@@ -418,13 +376,13 @@ function drawSchematic(xWin, yWin, circuit) {
 
 		outlineWindow(ctx, xWin, yWin, xTicks, yTicks);
 
-		// for (var i=0; i<circuit.nodes.length; i++) {
-		// 	var x = xIncrement/2 + (circuit.nodes[i].x * xIncrement);
-		// 	var y = circuit.nodes[i].y * yWin;
-		// 	var kind = circuit.nodes[i].kind;
+		for (var i=0; i<circuit.nodes.length; i++) {
+			var x = xIncrement/2 + (circuit.nodes[i].x * xIncrement);
+			var y = circuit.nodes[i].y * yWin;
+			var kind = circuit.nodes[i].kind;
 
-		// 	drawNodes(ctx, x, y, scale/2, kind);
-		// }
+			drawNodes(ctx, x, y, scale/2, kind);
+		}
 
 		// // run through each level
 		// for (var i=0; i<circuit.depth; i++) {
