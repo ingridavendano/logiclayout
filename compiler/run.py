@@ -6,8 +6,8 @@
 # -----------------------------------------------------------------------------
 
 import parser
-import serializer
-from optimizer import Tree
+# import serializer
+from optimizer2 import Tree
 
 # -----------------------------------------------------------------------------
 # Run PLY yacc in the parser module.
@@ -31,11 +31,12 @@ def compiler(data, debug=0, print_tree=1):
 		return None
 
 	tree = Tree(parser.root[0], data)
-	# tree.print_tree()
+	tree.print_tree()
+	tree.print_nodes()
 	# tree.print_levels()
-	json_data = serializer.to_json(tree)
+	# json_data = serializer.to_json(tree)
 
-	return json_data
+	# return json_data
 
 # def parse_expression(expr, debug=0):
 # 	""" Run parser on one expression and return a tree of that expression. """
