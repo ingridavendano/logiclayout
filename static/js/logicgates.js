@@ -113,6 +113,7 @@ function drawAndGate(ctx, x, y, scale, color, inputs) {
 		var tick_y = (y - height/2) + mid_increment + increment*i;
 		var tick_x = x - length*0.75;
 		drawYTicks(ctx, tick_x, tick_y);
+		
 	} 
 
 	
@@ -418,13 +419,13 @@ function drawSchematic(xWin, yWin, circuit) {
 
 		outlineWindow(ctx, xWin, yWin, xTicks, yTicks);
 
-		// for (var i=0; i<circuit.nodes.length; i++) {
-		// 	var x = xIncrement/2 + (circuit.nodes[i].x * xIncrement);
-		// 	var y = circuit.nodes[i].y * yWin;
-		// 	var kind = circuit.nodes[i].kind;
+		for (var i=0; i<circuit.nodes.length; i++) {
+			var x = xIncrement/2 + (circuit.nodes[i].x * xIncrement);
+			var y = circuit.nodes[i].y * yWin;
+			var kind = circuit.nodes[i].kind;
 
-		// 	drawNodes(ctx, x, y, scale/2, kind);
-		// }
+			drawNodes(ctx, x, y, scale/2, kind);
+		}
 
 		// // run through each level
 		// for (var i=0; i<circuit.depth; i++) {

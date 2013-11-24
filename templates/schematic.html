@@ -2,28 +2,25 @@
 {% block body %}
 
 <p>
-	Type in a <a href="http://en.wikipedia.org/wiki/Boolean_algebra">Boolean Alegbra</a> expression. Please use <code>&</code> for AND, <code>|</code> for OR, <code>~</code> for NOT, <code>^</code> for XOR.
+	{{expression}}
 </p>
 
-<form action="/logic" method="POST" id="expression">
-	<div class="input-group">
-		<span class="input-group-addon">f=</span>
-		<input type="text" class="form-control" name="logic-expression" placeholder="Logic expression">
-	</div>
-</form>
+<p>
+ <a href="/">New expression?</a>
+</p>
 
-<!-- <canvas id="schematic" width="1280" height="600"></canvas> -->
-<canvas id="canvas" resize></canvas>
+<div>
+	<canvas id="canvas" resize></canvas>
+</div>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.3.9/d3.min.js"></script>
+
 <script type="text/javascript" src="/static/js/paper.js"></script>
 <script src="/static/js/circuit.js"></script>
-<!-- <script src="/static/js/logicgates.js"></script> -->
 
 <script type="text/paperscript" canvas="canvas">
-	
-	function drawAndGate(x, y, size, inputs) {
+	var results = JSON.parse( '{{json | safe}}' );
 
+	function drawAndGate(x, y, size, inputs) {
 		// determine height and length based on inputs
 		var h = size*inputs;
 		var l = h;
@@ -276,56 +273,67 @@
 		return outputPoint;
 	}
 
+	function drawNodes(node, x, y) {
+		var inputs = node.inputs;
+		var kind = node.kind;
+		var size = 20;
+
+		if (kind == 'and') {
+			drawAndGate(x, y, size, inputs);
+		} else if (kind == 'or') {
+			drawOrGate(x, y, size, inputs);
+		} else if (kind == 'xor') {
+			drawXorGate(x, y, size, inputs);
+		} else if (kind == 'input') {
+			drawInput(x, y, size, node.name);
+		} else if (kind == 'output') {
+			drawOutput(x, y, size, node.name);
+		} else if (kind == 'not') {
+			drawNotGate(x, y, size);
+		}
+	}  
 
 
-	function drawCircuit() {
-		drawAndGate(500, 100, 20, 2);
-		drawInput(400, 100, 20, 'A');
-		drawOrGate(500, 200, 20, 2);
-		drawXorGate(400, 200, 20, 2);
-		drawNotGate(300, 200, 20);
-		drawOutput(100,100,20, 'F');
+
+	function drawCircuit(circuit, xWin, yWin) {
+		// drawAndGate(500, 100, 20, 2);
+		// drawInput(400, 100, 20, 'A');
+		// drawOrGate(500, 200, 20, 2);
+		// drawXorGate(400, 200, 20, 2);
+		// drawNotGate(300, 200, 20);
+		// drawOutput(100,100,20, 'F');
+
+
+		var xTicks = circuit.depth; 
+		var yTicks = circuit.weight;
+
+
+		var xIncrement = (xWin/xTicks);
+		var yIncrement = (yWin/yTicks);
+
+
+		for (var i=0; i<circuit.nodes.length; i++) {
+			var x = xIncrement/2 + (circuit.nodes[i].x * xIncrement);
+			var y = circuit.nodes[i].y * yWin;
+			var kind = circuit.nodes[i].kind;
+
+			drawNodes(circuit.nodes[i], x, y);
+		}
+
 	}
 
+	function onResize(event) {
+		var xWin = view.bounds.width;
+		// var xWin = 1140;
+		console.log(xWin);
+		var yWin = view.bounds.height;
+		// var yWin = 600;
+		console.log(yWin);
 
-	// drawCircuit();
-
-	// var xWin = View.size.x;
-	// console.log(xWin); 
-	// var windowSpace = Rectangle(0,0,view.bounds);
-
-	// var path = new Path.Circle(view.bounds.center, 30);
-	// path.fillColor = 'red';
-	console.log(view.bounds.width);
-
-	// function onResize(event) {
-	// 	// Whenever the view is resized, move the path to its center:
-	// 	// var windowSpace = Rectange(view);
-	// 	// var xWin = view.bounds.width;
-	// 	// console.log(windowSpace.x);
-	// 	// console.log(view.bounds.width);
-	// }
-
+		drawCircuit(results, xWin, yWin);
+	}
+	
 
 </script>
-<!--- 
-<script type="text/javascript">
-
-	// $("#expression").submit(function(ev){
-	// 	ev.preventDefault(); // <-- go read up what this line does too
-	// 	//ajax code goes here
-	// 	// this replaces the usual POST and refresh
-		
-	// })
-
-	// $(function(ev) {
-	// 	// ev.preventDefault();
-	// 	// e.g. number of inputs to destination rendering space
-	// 	var someScale = d3.scale.linear().domain([0, 4]).range([0, 400]);
-	// 	draw(100,100, 1);
-	// 	return false;
-	// })
-</script>
--->
 
 {% endblock %}

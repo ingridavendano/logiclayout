@@ -38,6 +38,7 @@ class NodeEncoder(json.JSONEncoder):
 				'name': node.expr,
 				'weight': node.weight, 
 				'depth': node.level,
+				'inputs': len(node.children),
 				'x': node.x,
 				'y': node.y
 			}

@@ -18,7 +18,7 @@ def logic():
 	print expression
 	json = model.compile_expr(expression)
 	return render_template(
-		"logic_expression.html", 
+		"schematic.html", 
 		expression=expression, 
 		json=json)
 	# return json
