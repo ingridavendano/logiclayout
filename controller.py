@@ -21,7 +21,6 @@ def logic():
 		"schematic.html", 
 		expression=expression, 
 		json=json)
-	# return json
 
 # @app.route("/ajax")
 
