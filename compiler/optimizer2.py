@@ -196,8 +196,8 @@ class Tree(object):
 
 		# ---------------------------------------------------------------------
 
-		self.expr 			= expression
-		self.root 			= convert(root_token)
+		self.expr = expression
+		self.root = convert(root_token)
 
 
 		self.levels = [ [] for i in range(self.depth + 1)]
@@ -205,7 +205,7 @@ class Tree(object):
 
 		self.levels[self.depth - 1].append(first_cell)
 		find_cells(self.root, self.depth - 1, 0.0, 1.0)
-		
+
 	# -------------------------------------------------------------------------
 
 	def print_tree(self):
