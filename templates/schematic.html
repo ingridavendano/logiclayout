@@ -46,7 +46,7 @@
 			var from = new Point(x - l, y - h/2 + midPoint + i*size);
 			var to = new Point(x - l/2, y - h/2 + midPoint + i*size);
 			var pinLine = new Path.Line(from, to);
-			pinLine.strokeColor = 'black';
+			pinLine.strokeCol3or = 'black';
 			pinLine.strokeWidth = 2;
 			andInputPoints[i] = from;
 		}
@@ -252,10 +252,6 @@
 		netConnection.strokeColor = 'black';
 		netConnection.strokeWidth = 2;
 
-		// // center of input
-		// var dot = new Path.Circle(new  Point(x, y), 3);
-		// dot.fillColor = 'red';
-
 		return [];
 	}
 
@@ -294,20 +290,14 @@
 		pinLine.strokeWidth = 2;
 		inputPoints[0] = to;
 
-		console.log(inputPoints[0]);
-
 		return inputPoints;
 	}
 
 	function drawNodes(node, xIncr, yWin, netPoints) {
-		console.log(node.name);
-
-
 		var x = xIncr/2 + (node.x * xIncr);
 		var y = node.y * yWin;
 
 		var inputs = node.inputs;
-		console.log(inputs);
 		var kind = node.kind;
 		var size = 20;
 
@@ -326,12 +316,8 @@
 		} else if (kind == 'output') {
 			newNetPoints = drawOutput(x, y, size, node.name);
 		} 
-
-		console.log("netPoints");
-		console.log(newNetPoints);
 		
 		for (var i=0; i<node.nodes.length; i++) {
-			console.log(newNetPoints[i]);
 			drawNodes(node.nodes[i], xIncr, yWin, newNetPoints[i]);
 		}
 
@@ -367,14 +353,22 @@
 	}
 
 	function onResize(event) {
+		console.log(project.activeLayer.isEmpty());
+		if (project.activeLayer.isEmpty() != null) {
+			project.activeLayer.remove();
+		}
+		// project.activeLayer.remove();
 		var xWin = view.bounds.width;
 		// var xWin = 1140;
-		console.log(xWin);
+		// console.log(xWin);
 		var yWin = view.bounds.height;
 		// var yWin = 600;
-		console.log(yWin);
+		// console.log(yWin);
 
 		drawCircuit(results, xWin, yWin);
+
+
+		
 	}
 	
 
