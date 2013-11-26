@@ -37,31 +37,3 @@ def compiler(data, debug=0, print_tree=1):
 	json_data = serializer.to_json(tree, debug=debug)
 
 	return json_data
-
-# def parse_expression(expr, debug=0):
-# 	""" Run parser on one expression and return a tree of that expression. """
-# 	clear_parser()
-# 	yacc.error = 0
-# 	yacc.parse(expr)
-
-# 	if yacc.error:
-# 		return None
-
-# 	return Tree(parser.root[0])
-
-# def compiler_multiple(data, debug=0, print_tree=1):
-# 	""" Run compiler on a logic expression. """
-
-# 	parser_trees = []
-
-# 	for expr in data:
-# 		new_tree = parse_expression(expr)
-# 		parser_trees.append(new_tree)
-
-# 		print "*"*80
-# 		new_tree.print_tree()
-# 		print "*"*80
-# 		new_tree.print_levels()	
-# 		print "*"*80
-
-# 	return None
