@@ -5,7 +5,7 @@
 	Type in a <a href="http://en.wikipedia.org/wiki/Boolean_algebra">Boolean Alegbra</a> expression. Please use <code>&</code> for AND, <code>|</code> for OR, <code>~</code> for NOT, <code>^</code> for XOR.
 </p>
 
-<form action="/logic" method="POST" id="expression">
+<form action="/" method="POST" id="expression">
 	<div class="input-group">
 		<span class="input-group-addon">f=</span>
 		<input type="text" class="form-control" name="logic-expression" placeholder="Logic expression">
@@ -22,273 +22,285 @@
 
 <script type="text/paperscript" canvas="canvas">
 	
-	function drawAndGate(x, y, size, inputs) {
+	// function drawAndGate(x, y, size, inputs) {
 
-		// determine height and length based on inputs
-		var h = size*inputs;
-		var l = h;
-		var midPoint = size/2; 
+	// 	// determine height and length based on inputs
+	// 	var h = size*inputs;
+	// 	var l = h;
+	// 	var midPoint = size/2; 
 
-		var gate = new Path({
-			strokeColor: 'black', 
-			strokeWidth: 2,
-		});
+	// 	var gate = new Path({
+	// 		strokeColor: 'black', 
+	// 		strokeWidth: 2,
+	// 	});
 
-		// creating the body of an AND gate
-		gate.moveTo(new Point(x - l/2, y - h/2));
-		gate.lineTo(new Point(x - l/2, y + h/2));
-		gate.lineTo(new Point(x, y + h/2));
-		gate.arcTo(new Point(x + l/2, y), new Point(x, y - h/2));
-		gate.closePath();
+	// 	// creating the body of an AND gate
+	// 	gate.moveTo(new Point(x - l/2, y - h/2));
+	// 	gate.lineTo(new Point(x - l/2, y + h/2));
+	// 	gate.lineTo(new Point(x, y + h/2));
+	// 	gate.arcTo(new Point(x + l/2, y), new Point(x, y - h/2));
+	// 	gate.closePath();
 
-		// // center of gate
-		// var dot = new Path.Circle(new Point(x,y), 3);
-		// dot.fillColor = 'red';
+	// 	var andInputPoints = [];
 
-		// input pins
-		for (var i=0; i<inputs; i++) {
-			var from = new Point(x - l, y - h/2 + midPoint + i*size);
-			var to = new Point(x - l/2, y - h/2 + midPoint + i*size);
-			var pinLine = new Path.Line(from, to);
-			pinLine.strokeColor = 'black';
-			pinLine.strokeWidth = 2;
-		}
+	// 	// input pins
+	// 	for (var i=0; i<inputs; i++) {
+	// 		var from = new Point(x - l, y - h/2 + midPoint + i*size);
+	// 		var to = new Point(x - l/2, y - h/2 + midPoint + i*size);
+	// 		var pinLine = new Path.Line(from, to);
+	// 		pinLine.strokeColor = 'black';
+	// 		pinLine.strokeWidth = 2;
+	// 		andInputPoints[i] = from;
+	// 	}
 
-		// output pin
-		var gateOutput = new Point(x + l/2, y);
-		var outputPoint = new Point(x + l, y);
-		var pinLine = new Path.Line(gateOutput, outputPoint);
-		pinLine.strokeColor = 'black';
-		pinLine.strokeWidth = 2;
+	// 	// output pin
+	// 	var gateOutput = new Point(x + l/2, y);
+	// 	var outputPoint = new Point(x + l, y);
+	// 	var pinLine = new Path.Line(gateOutput, outputPoint);
+	// 	pinLine.strokeColor = 'black';
+	// 	pinLine.strokeWidth = 2;
 
-		return outputPoint;
-	}
+	// 	return andInputPoints;
+	// }
 
-	function drawOrGate(x, y, size, inputs) {
+	// function drawOrGate(x, y, size, inputs) {
 
-		// determine height and length based on inputs
-		var h = size*inputs;
-		var l = h;
-		var midPoint = size/2; 
+	// 	// determine height and length based on inputs
+	// 	var h = size*inputs;
+	// 	var l = h;
+	// 	var midPoint = size/2; 
 
+	// 	var orInputPoints = [];
 
-		// input pins
-		for (var i=0; i<inputs; i++) {
-			var from = new Point(x - l, y - h/2 + midPoint + i*size);
-			var to = new Point(x - l/4, y - h/2 + midPoint + i*size);
-			var pinLine = new Path.Line(from, to);
-			pinLine.strokeColor = 'black';
-			pinLine.strokeWidth = 2;
-		}
+	// 	// input pins
+	// 	for (var i=0; i<inputs; i++) {
+	// 		var from = new Point(x - l, y - h/2 + midPoint + i*size);
+	// 		var to = new Point(x - l/4, y - h/2 + midPoint + i*size);
+	// 		var pinLine = new Path.Line(from, to);
+	// 		pinLine.strokeColor = 'black';
+	// 		pinLine.strokeWidth = 2;
+	// 		orInputPoints[i] = from;
+	// 	}
 
-		// creating the body of an AND gate
-		var gate = new Path({
-			strokeColor: 'black', 
-			strokeWidth: 2,
-			fillColor: 'white'
-		});
-		gate.moveTo(new Point(x - l/2, y - h/2));
-		gate.curveTo(new Point(x - l/4,y), new Point(x - l/2, y + h/2));
-		// gate.quadraticCurveTo(new Point(x, y + h/2), new Point(x + l/2, y));
-		// gate.quadraticCurveTo(new Point(x , y - h/2), new Point(x - l/2, y - h/2));
-		gate.quadraticCurveTo(new Point(x + l/4, y + h/2), new Point(x + l/2, y));
-		gate.quadraticCurveTo(new Point(x + l/4, y - h/2), new Point(x - l/2, y - h/2));
+	// 	// creating the body of an AND gate
+	// 	var gate = new Path({
+	// 		strokeColor: 'black', 
+	// 		strokeWidth: 2,
+	// 		fillColor: 'white'
+	// 	});
+	// 	gate.moveTo(new Point(x - l/2, y - h/2));
+	// 	gate.curveTo(new Point(x - l/4,y), new Point(x - l/2, y + h/2));
+	// 	gate.quadraticCurveTo(new Point(x + l/4, y + h/2), new Point(x + l/2, y));
+	// 	gate.quadraticCurveTo(new Point(x + l/4, y - h/2), new Point(x - l/2, y - h/2));
 
-		gate.closePath();
+	// 	gate.closePath();
 
-		// // center of gate
-		// var dot = new Path.Circle(new Point(x,y), 3);
-		// dot.fillColor = 'red';
+	// 	// output pin
+	// 	var gateOutput = new Point(x + l/2, y);
+	// 	var outputPoint = new Point(x + l, y);
+	// 	var pinLine = new Path.Line(gateOutput, outputPoint);
+	// 	pinLine.strokeColor = 'black';
+	// 	pinLine.strokeWidth = 2;
 
+	// 	return orInputPoints;
+	// }
+
+	// function drawXorGate(x, y, size, inputs) {
+
+	// 	// determine height and length based on inputs
+	// 	var h = size*inputs;
+	// 	var l = h;
+	// 	var offset = h/5;
+	// 	var midPoint = size/2; 
+
+	// 	var xorInputPoints = [];
+
+	// 	// input pins
+	// 	for (var i=0; i<inputs; i++) {
+	// 		var from = new Point(x - l, y - h/2 + midPoint + i*size);
+	// 		var to = new Point(x - l/4, y - h/2 + midPoint + i*size);
+	// 		var pinLine = new Path.Line(from, to);
+	// 		pinLine.strokeColor = 'black';
+	// 		pinLine.strokeWidth = 2;
+	// 		xorInputPoints[i] = from;
+	// 	}
+
+	// 	// creating the body of an AND gate
+	// 	var gate = new Path({
+	// 		strokeColor: 'black', 
+	// 		strokeWidth: 2,
+	// 		fillColor: 'white'
+	// 	});
+	// 	gate.moveTo(new Point(x - l/2, y - h/2));
+	// 	gate.curveTo(new Point(x - l/4,y), new Point(x - l/2, y + h/2));
+	// 	gate.quadraticCurveTo(new Point(x + l/4, y + h/2), new Point(x + l/2, y));
+	// 	gate.quadraticCurveTo(new Point(x + l/4, y - h/2), new Point(x - l/2, y - h/2));
+
+	// 	gate.closePath();
+
+	// 	// xor line
+	// 	var xorLine = new Path({
+	// 		strokeColor: 'black', 
+	// 		strokeWidth: 2
+	// 	});
+	// 	xorLine.moveTo(new Point(x - l/2 - offset, y - h/2));
+	// 	xorLine.curveTo(new Point(x - l/4 - offset,y), new Point(x - l/2 - offset, y + h/2));
 	
 
-		// output pin
-		var gateOutput = new Point(x + l/2, y);
-		var outputPoint = new Point(x + l, y);
-		var pinLine = new Path.Line(gateOutput, outputPoint);
-		pinLine.strokeColor = 'black';
-		pinLine.strokeWidth = 2;
+	// 	// output pin
+	// 	var gateOutput = new Point(x + l/2, y);
+	// 	var outputPoint = new Point(x + l*1.25, y);
+	// 	var pinLine = new Path.Line(gateOutput, outputPoint);
+	// 	pinLine.strokeColor = 'black';
+	// 	pinLine.strokeWidth = 2;
 
-		return outputPoint;
-	}
+	// 	return xorInputPoints;
+	// }
 
-	function drawXorGate(x, y, size, inputs) {
+	// function drawNotGate(x, y, size) {
 
-		// determine height and length based on inputs
-		var h = size*inputs;
-		var l = h;
-		var offset = h/5;
-		var midPoint = size/2; 
+	// 	// determine height and length based on inputs
+	// 	var h = size;
+	// 	var l = h;
+	// 	var midPoint = size/2; 
 
+	// 	var notInputPoints = [];
 
-		// input pins
-		for (var i=0; i<inputs; i++) {
-			var from = new Point(x - l, y - h/2 + midPoint + i*size);
-			var to = new Point(x - l/4, y - h/2 + midPoint + i*size);
-			var pinLine = new Path.Line(from, to);
-			pinLine.strokeColor = 'black';
-			pinLine.strokeWidth = 2;
-		}
+	// 	var from = new Point(x - l*1.5, y);
+	// 	var to = new Point(x - l/2, y);
+	// 	var inputLine = new Path.Line(from, to);
+	// 	inputLine.strokeColor = 'black';
+	// 	inputLine.strokeWidth = 2;
+	// 	notInputPoints[0] = from;
 
-		// creating the body of an AND gate
-		var gate = new Path({
-			strokeColor: 'black', 
-			strokeWidth: 2,
-			fillColor: 'white'
-		});
-		gate.moveTo(new Point(x - l/2, y - h/2));
-		gate.curveTo(new Point(x - l/4,y), new Point(x - l/2, y + h/2));
-		gate.quadraticCurveTo(new Point(x + l/4, y + h/2), new Point(x + l/2, y));
-		gate.quadraticCurveTo(new Point(x + l/4, y - h/2), new Point(x - l/2, y - h/2));
+	// 	// creating the body of an AND gate
+	// 	var gate = new Path({
+	// 		strokeColor: 'black', 
+	// 		strokeWidth: 2,
+	// 		fillColor: 'white'
+	// 	});
+	// 	gate.moveTo(new Point(x - l/2, y - h/2));
+	// 	gate.lineTo(new Point(x - l/2, y + h/2));
+	// 	gate.lineTo(new Point(x + l/2, y));
+	// 	gate.closePath();
 
-		gate.closePath();
+	// 	// output pin
+	// 	var gateOutput = new Point(x + l/2, y);
+	// 	var outputPoint = new Point(x + l*1.5, y);
+	// 	var outputLine = new Path.Line(gateOutput, outputPoint);
+	// 	outputLine.strokeColor = 'black';
+	// 	outputLine.strokeWidth = 2;
 
-		// xor line
-		var xorLine = new Path({
-			strokeColor: 'black', 
-			strokeWidth: 2
-		});
-		xorLine.moveTo(new Point(x - l/2 - offset, y - h/2));
-		xorLine.curveTo(new Point(x - l/4 - offset,y), new Point(x - l/2 - offset, y + h/2));
-	
+	// 	// not circile of gate
+	// 	var notCircle = new Path.Circle(new Point(x + l/2 + (size/6)/2,y), size/6);
+	// 	notCircle.fillColor = 'white';	
+	// 	notCircle.strokeColor = 'black';
+	// 	notCircle.strokeWidth = 2;
 
-		// output pin
-		var gateOutput = new Point(x + l/2, y);
-		var outputPoint = new Point(x + l*1.25, y);
-		var pinLine = new Path.Line(gateOutput, outputPoint);
-		pinLine.strokeColor = 'black';
-		pinLine.strokeWidth = 2;
-
-		return outputPoint;
-	}
-
-	function drawNotGate(x, y, size) {
-
-		// determine height and length based on inputs
-		var h = size;
-		var l = h;
-		var midPoint = size/2; 
+	// 	return notInputPoints;
+	// }
 
 
-		var inputPoint = new Point(x - l*1.5, y);
-		var gateInput = new Point(x - l/2, y);
-		var inputLine = new Path.Line(gateInput, inputPoint);
-		inputLine.strokeColor = 'black';
-		inputLine.strokeWidth = 2;
+	// function drawInput(x, y, size, name, outputPoint) {
 
-		// creating the body of an AND gate
-		var gate = new Path({
-			strokeColor: 'black', 
-			strokeWidth: 2,
-			fillColor: 'white'
-		});
-		gate.moveTo(new Point(x - l/2, y - h/2));
-		gate.lineTo(new Point(x - l/2, y + h/2));
-		gate.lineTo(new Point(x + l/2, y));
-		gate.closePath();
+	// 	// determine height and length based on inputs
+	// 	var h = size/2;
+	// 	var l = size;
 
-		// output pin
-		var gateOutput = new Point(x + l/2, y);
-		var outputPoint = new Point(x + l*1.5, y);
-		var outputLine = new Path.Line(gateOutput, outputPoint);
-		outputLine.strokeColor = 'black';
-		outputLine.strokeWidth = 2;
+	// 	var pin = new Path({
+	// 		strokeColor: 'black', 
+	// 		strokeWidth: 2,
+	// 	});
 
-		// not circile of gate
-		var notCircle = new Path.Circle(new Point(x + l/2 + (size/6)/2,y), size/6);
-		notCircle.fillColor = 'white';	
-		notCircle.strokeColor = 'black';
-		notCircle.strokeWidth = 2;
+	// 	// creating the body of input
+	// 	pin.moveTo(new Point(x - l/2, y + h/2));
+	// 	pin.lineTo(new Point(x + l*0.75, y + h/2));
+	// 	pin.lineTo(new Point(x + l, y));
+	// 	pin.lineTo(new Point(x + l*0.75, y - h/2));
+	// 	pin.lineTo(new Point(x - l/2, y - h/2));
+	// 	pin.closePath();
 
-		return outputPoint;
-	}
+	// 	// name of input
+	// 	var text = new PointText(new Point(x - l*1.5, y + 4));
+	// 	text.fillColor = 'black';
+	// 	text.content = name;
 
+	// 	// output pin
+	// 	var rightOfPin = new Point(x + l, y);
+	// 	var outputOfPin = new Point(x + l*1.5, y);
+	// 	var pinLine = new Path.Line(rightOfPin, outputOfPin);
+	// 	pinLine.strokeColor = 'black';
+	// 	pinLine.strokeWidth = 2;
 
-	function drawInput(x, y, size, name) {
+	// 	// connection line
+	// 	var netConnection = new Path.Line(outputOfPin, outputPoint);
+	// 	netConnection.strokeColor = 'black';
+	// 	netConnection.strokeWidth = 2;
 
-		// determine height and length based on inputs
-		var h = size/2;
-		var l = size;
+	// 	// // center of input
+	// 	// var dot = new Path.Circle(new  Point(x, y), 3);
+	// 	// dot.fillColor = 'red';
 
-		var pin = new Path({
-			strokeColor: 'black', 
-			strokeWidth: 2,
-		});
+	// 	return [];
+	// }
 
-		// creating the body of input
-		pin.moveTo(new Point(x - l/2, y + h/2));
-		pin.lineTo(new Point(x + l*0.75, y + h/2));
-		pin.lineTo(new Point(x + l, y));
-		pin.lineTo(new Point(x + l*0.75, y - h/2));
-		pin.lineTo(new Point(x - l/2, y - h/2));
-		pin.closePath();
+	// function drawOutput(x, y, size, name) {
 
-		// name of input
-		var text = new PointText(new Point(x - l*1.5, y + 4));
-		text.fillColor = 'black';
-		text.content = name;
+	// 	// determine height and length based on inputs
+	// 	var h = size/2;
+	// 	var l = size;
 
-		// output pin
-		var inputOutput = new Point(x + l, y);
-		var outputPoint = new Point(x + l*1.5, y);
-		var pinLine = new Path.Line(inputOutput, outputPoint);
-		pinLine.strokeColor = 'black';
-		pinLine.strokeWidth = 2;
+	// 	var pin = new Path({
+	// 		strokeColor: 'black', 
+	// 		strokeWidth: 2,
+	// 	});
 
-		// // center of input
-		// var dot = new Path.Circle(new  Point(x, y), 3);
-		// dot.fillColor = 'red';
+	// 	// creating the body of input
+	// 	pin.moveTo(new Point(x + l/2, y + h/2));
+	// 	pin.lineTo(new Point(x - l*0.75, y + h/2));
+	// 	pin.lineTo(new Point(x - l, y));
+	// 	pin.lineTo(new Point(x - l*0.75, y - h/2));
+	// 	pin.lineTo(new Point(x + l/2, y - h/2));
+	// 	pin.closePath();
 
-		return outputPoint;
-	}
+	// 	// name of input
+	// 	var text = new PointText(new Point(x + l, y + 4));
+	// 	text.fillColor = 'black';
+	// 	text.content = name;
 
-	function drawOutput(x, y, size, name) {
+	// 	var inputPoints = [];
 
-		// determine height and length based on inputs
-		var h = size/2;
-		var l = size;
+	// 	// output pin
+	// 	var from = new Point(x - l*1.5, y);
+	// 	var to = new Point(x - l, y);
+		
+	// 	var pinLine = new Path.Line(from, to);
+	// 	pinLine.strokeColor = 'black';
+	// 	pinLine.strokeWidth = 2;
+	// 	inputPoints[0] = from;
 
-		var pin = new Path({
-			strokeColor: 'black', 
-			strokeWidth: 2,
-		});
-
-		// creating the body of input
-		pin.moveTo(new Point(x + l/2, y + h/2));
-		pin.lineTo(new Point(x - l*0.75, y + h/2));
-		pin.lineTo(new Point(x - l, y));
-		pin.lineTo(new Point(x - l*0.75, y - h/2));
-		pin.lineTo(new Point(x + l/2, y - h/2));
-		pin.closePath();
-
-		// name of input
-		var text = new PointText(new Point(x + l, y + 4));
-		text.fillColor = 'black';
-		text.content = name;
-
-		// output pin
-		var inputOutput = new Point(x - l, y);
-		var outputPoint = new Point(x - l*1.5, y);
-		var pinLine = new Path.Line(inputOutput, outputPoint);
-		pinLine.strokeColor = 'black';
-		pinLine.strokeWidth = 2;
-
-		return outputPoint;
-	}
+	// 	return inputPoints;
+	// }
 
 
 
 	function drawCircuit() {
-		drawAndGate(500, 100, 20, 2);
-		drawInput(400, 100, 20, 'A');
-		drawOrGate(500, 200, 20, 2);
-		drawXorGate(400, 200, 20, 2);
-		drawNotGate(300, 200, 20);
-		drawOutput(100,100,20, 'F');
+		var nets = drawAndGate(300,100,20,2);
+
+		// for (var i=0; i<nets.length; i++){
+		// 	drawInput(200, 75+75*i, 20, 'A', nets[i]);
+		// }
+
+		// drawAndGate(500, 100, 20, 2);
+		// drawInput(400, 100, 20, 'A');
+		// drawOrGate(500, 200, 20, 2);
+		// drawXorGate(400, 200, 20, 2);
+		// drawNotGate(300, 200, 20);
+		// drawOutput(100,100,20, 'F');
 	}
 
 
-	// drawCircuit();
+	drawCircuit();
 
 	// var xWin = View.size.x;
 	// console.log(xWin); 

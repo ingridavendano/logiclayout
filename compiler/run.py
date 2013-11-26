@@ -34,7 +34,7 @@ def compiler(data, debug=0, print_tree=1):
 	tree.print_tree()
 	tree.print_nodes()
 	# tree.print_levels()
-	json_data = serializer.to_json(tree)
+	json_data = serializer.to_json(tree, debug=debug)
 
 	return json_data
 

@@ -10,10 +10,14 @@ def index():
 	return render_template("index.html")
 	
 
-@app.route("/logic", methods=["POST"])
+@app.route("/", methods=["POST"])
 def logic():
 	expression = request.form["logic-expression"]
-	print "#"*80
+
+	# in case an empty expression was passed
+	if expression == "":
+		return render_template("index.html")
+
 	expression =  str("f = "+expression)
 	print expression
 	json = model.compile_expr(expression)

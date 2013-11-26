@@ -18,10 +18,11 @@ class Node(object):
 		self.y = 0
 
 		if token.kind == 'LITERAL':
-			if token.expr == None:
-				self.expr = '0'
-			else:
-				self.expr = '1'
+			self.expr = token.expr
+			# if token.expr == None:
+			# 	self.expr = '0'
+			# else:
+			# 	self.expr = '1'
 		elif token.kind == 'ID':
 			self.expr = token.expr
 		else:

@@ -19,12 +19,7 @@ class Node(object):
 		self.y_min = 0 
 		self.y_max = 0
 
-		if token.kind == 'LITERAL':
-			if token.expr == None:
-				self.expr = '0'
-			else:
-				self.expr = '1'
-		elif token.kind == 'ID':
+		if token.kind == 'LITERAL' or token.kind == 'ID':
 			self.expr = token.expr
 		else:
 			self.expr = token.kind
@@ -56,11 +51,6 @@ class Node(object):
 		self.y_max = y_max
 		self.y = y_min + (y_max - y_min)/2
 
-	# def calculate_y(self,):
-	# 	self.y = (self.y_max - self.y_min)/2
-
-
-
 # -----------------------------------------------------------------------------
 # Cluster and Level hold Nodes that are at the same level in AST.
 # -----------------------------------------------------------------------------
@@ -83,28 +73,9 @@ class Cell(object):
 
 		num_of_nodes = len(nodes)
 		y_increment = (y_max - y_min)/ticks
-		# y_mid_increment = y_increment/2
 
 		# print "*"*5
 		y_temp_min = y_min
-
-		# print "NODES",nodes
-		# for node in nodes:
-		# 	node.y_min = y_temp_min
-		# 	node.y_max = y_temp_min + y_increment*node.weight
-
-		# 	node.calculate_y()
-		# 	y_temp_min = node.y_max
-
-		# 	print node, node.y
-
-		# for i in range(len(nodes)):
-		# 	nodes[i].y_min = i*y_increment
-		# 	nodes[i].y_max = (i+1)*y_increment
-
-		# 	nodes[i].y = nodes[i].y_min + y_mid_increment
-
-		# 	print nodes[i], nodes[i].y
 
 	def __repr__(self):
 		""" What is displayed when a node is represented. """
@@ -194,65 +165,12 @@ class Tree(object):
 			new_node.calculate_weight()
 			return new_node
 
-		# def find_depth(node, depth=0):
-		# 	""" Determines the depth of a tree based on its nodes. """
-		# 	deepest_depth = depth 
-
-		# 	# determine a cell of children nodes
-		# 	if len(node.children) > 0:
-
-		# 		for child in node.children:
-		# 			new_depth = find_depth(child, depth + 1)
-
-		# 			if new_depth > deepest_depth:
-		# 				deepest_depth = new_depth
-
-		# 		cell_num = len(self.levels[depth+1])
-		# 		new_cell = Cell(cell_num, node.children)
-
-		# 		self.levels[depth+1].add(new_cell)
-
-		# 	# this function also sets the depth level of a node
-		# 	node.level = depth
-
-		# 	return deepest_depth
-
 		def find_cells(node, depth, y_min, y_max):
 			""" Determine which cells each node belongs in. """
 			node.calculate_y(y_min, y_max)
 			node.level = depth 
 			node.x = depth 
 			self.nodes.append(node)
-
-
-			# self.x = depth
-			# self.nodes = nodes
-
-			# ticks = 0
-			# # connects each Node to the cell it belongs to
-			# for node in nodes:
-			# 	ticks += node.weight 
-
-			# # this is for determining y-axis positions
-			# self.y_min = y_min
-			# self.y_max = y_max
-
-			# num_of_nodes = len(nodes)
-			# y_increment = (y_max - y_min)/ticks
-			# # y_mid_increment = y_increment/2
-
-			# print "*"*5
-			# y_temp_min = y_min
-
-			# # print "NODES",nodes
-			# for node in nodes:
-			# 	node.y_min = y_temp_min
-			# 	node.y_max = y_temp_min + y_increment*node.weight
-
-			# 	node.calculate_y()
-			# 	y_temp_min = node.y_max
-
-			# 	print node, node.y
 
 
 			if len(node.children) > 0:
@@ -276,45 +194,6 @@ class Tree(object):
 				new_cell = Cell(y_depth, y_min, y_max, node.children)
 				self.levels[x_depth].append(new_cell)
 
-
-
-			# else:
-			# 	pass
-
-		# def find_base_nodes(nodes, base):
-		# 	base_nodes = []
-
-		# 	for node in nodes:
-		# 		if node.pin == base:
-		# 			base_nodes.append(node)
-
-
-
-
-		# def find_levels(nodes, depth):
-		# 	""" Determines how many nodes go into each level. """
-		# 	levels = [Level(i) for i in range(depth)]
-
-		# 	for node in nodes:
-		# 		levels[node.level].append(node)
-
-		# 	return levels
-
-		# def find_clusters_by_level(node, levels):
-		# 	""" Determines the depth of a tree based on its nodes. """
-			
-		# 	for child in node.children:
-		# 		levels = find_clusters_by_level(child, levels)
-
-		# 	# this should not be an okay way to do this
-		# 	if node.level == 0:
-		# 		levels[0] = [[node],]
-		# 		levels[1].append(node.children)
-		# 	else:
-		# 		if not node.pin:
-		# 			levels[node.level+1].append(node.children)
-		# 	return levels
-
 		# ---------------------------------------------------------------------
 
 		self.expr 			= expression
@@ -326,29 +205,8 @@ class Tree(object):
 
 		self.levels[self.depth - 1].append(first_cell)
 		find_cells(self.root, self.depth - 1, 0.0, 1.0)
-
-		# self.nodes 			= find_nodes(self.root)
-		# self.nonterminals 	= find_base_nodes(self.nodes, True)
-		# self.terminals 		= find_base_nodes(self.nodes, False)
-		# self.levels 		= find_levels(self.nodes, self.depth)
-		# layers				= [[] for i in range(self.depth)]
-		# self.clusters 		= find_clusters_by_level(self.root, layers)
-		# self.weight 		= self.root.weight
-
-		# self.find_node_positions()
-	# -------------------------------------------------------------------------
-
-	# def find_node_positions(self):
-
-	# 	for level in self.levels:
-	# 		print len(level)
-	# 		for cell in level:
 		
-	# 	# def x_y_positions(node):
-
-	# 	# 	for child in node.children:
-
-
+	# -------------------------------------------------------------------------
 
 	def print_tree(self):
 		""" Prints each Node in tree in tree like structure to console. """ 
@@ -371,10 +229,5 @@ class Tree(object):
 			print node, '\t', node.y_min, '\t', node.y_max, '\t\t', node.y
 
 	def print_levels(self):
-		# pass
-		# for level in self.levels:
-		# 	print level
-			# print level.print_level()
-
 		for i in range(self.depth):
 			print i, self.levels[i]
