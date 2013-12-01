@@ -5,6 +5,11 @@
  * Contains the JS Canvas functions to draw logic gates. 
  * ------------------------------------------------------------------------- */
 
+function drawLine(a, b) {
+	var net = new Path.Line(a, b);
+	net.strokeColor = 'black';
+	net.strokeWidth = 2;
+}
 
 function drawAndGate(x, y, size, inputs, netPoint) {
 
@@ -31,22 +36,16 @@ function drawAndGate(x, y, size, inputs, netPoint) {
 	for (var i=0; i<inputs; i++) {
 		var from = new Point(x - l, y - h/2 + midPoint + i*size);
 		var to = new Point(x - l/2, y - h/2 + midPoint + i*size);
-		var pinLine = new Path.Line(from, to);
-		pinLine.strokeColor = 'black';
-		pinLine.strokeWidth = 2;
+
+		drawLine(from, to);
 		andInputPoints[i] = from;
 	}
 
 	// output pin
 	var from = new Point(x + l/2, y);
 	var to = new Point(x + l, y);
-	var pinLine = new Path.Line(from, to);
-	pinLine.strokeColor = 'black';
-	pinLine.strokeWidth = 2;
-
-	var connectionLine = new Path.Line(to, netPoint);
-	connectionLine.strokeColor = 'black';
-	connectionLine.strokeWidth = 2;
+	drawLine(from, to);
+	drawLine(to, netPoint);
 
 	return andInputPoints;
 }
@@ -64,9 +63,7 @@ function drawOrGate(x, y, size, inputs, netPoint) {
 	for (var i=0; i<inputs; i++) {
 		var from = new Point(x - l, y - h/2 + midPoint + i*size);
 		var to = new Point(x - l/4, y - h/2 + midPoint + i*size);
-		var pinLine = new Path.Line(from, to);
-		pinLine.strokeColor = 'black';
-		pinLine.strokeWidth = 2;
+		drawLine(from, to);
 		orInputPoints[i] = from;
 	}
 
@@ -86,13 +83,21 @@ function drawOrGate(x, y, size, inputs, netPoint) {
 	// output pin
 	var from = new Point(x + l/2, y);
 	var to = new Point(x + l, y);
-	var pinLine = new Path.Line(from, to);
-	pinLine.strokeColor = 'black';
-	pinLine.strokeWidth = 2;
+	drawLine(from, to);
 
-	var connectionLine = new Path.Line(to, netPoint);
-	connectionLine.strokeColor = 'black';
-	connectionLine.strokeWidth = 2;
+	// points for net of output wires
+	var xMidpoint = to.x + (netPoint.x - to.x)/2;
+	var pointNearOrOuput = new Point(xMidpoint, to.y);
+	var pointNearOrNewInput = new Point(xMidpoint, netPoint.y);
+
+	// left horizontal line
+	drawLine(to, pointNearOrOuput);
+
+	// vertical line
+	drawLine(pointNearOrOuput, pointNearOrNewInput);
+
+	// right horizontal line
+	drawLine(pointNearOrNewInput, netPoint);
 
 	return orInputPoints;
 }
@@ -111,9 +116,7 @@ function drawXorGate(x, y, size, inputs, netPoint) {
 	for (var i=0; i<inputs; i++) {
 		var from = new Point(x - l, y - h/2 + midPoint + i*size);
 		var to = new Point(x - l/4, y - h/2 + midPoint + i*size);
-		var pinLine = new Path.Line(from, to);
-		pinLine.strokeColor = 'black';
-		pinLine.strokeWidth = 2;
+		drawLine(from, to);
 		xorInputPoints[i] = from;
 	}
 
@@ -142,14 +145,8 @@ function drawXorGate(x, y, size, inputs, netPoint) {
 	// output pin
 	var from = new Point(x + l/2, y);
 	var to = new Point(x + l*1.25, y);
-	var pinLine = new Path.Line(from, to);
-	pinLine.strokeColor = 'black';
-	pinLine.strokeWidth = 2;
-
-
-	var connectionLine = new Path.Line(to, netPoint);
-	connectionLine.strokeColor = 'black';
-	connectionLine.strokeWidth = 2;
+	drawLine(from, to);
+	drawLine(to, netPoint);
 
 	return xorInputPoints;
 }
@@ -165,9 +162,7 @@ function drawNotGate(x, y, size, netPoint) {
 
 	var from = new Point(x - l*1.5, y);
 	var to = new Point(x - l/2, y);
-	var inputLine = new Path.Line(from, to);
-	inputLine.strokeColor = 'black';
-	inputLine.strokeWidth = 2;
+	drawLine(from, to);
 	notInputPoints[0] = from;
 
 	// creating the body of an AND gate
@@ -184,13 +179,8 @@ function drawNotGate(x, y, size, netPoint) {
 	// output pin
 	var outFrom = new Point(x + l/2, y);
 	var outTo = new Point(x + l*1.5, y);
-	var outputLine = new Path.Line(outFrom, outTo);
-	outputLine.strokeColor = 'black';
-	outputLine.strokeWidth = 2;
-
-	var connectionLine = new Path.Line(outTo, netPoint);
-	connectionLine.strokeColor = 'black';
-	connectionLine.strokeWidth = 2;
+	drawLine(outFrom, outTo);
+	drawLine(outTo, netPoint);
 
 	// not circile of gate
 	var notCircle = new Path.Circle(new Point(x + l/2 + (size/6)/2,y), size/6);
@@ -229,14 +219,21 @@ function drawInput(x, y, size, name, outputPoint) {
 	// output pin
 	var rightOfPin = new Point(x + l, y);
 	var outputOfPin = new Point(x + l*1.5, y);
-	var pinLine = new Path.Line(rightOfPin, outputOfPin);
-	pinLine.strokeColor = 'black';
-	pinLine.strokeWidth = 2;
+	drawLine(rightOfPin, outputOfPin);
 
-	// connection line
-	var netConnection = new Path.Line(outputOfPin, outputPoint);
-	netConnection.strokeColor = 'black';
-	netConnection.strokeWidth = 2;
+	// points for net of output wires
+	var xMidpoint = outputOfPin.x + (outputPoint.x - outputOfPin.x)/2;
+	var pointNearOrOuput = new Point(xMidpoint, outputOfPin.y);
+	var pointNearOrNewInput = new Point(xMidpoint, outputPoint.y);
+
+	// left horizontal line
+	drawLine(outputOfPin, pointNearOrOuput);
+
+	// vertical line
+	drawLine(pointNearOrOuput, pointNearOrNewInput);
+
+	// right horizontal line
+	drawLine(pointNearOrNewInput, outputPoint);
 
 	return [];
 }
@@ -271,9 +268,7 @@ function drawOutput(x, y, size, name) {
 	var from = new Point(x - l*1.5, y);
 	var to = new Point(x - l, y);
 	
-	var pinLine = new Path.Line(from, to);
-	pinLine.strokeColor = 'black';
-	pinLine.strokeWidth = 2;
+	drawLine(from, to);
 	inputPoints[0] = to;
 
 	console.log(inputPoints[0]);
@@ -322,25 +317,13 @@ function drawNodes(node, xIncr, yWin, netPoints) {
 
 
 function drawCircuit(circuit, xWin, yWin) {
-	// drawAndGate(500, 100, 20, 2);
-	// drawInput(400, 100, 20, 'A');
-	// drawOrGate(500, 200, 20, 2);
-	// drawXorGate(400, 200, 20, 2);
-	// drawNotGate(300, 200, 20);
-	// drawOutput(100,100,20, 'F');
-
-
 	var xTicks = circuit.depth; 
 	var yTicks = circuit.weight;
-
-
 	var xIncr = (xWin/xTicks);
 	var yIncr = (yWin/yTicks);
 
 
 	for (var i=0; i<circuit.nodes.length; i++) {
-		// var x = xIncr/2 + (circuit.nodes[i].x * xIncr);
-		// var y = circuit.nodes[i].y * yWin;
 		var newPoints = [];
 
 		drawNodes(circuit.nodes[i], xIncr, yWin, newPoints);
@@ -350,11 +333,14 @@ function drawCircuit(circuit, xWin, yWin) {
 
 function onResize(event) {
 	var xWin = view.bounds.width;
-	// var xWin = 1140;
-	console.log(xWin);
 	var yWin = view.bounds.height;
-	// var yWin = 600;
-	console.log(yWin);
 
+	if(project.activeLayer.hasChildren()){
+        project.activeLayer.removeChildren();
+    }
 	drawCircuit(results, xWin, yWin);
 }
+
+/* function dealing with window resizing and zoming in and out */
+
+
