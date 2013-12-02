@@ -15,7 +15,7 @@ tokens = lexer.tokens
 
 # parsing rules
 precedence = (
-				('left',  'OR', 'AND', 'XOR'),
+				('left', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NXOR'),
 				('right', 'NOT'),
 )
 
@@ -45,15 +45,30 @@ def p_expression_not(t):
 	'expression : NOT expression'
 	t[0] = Not(t[2])
 
-def p_expression_or(t):
-	'''expression : expression OR expression
-			  	  | ID OR expression'''
-	t[0] = Or(t[1], t[3])
+def p_expression_nand(t):
+	'''expression : expression NAND expression
+			  	  | ID NAND expression'''
+	t[0] = Nand(t[1], t[3])
 
 def p_expression_and(t):
 	'''expression : expression AND expression
 			  	  | ID AND expression'''
 	t[0] = And(t[1], t[3])
+
+def p_expression_nor(t):
+	'''expression : expression NOR expression
+			  	  | ID NOR expression'''
+	t[0] = Nor(t[1], t[3])
+
+def p_expression_or(t):
+	'''expression : expression OR expression
+			  	  | ID OR expression'''
+	t[0] = Or(t[1], t[3])
+
+def p_expression_nxor(t):
+	'''expression : expression NXOR expression	
+			  	  | ID NXOR expression'''
+	t[0] = Nxor(t[1], t[3])
 
 def p_expression_xor(t):
 	'''expression : expression XOR expression	

@@ -10,7 +10,7 @@ tokens = [
 	'ID',
 
 	# logic operatiors 
-	'NOT', 'AND', 'OR', 'XOR',
+	'NOT', 'NAND', 'AND', 'NOR', 'OR', 'NXOR', 'XOR',
 	
 	# assigments
 	'EQUALS',
@@ -25,19 +25,31 @@ tokens = [
 # -----------------------------------------------------------------------------
 
 # identifier
-t_ID			= r'[a-zA-Z_][a-zA-Z0-9_]*'
+t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
 # logic operators 
 def t_NOT(t):
 	r'([nN][oO][tT])|~|!'
 	return t
 
+def t_NAND(t):
+	r'([nN][aA][nN][dD])|(\&{1,2})|\*'
+	return t
+
 def t_AND(t):
 	r'([aA][nN][dD])|(\&{1,2})|\*'
 	return t
 
+def t_NOR(t):
+	r'([nN][oO][rR])|\|{1,2}|\+'
+	return t
+
 def t_OR(t):
 	r'([oO][rR])|\|{1,2}|\+'
+	return t
+
+def t_NXOR(t):
+	r'([nN][xX][oO][rR])|\^'
 	return t
 
 def t_XOR(t):
@@ -45,18 +57,18 @@ def t_XOR(t):
 	return t
 
 # assignments
-t_EQUALS		= r'='
+t_EQUALS = r'='
 
 # delimiters
-t_LPAREN		= r'\('
-t_RPAREN		= r'\)'
-t_LBRACKET		= r'\['
-t_RBRACKET		= r'\]'
-t_LBRACE		= r'\{'
-t_RBRACE		= r'\}'
+t_LPAREN = r'\('
+t_RPAREN = r'\)'
+t_LBRACKET = r'\['
+t_RBRACKET = r'\]'
+t_LBRACE = r'\{'
+t_RBRACE = r'\}'
 
 # tokens to ignore
-t_ignore		= " \t"
+t_ignore = " \t"
 
 # binary
 def t_BIN(t):

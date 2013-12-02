@@ -8,6 +8,7 @@
 class Token(object):
 	""" Basic node class for tokens. """ 
 	base = False
+	terminal = True
 
 	def __init__(self, left=None, right=None):
 		""" Lets a node set its children immediately when made. """
@@ -53,19 +54,35 @@ class And(Token):
 	kind = 'AND'
 	expr = '*'
 
+class Nand(Token):
+	""" Nand node. """ 
+	kind = 'NAND'
+	expr = '!*'
+
 class Or(Token):
 	""" Or node. """ 
 	kind = 'OR'
 	expr = '+'
+
+class Nor(Token):
+	""" Nor node. """ 
+	kind = 'NOR'
+	expr = '!+'
 
 class Xor(Token):
 	""" Xor node. """ 
 	kind = 'XOR'
 	expr = '^'
 
+class Nxor(Token):
+	""" Nxor node. """ 
+	kind = 'NXOR'
+	expr = '!^'
+
 class Id(Token):
 	""" Id node. """ 
 	kind = 'ID'
+	terminal = False
 
 	def __init__(self, expr, child=None):
 		self.expr = expr
@@ -80,6 +97,7 @@ class Literal(Token):
 	kind = 'LITERAL'
 	left = None
 	right = None
+	terminal = False
 	base = True
 
 	def __init__(self, expr=None):
