@@ -7,7 +7,7 @@
 
 import parser
 import serializer
-from optimizer2 import Tree
+from optimizer import Tree
 
 # -----------------------------------------------------------------------------
 # Run PLY yacc in the parser module.
