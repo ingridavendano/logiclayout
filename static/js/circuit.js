@@ -1,3 +1,4 @@
+
 /* ----------------------------------------------------------------------------
  * circuit.js
  * Created by Ingrid Avendano on 11/20/13. 
@@ -5,276 +6,136 @@
  * Contains the JS Canvas functions to draw logic gates. 
  * ------------------------------------------------------------------------- */
 
+function schematicAttributes(object, gate) {
+	if (gate) object.fillColor = 'white';
+
+	object.strokeColor = 'black';
+	object.strokeWidth = 2;
+	return object;
+}
+
+function shapeAttributes(fillColor) {
+	var gate = new Path();
+	return schematicAttributes(gate, fillColor);
+}
+
 function drawLine(a, b) {
 	var net = new Path.Line(a, b);
-	net.strokeColor = 'black';
-	net.strokeWidth = 2;
+	schematicAttributes(net, false);
 }
 
-function drawAndGate(x, y, size, inputs, netPoint) {
+function drawNet(a, b) {
+	var x = a.x + (b.x - a.x)/2;
+	var _a = new Point(x, a.y);
+	var _b = new Point(x, b.y);
 
-	// determine height and length based on inputs
-	var h = size*inputs;
-	var l = h;
-	var midPoint = size/2; 
+	drawLine(a, _a);
+	drawLine(_a, _b);
+	drawLine(_b, b);
+}
 
-	var gate = new Path({
-		strokeColor: 'black', 
-		strokeWidth: 2,
-	});
+/* ------------------------------------------------------------------------- */
 
-	// creating the body of an AND gate
-	gate.moveTo(new Point(x - l/2, y - h/2));
-	gate.lineTo(new Point(x - l/2, y + h/2));
-	gate.lineTo(new Point(x, y + h/2));
-	gate.arcTo(new Point(x + l/2, y), new Point(x, y - h/2));
-	gate.closePath();
+function inputPins(x, y, numberOfPins, size) {
+	var offset = numberOfPins*size;
+	var pinPoints = [];
 
-	var andInputPoints = [];
+	for (var i = 0; i < numberOfPins; i++) {
+		var a = new Point(x - offset,   y - offset/2 + (i+0.5)*size);
+		var b = new Point(x, y - offset/2 + (i+0.5)*size);
+		drawLine(a, b);
 
-	// input pins
-	for (var i=0; i<inputs; i++) {
-		var from = new Point(x - l, y - h/2 + midPoint + i*size);
-		var to = new Point(x - l/2, y - h/2 + midPoint + i*size);
-
-		drawLine(from, to);
-		andInputPoints[i] = from;
+		pinPoints[i] = a;
 	}
 
-	// output pin
-	var from = new Point(x + l/2, y);
-	var to = new Point(x + l, y);
-	drawLine(from, to);
-	drawLine(to, netPoint);
-
-	return andInputPoints;
+	return pinPoints;
 }
 
-function drawOrGate(x, y, size, inputs, netPoint) {
-
-	// determine height and length based on inputs
-	var h = size*inputs;
-	var l = h;
-	var midPoint = size/2; 
-
-	var orInputPoints = [];
-
-	// input pins
-	for (var i=0; i<inputs; i++) {
-		var from = new Point(x - l, y - h/2 + midPoint + i*size);
-		var to = new Point(x - l/4, y - h/2 + midPoint + i*size);
-		drawLine(from, to);
-		orInputPoints[i] = from;
-	}
-
-	// creating the body of an AND gate
-	var gate = new Path({
-		strokeColor: 'black', 
-		strokeWidth: 2,
-		fillColor: 'white'
-	});
-	gate.moveTo(new Point(x - l/2, y - h/2));
-	gate.curveTo(new Point(x - l/4,y), new Point(x - l/2, y + h/2));
-	gate.quadraticCurveTo(new Point(x + l/4, y + h/2), new Point(x + l/2, y));
-	gate.quadraticCurveTo(new Point(x + l/4, y - h/2), new Point(x - l/2, y - h/2));
-
-	gate.closePath();
-
-	// output pin
-	var from = new Point(x + l/2, y);
-	var to = new Point(x + l, y);
-	drawLine(from, to);
-
-	// points for net of output wires
-	var xMidpoint = to.x + (netPoint.x - to.x)/2;
-	var pointNearOrOuput = new Point(xMidpoint, to.y);
-	var pointNearOrNewInput = new Point(xMidpoint, netPoint.y);
-
-	// left horizontal line
-	drawLine(to, pointNearOrOuput);
-
-	// vertical line
-	drawLine(pointNearOrOuput, pointNearOrNewInput);
-
-	// right horizontal line
-	drawLine(pointNearOrNewInput, netPoint);
-
-	return orInputPoints;
+function outputPin(x, y, offset, netPoint) {
+	var a = new Point(x + offset/2, y);
+	var b = new Point(x + offset, y);
+	drawLine(a, b);
+	drawNet(b, netPoint);
 }
+
+function outPin(p, o, net) {
+	drawLine(new Point(p.x+(o*0.5), p.y), new Point(p.x+o, p.y));
+	drawNet(new Point(p.x+o, p.y), net);
+}
+
+/* ----------------------------------------------------------------------------
+ * all gate functions take in 'p' for center point of gate and 'o' for offset
+ * ------------------------------------------------------------------------- */
+
+function notCircle(p, o) {
+	var point = new Point(p.x+(o*1.2), p.y);
+	var circle = new Path.Circle(point, o*0.3);
+	circle.fillColor = 'white';	
+	circle.strokeColor = 'black';
+	circle.strokeWidth = 2;
+}
+
+function notGate(p, o) {
+	var g = shapeAttributes(true);
+	g.moveTo(new Point(p.x-o, p.y-o));
+	g.lineTo(new Point(p.x-o, p.y+o));
+	g.lineTo(new Point(p.x+o, p.y));
+	g.closePath();
+	notCircle(p, o);
+} 
+
+function andGate(p, o) {
+	var g = shapeAttributes(true);
+	g.moveTo(new Point(p.x-o, p.y-o));
+	g.lineTo(new Point(p.x-o, p.y+o));
+	g.lineTo(new Point(p.x, p.y+o));
+	g.arcTo(new Point(p.x+o, p.y), new Point(p.x, p.y-o));
+	g.closePath();
+}
+
+function orGate(p, o) {
+	var g = shapeAttributes(true);
+	g.moveTo(new Point(p.x-o, p.y-o));
+	g.curveTo(new Point(p.x-(o*0.5), p.y), new Point(p.x-o, p.y+o));
+	g.quadraticCurveTo(new Point(p.x+(o*0.5), p.y+o), new Point(p.x+o, p.y));
+	g.quadraticCurveTo(new Point(p.x+(o*0.5), p.y-o), new Point(p.x-o, p.y-o));
+	g.closePath();
+}
+
+function xorGate(p, o) {
+	orGate(p, o);
+	// create the xor line
+	var l = shapeAttributes(false);
+	l.moveTo(new Point(p.x-(o*1.4), p.y-o));
+	l.curveTo(new Point(p.x-(o*0.9), p.y), new Point(p.x-(o*1.4), p.y+o));
+}
+
+function port(p, size, name, direction) {
+	var o = size/4.0;
+	var _o = ((direction == 'input') ? o : -o)*2.0;
+
+	var i = shapeAttributes(true);
+	i.moveTo(new Point(p.x-_o, p.y+o));
+	i.lineTo(new Point(p.x+(_o*1.5), p.y+o));
+	i.lineTo(new Point(p.x+(_o*2.0), p.y));
+	i.lineTo(new Point(p.x+(_o*1.5), p.y-o));
+	i.lineTo(new Point(p.x-_o, p.y-o));
+	i.closePath();
+
+	_o = ((direction == 'input') ? size : -size)*1.2 + name.length*4.0;
+	var text = new PointText(new Point(p.x-_o, p.y+4.0));
+	text.fillColor = 'black';
+	text.content = name;
+}
+
+/* ------------------------------------------------------------------------- */
 
 function drawXorGate(x, y, size, inputs, netPoint) {
-
-	// determine height and length based on inputs
 	var h = size*inputs;
-	var l = h;
-	var offset = h/5;
-	var midPoint = size/2; 
-
-	var xorInputPoints = [];
-
-	// input pins
-	for (var i=0; i<inputs; i++) {
-		var from = new Point(x - l, y - h/2 + midPoint + i*size);
-		var to = new Point(x - l/4, y - h/2 + midPoint + i*size);
-		drawLine(from, to);
-		xorInputPoints[i] = from;
-	}
-
-	// creating the body of an AND gate
-	var gate = new Path({
-		strokeColor: 'black', 
-		strokeWidth: 2,
-		fillColor: 'white'
-	});
-	gate.moveTo(new Point(x - l/2, y - h/2));
-	gate.curveTo(new Point(x - l/4,y), new Point(x - l/2, y + h/2));
-	gate.quadraticCurveTo(new Point(x + l/4, y + h/2), new Point(x + l/2, y));
-	gate.quadraticCurveTo(new Point(x + l/4, y - h/2), new Point(x - l/2, y - h/2));
-
-	gate.closePath();
-
-	// xor line
-	var xorLine = new Path({
-		strokeColor: 'black', 
-		strokeWidth: 2
-	});
-	xorLine.moveTo(new Point(x - l/2 - offset, y - h/2));
-	xorLine.curveTo(new Point(x - l/4 - offset,y), new Point(x - l/2 - offset, y + h/2));
-
-
-	// output pin
-	var from = new Point(x + l/2, y);
-	var to = new Point(x + l*1.25, y);
-	drawLine(from, to);
-	drawLine(to, netPoint);
-
-	return xorInputPoints;
+	var point = new Point(x,y);
+	xorGate(point, h/2);
 }
 
-function drawNotGate(x, y, size, netPoint) {
-
-	// determine height and length based on inputs
-	var h = size;
-	var l = h;
-	var midPoint = size/2; 
-
-	var notInputPoints = [];
-
-	var from = new Point(x - l*1.5, y);
-	var to = new Point(x - l/2, y);
-	drawLine(from, to);
-	notInputPoints[0] = from;
-
-	// creating the body of an AND gate
-	var gate = new Path({
-		strokeColor: 'black', 
-		strokeWidth: 2,
-		fillColor: 'white'
-	});
-	gate.moveTo(new Point(x - l/2, y - h/2));
-	gate.lineTo(new Point(x - l/2, y + h/2));
-	gate.lineTo(new Point(x + l/2, y));
-	gate.closePath();
-
-	// output pin
-	var outFrom = new Point(x + l/2, y);
-	var outTo = new Point(x + l*1.5, y);
-	drawLine(outFrom, outTo);
-	drawLine(outTo, netPoint);
-
-	// not circile of gate
-	var notCircle = new Path.Circle(new Point(x + l/2 + (size/6)/2,y), size/6);
-	notCircle.fillColor = 'white';	
-	notCircle.strokeColor = 'black';
-	notCircle.strokeWidth = 2;
-
-	return notInputPoints;
-}
-
-
-function drawInput(x, y, size, name, outputPoint) {
-
-	// determine height and length based on inputs
-	var h = size/2;
-	var l = size;
-
-	var pin = new Path({
-		strokeColor: 'black', 
-		strokeWidth: 2,
-	});
-
-	// creating the body of input
-	pin.moveTo(new Point(x - l/2, y + h/2));
-	pin.lineTo(new Point(x + l*0.75, y + h/2));
-	pin.lineTo(new Point(x + l, y));
-	pin.lineTo(new Point(x + l*0.75, y - h/2));
-	pin.lineTo(new Point(x - l/2, y - h/2));
-	pin.closePath();
-
-	// name of input
-	var text = new PointText(new Point(x - l*1.5, y + 4));
-	text.fillColor = 'black';
-	text.content = name;
-
-	// output pin
-	var rightOfPin = new Point(x + l, y);
-	var outputOfPin = new Point(x + l*1.5, y);
-	drawLine(rightOfPin, outputOfPin);
-
-	// points for net of output wires
-	var xMidpoint = outputOfPin.x + (outputPoint.x - outputOfPin.x)/2;
-	var pointNearOrOuput = new Point(xMidpoint, outputOfPin.y);
-	var pointNearOrNewInput = new Point(xMidpoint, outputPoint.y);
-
-	// left horizontal line
-	drawLine(outputOfPin, pointNearOrOuput);
-
-	// vertical line
-	drawLine(pointNearOrOuput, pointNearOrNewInput);
-
-	// right horizontal line
-	drawLine(pointNearOrNewInput, outputPoint);
-
-	return [];
-}
-
-function drawOutput(x, y, size, name) {
-
-	// determine height and length based on inputs
-	var h = size/2;
-	var l = size;
-
-	var pin = new Path({
-		strokeColor: 'black', 
-		strokeWidth: 2,
-	});
-
-	// creating the body of input
-	pin.moveTo(new Point(x + l/2, y + h/2));
-	pin.lineTo(new Point(x - l*0.75, y + h/2));
-	pin.lineTo(new Point(x - l, y));
-	pin.lineTo(new Point(x - l*0.75, y - h/2));
-	pin.lineTo(new Point(x + l/2, y - h/2));
-	pin.closePath();
-
-	// name of input
-	var text = new PointText(new Point(x + l, y + 4));
-	text.fillColor = 'black';
-	text.content = name;
-
-	var inputPoints = [];
-
-	// output pin
-	var from = new Point(x - l*1.5, y);
-	var to = new Point(x - l, y);
-	
-	drawLine(from, to);
-	inputPoints[0] = to;
-
-	console.log(inputPoints[0]);
-
-	return inputPoints;
-}
 
 function drawNodes(node, xIncr, yWin, netPoints) {
 	console.log(node.name);
@@ -282,31 +143,33 @@ function drawNodes(node, xIncr, yWin, netPoints) {
 
 	var x = xIncr/2 + (node.x * xIncr);
 	var y = node.y * yWin;
+	var point = new Point(xIncr/2 + (node.x * xIncr), node.y * yWin);
+	// var size = new Size(20,20);
 
 	var inputs = node.inputs;
-	console.log(inputs);
-	var kind = node.kind;
 	var size = 20;
 
-	var newNetPoints = [];
+	var newNetPoints = inputPins(x,y,inputs,size);
+	if (node.kind != 'output') outPin(point,size,netPoints);
 
-	if (kind == 'and') {
-		newNetPoints = drawAndGate(x, y, size, inputs, netPoints);
-	} else if (kind == 'or') {
-		newNetPoints = drawOrGate(x, y, size, inputs, netPoints);
-	} else if (kind == 'xor') {
-		newNetPoints = drawXorGate(x, y, size, inputs, netPoints);
-	} else if (kind == 'not') {
-		newNetPoints = drawNotGate(x, y, size, netPoints);
-	} else if (kind == 'input') {
-		newNetPoints = drawInput(x, y, size, node.name, netPoints);
-	} else if (kind == 'output') {
-		newNetPoints = drawOutput(x, y, size, node.name);
-	} 
+	switch (node.kind) {
+		case 'not':
+			notGate(point, size/2);
+			break;
+		case 'and':
+			andGate(point, (size*inputs)/2);
+			break;
+		case 'or':
+			orGate(point, (size*inputs)/2);
+			break;
+		case 'xor':
+			drawXorGate(x, y, size, inputs, netPoints);
+			break;
+		default: 
+			port(point, size, node.name, node.kind);
+	}
 
-	console.log("netPoints");
-	console.log(newNetPoints);
-	
+
 	for (var i=0; i<node.nodes.length; i++) {
 		console.log(newNetPoints[i]);
 		drawNodes(node.nodes[i], xIncr, yWin, newNetPoints[i]);
@@ -342,5 +205,3 @@ function onResize(event) {
 }
 
 /* function dealing with window resizing and zoming in and out */
-
-
