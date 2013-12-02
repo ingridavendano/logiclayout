@@ -7,7 +7,6 @@
 
 function schematicAttributes(object, gate) {
 	if (gate) object.fillColor = 'white';
-
 	object.strokeColor = 'black';
 	object.strokeWidth = 2;
 	return object;
@@ -69,12 +68,10 @@ function outPin(p, o, net) {
  * all gate functions take 'p' for center point of gate and 'o' for offset
  * ------------------------------------------------------------------------- */
 
-function notCircle(p, o) {
-	var point = new Point(p.x+(o*1.2), p.y);
-	var circle = new Path.Circle(point, o*0.3);
-	circle.fillColor = 'white';	
-	circle.strokeColor = 'black';
-	circle.strokeWidth = 2;
+function notCircle(p, o, gate) {
+	var radius = ((gate) ? 0.25 : 0.4)*o;
+	var point = new Point(p.x+o+radius, p.y);
+	schematicAttributes(new Path.Circle(point, radius), true);
 }
 
 function notGate(s, p, o) {
@@ -82,7 +79,7 @@ function notGate(s, p, o) {
 	s.lineTo(new Point(p.x-o, p.y+o));
 	s.lineTo(new Point(p.x+o, p.y));
 	s.closePath();
-	notCircle(p, o);
+	notCircle(p, o, false);
 } 
 
 function andGate(s, p, o) {
@@ -93,6 +90,11 @@ function andGate(s, p, o) {
 	s.closePath();
 }
 
+function nandGate(s, p, o) {
+	andGate(s, p, o);
+	notCircle(p, o, true);
+}
+
 function orGate(s, p, o) {
 	s.moveTo(new Point(p.x-o, p.y-o));
 	s.curveTo(new Point(p.x-(o*0.5), p.y), new Point(p.x-o, p.y+o));
@@ -101,12 +103,23 @@ function orGate(s, p, o) {
 	s.closePath();
 }
 
+function norGate(s, p, o) {
+	orGate(s, p, o);
+	console.log("$#%^$&%*^(&&%^$")
+	notCircle(p, o, true);
+}
+
 function xorGate(s, p, o) {
 	orGate(s, p, o);
 	// create the xor line
 	var l = drawShape(false);
 	l.moveTo(new Point(p.x-(o*1.4), p.y-o));
 	l.curveTo(new Point(p.x-(o*0.9), p.y), new Point(p.x-(o*1.4), p.y+o));
+}
+
+function nxorGate(s, p, o) {
+	xorGate(s, p, o);
+	notCircle(p, o, true);
 }
 
 function port(s, p, size, name, direction) {
@@ -129,7 +142,6 @@ function port(s, p, size, name, direction) {
 /* ------------------------------------------------------------------------- */
 
 function drawNodes(node, xIncr, yWin, netPoints) {
-	console.log(node.name);
 	var x = xIncr/2 + (node.x * xIncr);
 	var y = node.y * yWin;
 	var point = new Point(xIncr/2 + (node.x * xIncr), node.y * yWin);
@@ -154,11 +166,20 @@ function drawNodes(node, xIncr, yWin, netPoints) {
 		case 'and':
 			andGate(shape, point, (size*inputs)/2);
 			break;
+		case 'nand':
+			nandGate(shape, point, (size*inputs)/2);
+			break;
 		case 'or':
 			orGate(shape, point, (size*inputs)/2);
 			break;
+		case 'nor':
+			norGate(shape, point, (size*inputs)/2);
+			break;
 		case 'xor':
 			xorGate(shape, point, (size*inputs)/2);
+			break;
+		case 'nxor':
+			nxorGate(shape, point, (size*inputs)/2);
 			break;
 		default: 
 			port(shape, point, size, node.name, node.kind);
