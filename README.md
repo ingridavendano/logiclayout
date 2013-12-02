@@ -1,5 +1,5 @@
-Circuit Design WYSIWYG Webapp
-=============================
+Circuit Design Webapp
+=====================
 
 This app is designed to be a learn tool that enables people to create circuit schematics from Boolean expressions. 
 
