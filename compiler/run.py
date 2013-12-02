@@ -21,19 +21,27 @@ def clear_parser():
 	""" Empties root of pre-exisiting root tokens. """
 	parser.root = []
 
-def compiler(data, debug=0, print_tree=1):
+def compiler(data, debug=0):
 	""" Run compiler on a logic expression. """
 	clear_parser()
-	yacc.error = 0
 	yacc.parse(data)
+	
+	# catches errors of bad data expressions
+	try:
+		parser.root[0]
+		tree = Tree(parser.root[0], data)
 
-	if yacc.error:
-		return None
+		# print working tree in debug mode
+		if debug:
+			tree.print_tree()
+			tree.print_nodes()
 
-	tree = Tree(parser.root[0], data)
-	tree.print_tree()
-	tree.print_nodes()
-	# tree.print_levels()
-	json_data = serializer.to_json(tree, debug=debug)
+		# second catch for bad data of a list of literals
+		if len(tree.nodes) == 1:
+			tree = None
+	# return an empty tree so that it doesn't print
+	except IndexError: 
+		print "Error: expression is bad"
+		tree = None
 
-	return json_data
+	return serializer.to_json(tree, debug=debug)

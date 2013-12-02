@@ -7,19 +7,32 @@
 
 <form action="/" method="POST" id="expression">
 	<div class="input-group">
-		<span class="input-group-addon">f=</span>
-		<input type="text" class="form-control" name="logic-expression" placeholder="logic expression">
+		<span class="input-group-addon">f =</span>
+		<input type="text" class="form-control" name="logic-expression" placeholder="expression">
 	</div>
 </form>
 
-<canvas id="canvas" resize></canvas>
+<p class="prev-expr">
+	{{ expr }}
+</p>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.3.9/d3.min.js"></script>
+
+<div>
+	<canvas id="canvas" resize></canvas>
+</div>
+
 <script type="text/javascript" src="/static/js/paper.js"></script>
-<script src="/static/js/circuit.js"></script>
+<script type="text/javascript">
+	var run = false;
+	var results = "";
 
-<script type="text/paperscript" canvas="canvas">
-	
+	{% if display is defined %}
+		run = true;
+		results = JSON.parse( '{{json | safe}}' );
+	{% endif %}
+
 </script>
+<script type="text/paperscript" src="/static/js/circuit.js" canvas="canvas"></script>
+
 
 {% endblock %}

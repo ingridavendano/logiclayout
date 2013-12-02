@@ -14,30 +14,6 @@ class NodeEncoder(json.JSONEncoder):
 	""" Encode Node class objects to JSON. """
 	
 	def default(self, tree):
-		# def unknown_node(node):
-		# 	return {
-		# 		'kind': node.kind,
-		# 		'name': node.expr,
-		# 		'weight': node.weight, 
-		# 		'depth': node.level,
-		# 		'inputs': len(node.children),
-		# 		'x': node.x,
-		# 		'y': node.y
-		# 	}
-
-		# if isinstance(tree, Tree):
-		# 	return {
-		# 		'depth': tree.depth,
-		# 		'weight': tree.root.weight,
-		# 		'nodes': [
-		# 			unknown_node(node) for node in tree.nodes
-		# 		]
-				
-		# 	}	
-		# else:
-		# 	return json.JSONEncoder.default(self, tree)
-
-
 		def unknown_node(node):
 			return {
 				'kind': node.kind,
@@ -68,6 +44,10 @@ class NodeEncoder(json.JSONEncoder):
 
 def to_json(tree, debug=False):
 	""" Converts a Node Tree to JSON. """
+
+	# checks if tree exists
+	if tree is None:
+		return tree;
 
 	json_string = json.dumps(
 		tree, 

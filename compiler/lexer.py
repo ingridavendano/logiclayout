@@ -33,7 +33,7 @@ def t_NOT(t):
 	return t
 
 def t_NAND(t):
-	r'([nN][aA][nN][dD])|(\&{1,2})|\*'
+	r'([nN][aA][nN][dD])'
 	return t
 
 def t_AND(t):
@@ -41,7 +41,7 @@ def t_AND(t):
 	return t
 
 def t_NOR(t):
-	r'([nN][oO][rR])|\|{1,2}|\+'
+	r'([nN][oO][rR])'
 	return t
 
 def t_OR(t):
@@ -49,7 +49,7 @@ def t_OR(t):
 	return t
 
 def t_NXOR(t):
-	r'([nN][xX][oO][rR])|\^'
+	r'([nN][xX][oO][rR])'
 	return t
 
 def t_XOR(t):

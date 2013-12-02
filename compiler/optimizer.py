@@ -74,7 +74,6 @@ class Cell(object):
 		num_of_nodes = len(nodes)
 		y_increment = (y_max - y_min)/ticks
 
-		# print "*"*5
 		y_temp_min = y_min
 
 	def __repr__(self):
@@ -122,7 +121,7 @@ class Tree(object):
 
 		def convert(token, depth=1): 
 			""" Organize tree of Nodes out of tokens and gives depth. """
-			print token.terminal
+			
 			if token.kind == 'EQUALS':
 
 				# asssign left Token as output pin
@@ -166,6 +165,8 @@ class Tree(object):
 							new_node.kind = 'n' + token.left.kind.lower();
 						new_child_node = convert(token.left, depth)
 						new_node.children += new_child_node.children
+
+					# no optimizing to be done
 					else: 
 						new_child_node = convert(token.left, depth + 1)
 						new_node.children += [new_child_node]
@@ -174,7 +175,7 @@ class Tree(object):
 			new_node.calculate_weight()
 			return new_node
 
-		def find_cells(node, depth, y_min, y_max):
+		def find_cells(node, depth, y_min, y_max, debug=False):
 			""" Determine which cells each node belongs in. """
 			node.calculate_y(y_min, y_max)
 			node.level = depth 
@@ -185,14 +186,18 @@ class Tree(object):
 			if len(node.children) > 0:
 				ticks = node.weight
 				increment = (y_max - y_min)/ticks
-				print node, y_min, y_max, ticks,  (y_max - y_min), increment
+
+				if debug:
+					print node, y_min, y_max, ticks,  (y_max-y_min), increment
 
 				temp_y_min = y_min
 				for child in node.children:
 					
 					cell_y_min = temp_y_min
 					cell_y_max = temp_y_min + (child.weight*increment)
-					print "   ", child, child.weight, cell_y_min, cell_y_max
+					
+					if debug:
+						print "\t", child, child.weight, cell_y_min, cell_y_max
 
 					find_cells(child, depth - 1, cell_y_min, cell_y_max)
 					temp_y_min = cell_y_max
@@ -207,7 +212,6 @@ class Tree(object):
 
 		self.expr = expression
 		self.root = convert(root_token)
-
 
 		self.levels = [ [] for i in range(self.depth + 1)]
 		first_cell = Cell(self.depth - 1, 0.0, 1.0, [self.root])

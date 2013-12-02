@@ -23,3 +23,7 @@ form.signin input.btn {
     width: 330px;
     margin: 50px;
 }
+
+p.prev-expr {
+	color: #c7bebe;
+}

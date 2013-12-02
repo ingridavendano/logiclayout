@@ -9,10 +9,6 @@ from compiler import run
 
 # -----------------------------------------------------------------------------
 
-
 def compile_expr(expr):
 	run.clear_parser()
 	return run.compiler(expr)
-
-def make_json(root):
-	pass 

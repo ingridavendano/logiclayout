@@ -1,32 +1,47 @@
-from flask import Flask, render_template, redirect, request, session, url_for
+# -----------------------------------------------------------------------------
+# controller.py
+# Created by Ingrid Avendano 11/17/13.
+# -----------------------------------------------------------------------------
+# Contols different views and runs model depending on the view.
+# -----------------------------------------------------------------------------
+
+from flask import Flask, render_template, request
 import model
+
+# -----------------------------------------------------------------------------
 
 app = Flask(__name__)
 app.secret_key = "honeybooboochild"
 
+# -----------------------------------------------------------------------------
+# Run main view of website showing no sublinks. 
+# -----------------------------------------------------------------------------
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
 	return render_template("index.html")
-	
 
 @app.route("/", methods=["POST"])
-def logic():
-	expression = request.form["logic-expression"]
+def new_logic():
+	data = request.form["logic-expression"]
 
 	# in case an empty expression was passed
-	if expression == "":
+	if data.strip() == "":
 		return render_template("index.html")
 
-	expression =  str("f = "+expression)
-	print expression
-	json = model.compile_expr(expression)
-	return render_template(
-		"schematic.html", 
-		expression=expression, 
-		json=json)
+	data = str("f = " + data)
+	json = model.compile_expr(data)
 
-# @app.route("/ajax")
+	if json is not None:
+		return render_template(
+			"index.html",
+			expr=data,
+			display=True, 
+			json=json)
+	else:
+		return render_template("index.html", expr="try again")
+
+# -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
 	app.run(debug=True)

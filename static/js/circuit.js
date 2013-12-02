@@ -105,7 +105,6 @@ function orGate(s, p, o) {
 
 function norGate(s, p, o) {
 	orGate(s, p, o);
-	console.log("$#%^$&%*^(&&%^$")
 	notCircle(p, o, true);
 }
 
@@ -156,8 +155,7 @@ function drawNodes(node, xIncr, yWin, netPoints) {
 	for (var i=0; i<node.nodes.length; i++) {
 		drawNodes(node.nodes[i], xIncr, yWin, newNetPoints[i]);
 	}
-
-
+	
 	var shape = drawShape(true);
 	switch (node.kind) {
 		case 'not':
@@ -207,5 +205,7 @@ function onResize(event) {
         project.activeLayer.removeChildren();
     }
 
-	drawCircuit(results, xWin, yWin);
+    if (run) drawCircuit(results, xWin, yWin);
+    
+	
 }

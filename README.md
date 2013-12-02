@@ -18,3 +18,4 @@ Things to improve
 * Create a simulator. 
 * Add more colorful ways to display a schematic. 
 * Enable a user to use and generate VHDL/Verilog code.
+* Design app to be a WYSIWYG.
