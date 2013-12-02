@@ -138,10 +138,6 @@ function drawNodes(node, xIncr, yWin, netPoints) {
 	var size = 20;
 
 	var newNetPoints = inPins(point, inputs, size);
-
-	// only draw net from a node to its parent as long as it is not an output
-	// if (node.kind != 'output') outPin(point,size,netPoints);
-
 	outPin(point,size,netPoints);
 
 	// recursively go through and draw every child node
