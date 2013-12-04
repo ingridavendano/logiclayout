@@ -11,7 +11,7 @@
 <form action="/" method="POST" id="expression">
 	<div class="input-group">
 		<span class="label">f =</span>
-		<input type="text" name="logic-expression" placeholder="expression">
+		<input type="text" class="expression" name="logic-expression" placeholder="expression">
 	</div>
 </form>
 
@@ -44,8 +44,35 @@
 		results = JSON.parse( '{{json | safe}}' );
 	{% endif %}
 
+	if (!run) { $('.schematic').css('display','none')}
+
+
 </script>
 <script type="text/javascript" src="/static/js/display.js"></script>
 <script type="text/paperscript" src="/static/js/circuit.js" canvas="canvas"></script>
+
+<h2>Examples</h2>
+<div class="examples">
+<form action="/" method="POST">
+	<div class="input-group">
+		<input type="hidden" name="logic-expression" value="(a | b | c)">
+		<input class="example-submit" type="submit" value="Simple">
+	</div>
+</form>
+<form action="/" method="POST">
+	<div class="input-group">
+		<input type="hidden" name="logic-expression" value="a * (b OR c) xor (d | c | g) xor (s OR t)">
+		<input class="example-submit" type="submit" value="Complex">
+	</div>
+</form>
+<form action="/" method="POST">
+	<div class="input-group">
+		<input type="hidden" name="logic-expression" value="a * (b OR (NOT (c * (NOT i)))) xor (d | c | g) xor (s OR t) xor (NOT (a OR (NOT (u and p)))) and f">
+		<input class="example-submit" type="submit" value="Woah!">
+	</div>
+</div>
+</form>
+ 
+ 
  
  {% endblock %}

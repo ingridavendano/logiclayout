@@ -40,11 +40,12 @@ var color = {
 var color = {
 	// on: '#21B181', 
 	on: '#F2CB05',
-	off: '#D90404',
+	off: '#0d59c3',
+	
 	// off: '#DA462E',
 	// fill: '#F2F2F1',
 	fill: '#FFFFFF',
-	wire: '#223442'
+	wire: '#0d59c3'
 };
 
 /* ------------------------------------------------------------------------- */
@@ -52,7 +53,7 @@ var color = {
 function schematicAttributes(object, gate) {
 	if (gate) object.fillColor = color.fill;
 	object.strokeColor = color.wire;
-	object.strokeWidth = 3;
+	object.strokeWidth = 2;
 	object.state = null;
 	object.pin = false;
 	object.change = true;

@@ -1,5 +1,6 @@
 h2 {
-    color: red;
+
+    text-align: center
 }
 
 body {
@@ -100,7 +101,7 @@ span.highlight {
     color: #FFF;
 }
 
-input {
+input.expression {
     border: 0; 
     padding: 20px; 
     width: 800px; 
@@ -110,13 +111,20 @@ input {
     height: 40px;
 }
 
-button {
-    background: #0d59c3; 
-    color: #FFF; 
-    border: 0; 
-    font-size: 1.5em; 
-    font-weight: 100; 
-    letter-spacing: 0.5em; 
-    padding: 15px 65px; 
-    margin: 35px 0;
+.example-submit {
+    background: #0d59c3;
+    color: #FFF; border: 0;
+    font-size: 1em;
+    font-weight: 100;
+    letter-spacing: 0.5em;
+    padding: 15px 35px;
+    margin: 35px 50px;
+    float:left;
+}
+
+.examples {
+    margin:0 auto;
+    width:800px;
+    text-align: center;
+
 }
