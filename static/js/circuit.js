@@ -41,7 +41,7 @@ var color = {
 	// on: '#21B181', 
 	on: '#F2CB05',
 	off: '#0d59c3',
-	
+
 	// off: '#DA462E',
 	// fill: '#F2F2F1',
 	fill: '#FFFFFF',
@@ -217,11 +217,12 @@ function port(s, p, size, name, direction) {
 
 /* ------------------------------------------------------------------------- */
 
-function drawNodes(node, xIncr, yWin, netPoints) {
+function drawNodes(node, xWin, xIncr, yWin, netPoints) {
 	// console.log(node.name);
 	var x = xIncr/2 + (node.x * xIncr);
+	// x = xWin + x;
 	var y = node.y * yWin;
-	var point = new Point(xIncr/2 + (node.x * xIncr), node.y * yWin);
+	var point = new Point(x, y);
 
 	var size = 20;
 	var gateSize = (size*node.inputs)/2;
@@ -239,7 +240,7 @@ function drawNodes(node, xIncr, yWin, netPoints) {
 
 	// recursively go through and draw every child node
 	for (var i=0; i<node.nodes.length; i++) {
-		var child = drawNodes(node.nodes[i], xIncr, yWin, newNetPoints[i]);
+		var child = drawNodes(node.nodes[i], xWin, xIncr, yWin, newNetPoints[i]);
 		shapeNode.addChild(child);
 	}
 
@@ -287,14 +288,15 @@ function drawCircuit(tree, xWin, yWin) {
 	var yIncr = (yWin/tree.weight);
 
 	// xIncr = 100;
-	// yWin = circuit.weight*40;
+	// yWin = tree.weight*40;
+	// xWin = xWin/2;
 
 	// creating a group of nodes to be easy to move around
 	circuit = new Group()
 	var outputPin;
 
 	for (var i=0; i<tree.nodes.length; i++) {
-		outputPin = drawNodes(tree.nodes[i], xIncr, yWin, false);
+		outputPin = drawNodes(tree.nodes[i], xWin, xIncr, yWin, false);
 	}
 	// console.log(outputPin.nameText);
 

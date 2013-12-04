@@ -128,3 +128,10 @@ input.expression {
     text-align: center;
 
 }
+
+@font-face {
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Quicksand Light'), local('Quicksand-Light'), url(/static/fonts/quicksand.woff) format('woff');
+}
