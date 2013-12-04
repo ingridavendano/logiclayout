@@ -37,7 +37,7 @@ function schematicAttributes(object, gate) {
 	object.strokeWidth = 2;
 	object.state = null;
 	object.pin = false;
-	object.change = false;
+	object.change = true;
 
 	// adds every item created to a group to make it easier to move around
 	circuit.addChild(object);
@@ -104,7 +104,7 @@ function outPin(p, o, net) {
 function notCircle(p, o, gate) {
 	var radius = ((gate) ? 0.25 : 0.4)*o;
 	var point = new Point(p.x+o+radius, p.y);
-	schematicAttributes(new Path.Circle(point, radius), true);
+	return schematicAttributes(new Path.Circle(point, radius), true);
 }
 
 function notGate(s, p, o) {
@@ -112,8 +112,10 @@ function notGate(s, p, o) {
 	s.lineTo(new Point(p.x-o, p.y+o));
 	s.lineTo(new Point(p.x+o, p.y));
 	s.closePath();
-	notCircle(p, o, false);
-	return s;
+	
+	var compound = new CompoundPath(s, notCircle(p, o, false));
+	compound = schematicAttributes(compound, true);
+	return compound;
 } 
 
 function andGate(s, p, o) {
@@ -126,9 +128,9 @@ function andGate(s, p, o) {
 }
 
 function nandGate(s, p, o) {
-	s = andGate(s, p, o);
-	notCircle(p, o, true);
-	return s;
+	var compound = new CompoundPath(andGate(s, p, o), notCircle(p, o, true));
+	compound = schematicAttributes(compound, true);
+	return compound;
 }
 
 function orGate(s, p, o) {
@@ -141,9 +143,9 @@ function orGate(s, p, o) {
 }
 
 function norGate(s, p, o) {
-	s = orGate(s, p, o);
-	notCircle(p, o, true);
-	return s;
+	var compound = new CompoundPath(orGate(s, p, o), notCircle(p, o, true));
+	compound = schematicAttributes(compound, true);
+	return compound;
 }
 
 function xorGate(s, p, o) {
@@ -156,9 +158,9 @@ function xorGate(s, p, o) {
 }
 
 function nxorGate(s, p, o) {
-	s = xorGate(s, p, o);
-	notCircle(p, o, true);
-	return s;
+	var compound = new CompoundPath(xorGate(s, p, o), notCircle(p, o, true));
+	compound = schematicAttributes(compound, true);
+	return compound;
 }
 
 function port(s, p, size, name, direction) {
@@ -210,7 +212,6 @@ function drawNodes(node, xIncr, yWin, netPoints) {
 
 	var shape = drawShape(true);
 	var shapeNode = new Group();
-	shapeNode.image = shape;
 	shapeNode.nameText = String(node.name);
 	shapeNode.kind = node.kind;
 	shapeNode.state = null;
@@ -256,7 +257,7 @@ function drawNodes(node, xIncr, yWin, netPoints) {
 				output = shapeNode;
 			}
 	}
-
+	shapeNode.image = shape;
 	return shapeNode;
 }  
 
@@ -291,11 +292,6 @@ function drawSimulator(nodeShape) {
 		childrenValues.push(drawSimulator(nodeShape.children[i]));
 	}
 
-
-
-	console.log(childrenValues);
-
-
 	switch (nodeShape.kind) {
 		case 'output':
 			nodeShape.state = childrenValues[0];
@@ -307,64 +303,76 @@ function drawSimulator(nodeShape) {
 			nodeShape.state = !(childrenValues[0]);
 			break;
 		case 'and':
-			var result = nodeShape.children[0].state && nodeShape.children[1].state;
+			var result = nodeShape.children[0].state & nodeShape.children[1].state;
 			for (var i=2; i<nodeShape.children.length; i++) {
-				result = nodeShape.children[i].state && result;
+				result = nodeShape.children[i].state & result;
 			}
-			console.log('result:');
-			console.log(result);
 			nodeShape.state = result;
+			nodeShape.image.state = (result) ? true : false;
+			break;
+		case 'nand':
+			var result = nodeShape.children[0].state & nodeShape.children[1].state;
+			for (var i=2; i<nodeShape.children.length; i++) {
+				result = nodeShape.children[i].state & result;
+			}
+			nodeShape.state = !result;
+			nodeShape.image.state = (result) ? true : false;
+			break;
+		case 'or':
+			var result = nodeShape.children[0].state | nodeShape.children[1].state;
+			for (var i=2; i<nodeShape.children.length; i++) {
+				result = nodeShape.children[i].state | result;
+			}
+			nodeShape.state = result;
+			nodeShape.image.state = (result) ? true : false;
+			break;
+		case 'nor':
+			var result = nodeShape.children[0].state | nodeShape.children[1].state;
+			for (var i=2; i<nodeShape.children.length; i++) {
+				result = nodeShape.children[i].state | result;
+			}
+			nodeShape.state = !result;
+			nodeShape.image.state = (result) ? true : false;
+			break;
+		case 'xor':
+			var result = nodeShape.children[0].state ^ nodeShape.children[1].state;
+			for (var i=2; i<nodeShape.children.length; i++) {
+				result = nodeShape.children[i].state ^ result;
+			}
+			nodeShape.state = result;
+			nodeShape.image.state = (result) ? true : false;
+			break;
+		case 'nxor':
+			var result = nodeShape.children[0].state ^ nodeShape.children[1].state;
+			for (var i=2; i<nodeShape.children.length; i++) {
+				result = nodeShape.children[i].state ^ result;
+			}
+			nodeShape.state = !result;
+			nodeShape.image.state = (result) ? true : false;
+			break;
 
-	// 		// for (var i=0; i<childrenValues.length)
-	// 		break;
-	// 	case 'and':
-	// 		shape = andGate(shape, point, gateSize);
-	// 		break;
-	// 	case 'nand':
-	// 		shape = nandGate(shape, point, gateSize);
-	// 		break;
-	// 	case 'or':
-	// 		shape = orGate(shape, point, gateSize);
-	// 		break;
-	// 	case 'nor':
-	// 		shape = norGate(shape, point, gateSize);
-	// 		break;
-	// 	case 'xor':
-	// 		shape = xorGate(shape, point, gateSize);
-	// 		break;
-	// 	case 'nxor':
-	// 		shape = nxorGate(shape, point, gateSize);
-	// 		break;
-	// 	case 'input':
-	// 		node
-	// 	default: 
-
-	// 		// shape = port(shape, point, size, node.name, node.kind);
-	// 		// if (node.kind == 'input') {
-	// 		// 	inputs.push(shapeNode);
-	// 		// } else {
-	// 		// 	output = shapeNode;
-	// 		// }
 	}
 
-	console.log(nodeShape.nameText);
-	console.log("    "+nodeShape.state);
-
-
-	if (nodeShape.state == true || nodeShape.state == false) {
+	if (nodeShape.state != true && nodeShape.state != false) {
 		nodeShape.state = false;
+		if (nodeShape.kind == 'input') nodeShape.image.state = false;
 	}
 
-	// change the color of a shape
-	if (nodeShape.state == false) {
-		nodeShape.image.fillColor = color.off;
-		nodeShape.image.state = false;
-	} else {
-		nodeShape.image.fillColor = color.on;
-		nodeShape.image.state = true;
+	if (nodeShape.image.change) {
+		// change the color of a shape
+		if (nodeShape.state == false) {
+			nodeShape.image.fillColor = color.off;
+			nodeShape.image.state = false;
+			if (nodeShape.kind == 'input') {
+				nodeShape.image.state = false;
+			}
+		} else {
+			nodeShape.image.fillColor = color.on;
+			nodeShape.image.state = true;
+			if (nodeShape.kind == 'input') nodeShape.image.state = true;
+		}
 	}
-
-	console.log(nodeShape.state);
+	
 	return nodeShape.state;
 }
 
@@ -428,8 +436,6 @@ function onMouseDown(event) {
 	if (hitResult) {
 		path = hitResult.item;
 
-
-
 		if (path.pin == true && path.change == true) {
 			if (path.state) {
 				path.fillColor = color.off;
@@ -439,31 +445,10 @@ function onMouseDown(event) {
 				path.state = true;
 			}
 		}
-		
-		
-		// if (hitResult.type == 'segment') {
-		// 	segment = hitResult.segment;
-		// } else if (hitResult.type == 'stroke') {
-		// 	var location = hitResult.location;
-		// 	segment = path.insert(location.index + 1, event.point);
-		// 	path.smooth();
-		// }
 	}
 	drawSimulator(output);
 	movePath = hitResult.type == 'fill';
 	if (movePath)
 		project.activeLayer.addChild(hitResult.itxzem);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
