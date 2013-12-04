@@ -2,7 +2,7 @@
 {% block body %}
 
 <p>
-	Type in a <a href="http://en.wikipedia.org/wiki/Boolean_algebra">digital logic</a> expression. Please use <code>&</code> for AND, <code>|</code> for OR, <code>~</code> for NOT, <code>^</code> for XOR.
+	Type in a <a href="http://en.wikipedia.org/wiki/Logic_gate">digital logic</a> expression. Please use <code>&</code> for AND, <code>|</code> for OR, <code>~</code> for NOT, <code>^</code> for XOR.
 </p>
 
 <!-- Main input bar to get expressions -->
@@ -28,11 +28,6 @@
 	<canvas id="canvas" resize></canvas>
 </div>
 
-<!-- Run me button for simulation -->
-{% if display is defined %}
-	<button type="button" class="btn btn-default">run</button>
-{% endif %}
-
 <!-- JavaScript using Jinja to determine if JSON results exist -->
 <script type="text/javascript" src="/static/js/paper.js"></script>
 <script type="text/javascript">
@@ -45,35 +40,10 @@
 	{% if display is defined %}
 		run = true;
 		results = JSON.parse( '{{json | safe}}' );
-
-		// $(function() {
-		// 	$( "input[type=button], a, button" )
-		// 	.button()
-		// 	.click( function( event ) {
-		// 		simulate();
-		// 		event.preventDefault();
-		// 	});
-		// });
 	{% endif %}
-
-
 
 </script>
 <script type="text/javascript" src="/static/js/display.js"></script>
 <script type="text/paperscript" src="/static/js/circuit.js" canvas="canvas"></script>
-<script type="text/javascript">
-	// only runs compiler for proper expressions
-	{% if display is defined %}
-		// $(function() {
-		// 	$( "input[type=button], a, button" )
-		// 	.button()
-		// 	.click( function( event ) {
-		// 		window.globals.simulate();
-		// 		event.preventDefault();
-		// 	});
-		// });
-	{% endif %}
-
-</script>
  
  {% endblock %}

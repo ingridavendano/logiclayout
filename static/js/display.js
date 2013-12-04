@@ -27,5 +27,4 @@ function zoomCanvas(event) {
 	paper.project.view.zoom = zoom.getValue();
 }
 
-
 window.globals = {};
