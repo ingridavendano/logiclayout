@@ -19,3 +19,4 @@ Things to improve
 * Add more colorful ways to display a schematic. 
 * Enable a user to use and generate VHDL/Verilog code.
 * Design app to be a WYSIWYG.
+* Add screen shot of canvas to export image. 

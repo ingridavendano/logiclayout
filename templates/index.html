@@ -5,6 +5,7 @@
 	Type in a <a href="http://en.wikipedia.org/wiki/Boolean_algebra">digital logic</a> expression. Please use <code>&</code> for AND, <code>|</code> for OR, <code>~</code> for NOT, <code>^</code> for XOR.
 </p>
 
+<!-- Main input bar to get expressions -->
 <form action="/" method="POST" id="expression">
 	<div class="input-group">
 		<span class="input-group-addon">f =</span>
@@ -12,27 +13,53 @@
 	</div>
 </form>
 
-<p class="prev-expr">
+<!-- Displays expression typed in the input bar -->
+<p class="text-expression">
 	{{ expr }}
 </p>
 
+<!-- Scroll bar that displays if a circuit is created -->
+{% if display is defined %}
+	<input type="text" class="slider" value="" data-slider-min="0.4" data-slider-max="3" data-slider-step=".01" data-slider-value="1.7" data-slider-orientation="vertical" data-slider-selection="before" data-slider-tooltip="hide">
+{% endif %}
 
-<div>
+<!-- HTML5 Canvas -->
+<div class="schematic">
 	<canvas id="canvas" resize></canvas>
 </div>
 
+<!-- Run me button for simulation -->
+{% if display is defined %}
+	<button type="button" class="btn btn-default">run</button>
+{% endif %}
+
+<!-- JavaScript using Jinja to determine if JSON results exist -->
 <script type="text/javascript" src="/static/js/paper.js"></script>
 <script type="text/javascript">
+
 	var run = false;
 	var results = "";
+	var runSimulator = "";
 
+	// only runs compiler for proper expressions
 	{% if display is defined %}
 		run = true;
 		results = JSON.parse( '{{json | safe}}' );
+
+		$(function() {
+			$( "input[type=button], a, button" )
+			.button()
+			.click( function( event ) {
+				console.log("HELLO");
+				event.preventDefault();
+			});
+		});
 	{% endif %}
 
+
+
 </script>
+<script type="text/javascript" src="/static/js/display.js"></script>
 <script type="text/paperscript" src="/static/js/circuit.js" canvas="canvas"></script>
-
-
-{% endblock %}
+ 
+ {% endblock %}

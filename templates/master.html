@@ -1,49 +1,42 @@
 <html>
-<head>
-	<title>Digital Logic Schematics</title>
-	<link href="/static/css/bootstrap.css" rel="stylesheet">
-	<link href="/static/css/main.css" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+	<head>
+		<title>Digital Logic Schematics</title>
 
-	<!-- JQuery -->
-	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-</head>
-<body>
-	<nav class="navbar navbar-default" role="navigation">
-		<!-- Brand and toggle get grouped for better mobile display -->
-		<div class="navbar-header">
-			<a class="navbar-brand" href="#">Logic Layout</a>
+		<!-- Bootstrap -->
+		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/slider.css">
+		<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+
+		<!-- Custom CSS -->
+		<link href="/static/css/main.css" rel="stylesheet">
+
+		<!-- jQuery -->
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="/static/js/bootstrap-slider.js"></script>
+	</head>
+	<body>
+
+		<!-- Nav Bar -->
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Logic Layout</a>
+			</div>
+		</nav>
+
+		<!-- Extending other HTML files -->
+		<div class="container">
+			{% block body %}
+			{% endblock %}
 		</div>
-	</nav>
 
-	<div class="container">
-		{% block body %}
-		{% endblock %}
-	</div>
-
-	<footer>
-		<p align='center'>&copy; <a href="https://twitter.com/ingridavendano">Ingrid Avenda&ntilde;o</a> 2013</p>
-	</footer>
-
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
-	<script type="text/javascript">
-
-		// text box submits because enter key is hit
-		$("logic-expression").bind("keypress", {}, keypressInBox);
-
-		function keypressInBox(e) {
-			var code = (e.keyCode ? e.keyCode : e.which);
-			// enter button keycode is 13
-			if (code == 13) {
-				alert('works!');
-				e.preventDefault();
-
-				$("logic-expression").submit();
-			}
-		};
-	</script>
-</body>
+		<!-- Credits -->
+		<footer>
+			<p align='center'>
+				&copy; <a href="https://twitter.com/ingridavendano">Ingrid Avenda&ntilde;o</a> 2013
+			</p>
+		</footer>
+	</body>
 </html>

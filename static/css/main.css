@@ -3,7 +3,7 @@ h2 {
 }
 
 body {
-    background-color: #eee;
+    background-color: white;
 }
 
 form.signin {
@@ -24,6 +24,27 @@ form.signin input.btn {
     margin: 50px;
 }
 
-p.prev-expr {
+p.text-expression {
 	color: #c7bebe;
+}
+
+.schematic {
+	overflow: hidden;
+	height: 70%;
+	width: 100%;
+    /*padding-bottom: 20px;*/
+}
+
+.slider {
+	position: absolute;
+    right:0;
+}
+
+.container {
+    position:relative;
+    margin-bottom: 40px;
+}
+
+.slider .slider-handle {
+    /*background: blue;*/
 }

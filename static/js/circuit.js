@@ -5,10 +5,42 @@
  * Contains the JS Canvas functions to draw logic gates. 
  * ------------------------------------------------------------------------- */
 
+var circuit;
+var output;
+var inputs = [];
+// var color = {
+// 	on: '#FF876C', 
+// 	off: '#008A83',
+// 	fill: '#CEFFBC',
+// 	wire: '#66635D'
+// };
+
+var color = {
+	on: '#E54140', 
+	off: '#6CC5C1',
+	fill: '#F7EBD5',
+	wire: '#66635D'
+};
+
+// var color = {
+// 	on: '#000000', 
+// 	off: '#FFFFFF',
+// 	fill: '#FFFFFF',
+// 	wire: '#000000'
+// };
+
+/* ------------------------------------------------------------------------- */
+
 function schematicAttributes(object, gate) {
-	if (gate) object.fillColor = 'white';
-	object.strokeColor = 'black';
+	if (gate) object.fillColor = color.fill;
+	object.strokeColor = color.wire;
 	object.strokeWidth = 2;
+	object.pin = false;
+	object.change = false;
+
+	// adds every item created to a group to make it easier to move around
+	circuit.addChild(object);
+	
 	return object;
 }
 
@@ -35,7 +67,7 @@ function drawNet(a, b) {
 /* ------------------------------------------------------------------------- */
 
 function inPins(p, n, o) {
-	// lines drawn are dependent if there are even or odd number of inputs
+	// lines drawn are dependent if there are even or odd number of in pins
 	var pinPoints = [];
 	var even = (n%2 == 0) ? 1 : 0; 
 
@@ -80,6 +112,7 @@ function notGate(s, p, o) {
 	s.lineTo(new Point(p.x+o, p.y));
 	s.closePath();
 	notCircle(p, o, false);
+	return s;
 } 
 
 function andGate(s, p, o) {
@@ -88,11 +121,13 @@ function andGate(s, p, o) {
 	s.lineTo(new Point(p.x, p.y+o));
 	s.arcTo(new Point(p.x+o, p.y), new Point(p.x, p.y-o));
 	s.closePath();
+	return s; 
 }
 
 function nandGate(s, p, o) {
-	andGate(s, p, o);
+	s = andGate(s, p, o);
 	notCircle(p, o, true);
+	return s;
 }
 
 function orGate(s, p, o) {
@@ -101,24 +136,28 @@ function orGate(s, p, o) {
 	s.quadraticCurveTo(new Point(p.x+(o*0.5), p.y+o), new Point(p.x+o, p.y));
 	s.quadraticCurveTo(new Point(p.x+(o*0.5), p.y-o), new Point(p.x-o, p.y-o));
 	s.closePath();
+	return s; 
 }
 
 function norGate(s, p, o) {
-	orGate(s, p, o);
+	s = orGate(s, p, o);
 	notCircle(p, o, true);
+	return s;
 }
 
 function xorGate(s, p, o) {
-	orGate(s, p, o);
+	s = orGate(s, p, o);
 	// create the xor line
 	var l = drawShape(false);
 	l.moveTo(new Point(p.x-(o*1.4), p.y-o));
 	l.curveTo(new Point(p.x-(o*0.9), p.y), new Point(p.x-(o*1.4), p.y+o));
+	return s;
 }
 
 function nxorGate(s, p, o) {
-	xorGate(s, p, o);
+	s = xorGate(s, p, o);
 	notCircle(p, o, true);
+	return s;
 }
 
 function port(s, p, size, name, direction) {
@@ -132,80 +171,272 @@ function port(s, p, size, name, direction) {
 	s.lineTo(new Point(p.x-_o, p.y-o));
 	s.closePath();
 
-	_o = ((direction == 'input') ? size : -size)*1.2 + name.length*4.0;
+	// ports are assigned spectial abilities because they alter simulations
+	if (direction == 'input') {
+		s.pin = true;
+		s.change = true;
+		s.status = null;
+		
+		// checks if a port is actually assigned as on or off
+		if (typeof name == 'number') {
+			s.change = false;
+			s.status = (name) ? true : false;
+			s.fillColor = (s.status) ? color.on : color.off;
+		}
+	}
+
+	_o = ((direction == 'input') ? size : -size)*1.2 + String(name).length*4.0;
 	var text = new PointText(new Point(p.x-_o, p.y+4.0));
-	text.fillColor = 'black';
-	text.content = name;
+	text.fillColor = color.wire;
+	text.content = String(name);
+	circuit.addChild(text);
+	return s; 
 }
 
 /* ------------------------------------------------------------------------- */
 
 function drawNodes(node, xIncr, yWin, netPoints) {
+	// console.log(node.name);
 	var x = xIncr/2 + (node.x * xIncr);
 	var y = node.y * yWin;
 	var point = new Point(xIncr/2 + (node.x * xIncr), node.y * yWin);
 
-	var inputs = node.inputs;
 	var size = 20;
+	var gateSize = (size*node.inputs)/2;
 
-	var newNetPoints = inPins(point, inputs, size);
+	var newNetPoints = inPins(point, node.inputs, size);
 	outPin(point,size,netPoints);
+
+	var shape = drawShape(true);
+	var shapeNode = new Group();
+	shapeNode.image = shape;
+	shapeNode.name = node.name;
+	shapeNode.kind = node.kind;
+	shapeNode.status = null;
+	// shape.children = [];
 
 	// recursively go through and draw every child node
 	for (var i=0; i<node.nodes.length; i++) {
-		drawNodes(node.nodes[i], xIncr, yWin, newNetPoints[i]);
+		var child = drawNodes(node.nodes[i], xIncr, yWin, newNetPoints[i]);
+		console.log(" "+child.name);
+		shapeNode.addChild(child);
 	}
-	
-	var shape = drawShape(true);
+
+	console.log(shapeNode.hasChildren());
+
 	switch (node.kind) {
 		case 'not':
-			notGate(shape, point, size/2);
+			shape = notGate(shape, point, size/2);
 			break;
 		case 'and':
-			andGate(shape, point, (size*inputs)/2);
+			shape = andGate(shape, point, gateSize);
 			break;
 		case 'nand':
-			nandGate(shape, point, (size*inputs)/2);
+			shape = nandGate(shape, point, gateSize);
 			break;
 		case 'or':
-			orGate(shape, point, (size*inputs)/2);
+			shape = orGate(shape, point, gateSize);
 			break;
 		case 'nor':
-			norGate(shape, point, (size*inputs)/2);
+			shape = norGate(shape, point, gateSize);
 			break;
 		case 'xor':
-			xorGate(shape, point, (size*inputs)/2);
+			shape = xorGate(shape, point, gateSize);
 			break;
 		case 'nxor':
-			nxorGate(shape, point, (size*inputs)/2);
+			shape = nxorGate(shape, point, gateSize);
 			break;
 		default: 
-			port(shape, point, size, node.name, node.kind);
+			shape = port(shape, point, size, node.name, node.kind);
+			if (node.kind == 'input') {
+				inputs.push(shapeNode);
+
+				// sets input status if node is alreay preset
+				shapeNode.status = shape.status;
+			} else {
+				output = shapeNode;
+			}
 	}
 
-	return 0;
+	return shapeNode;
 }  
 
-function drawCircuit(circuit, xWin, yWin) {
-	var xIncr = (xWin/circuit.depth);
-	var yIncr = (yWin/circuit.weight);
+/* ------------------------------------------------------------------------- */
 
-	for (var i=0; i<circuit.nodes.length; i++) {
-		drawNodes(circuit.nodes[i], xIncr, yWin, false);
+function drawCircuit(tree, xWin, yWin) {
+	var xIncr = (xWin/tree.depth);
+	var yIncr = (yWin/tree.weight);
+
+	// xIncr = 100;
+	// yWin = circuit.weight*40;
+
+	// creating a group of nodes to be easy to move around
+	circuit = new Group()
+	var outputPin;
+
+	for (var i=0; i<tree.nodes.length; i++) {
+		outputPin = drawNodes(tree.nodes[i], xIncr, yWin, false);
+	}
+	console.log(outputPin.name);
+
+	console.log(output.hasChildren());
+	return 0;
+}
+
+/* ------------------------------------------------------------------------- */
+
+function drawSimulator(nodeShape) {
+	var childrenValues = [];
+	console.log(nodeShape.name);
+	console.log(nodeShape.status);
+
+
+	for (var i=0; i<nodeShape.children.length; i++) {
+		// console.log(nodeShape.children[i].name);
+
+		// compiles all of the status of the nodes 
+		childrenValues.push(drawSimulator(nodeShape.children[i]));
 	}
 
+	console.log(childrenValues);
+
+
+	// switch (nodeShape.kind) {
+	// 	case 'not':
+	// 		shape = notGate(shape, point, size/2);
+	// 		break;
+	// 	case 'and':
+	// 		shape = andGate(shape, point, gateSize);
+	// 		break;
+	// 	case 'nand':
+	// 		shape = nandGate(shape, point, gateSize);
+	// 		break;
+	// 	case 'or':
+	// 		shape = orGate(shape, point, gateSize);
+	// 		break;
+	// 	case 'nor':
+	// 		shape = norGate(shape, point, gateSize);
+	// 		break;
+	// 	case 'xor':
+	// 		shape = xorGate(shape, point, gateSize);
+	// 		break;
+	// 	case 'nxor':
+	// 		shape = nxorGate(shape, point, gateSize);
+	// 		break;
+	// 	default: 
+	// 		shape = port(shape, point, size, node.name, node.kind);
+	// 		if (node.kind == 'input') {
+	// 			inputs.push(shapeNode);
+	// 		} else {
+	// 			output = shapeNode;
+	// 		}
+	// }
+
+	return nodeShape.status;
 }
+
+/* ------------------------------------------------------------------------- */
 
 function onResize(event) {
 	var xWin = view.bounds.width;
-	var yWin = view.bounds.height;
+	var yWin = view.bounds.height/2;
+
+	// have the scroll bar be the same height as viewing window
+	$('.slider').css('height',$(".schematic").height());
+
+	console.log(xWin);
+	console.log(yWin);
+
+
+	var x = $(".schematic").width();
+	var Y = $(".schematic").height();
+	console.log(Y);
+	// var y = $(".schematic").height()/2;
+	var y = yWin*2*0.8;
+	console.log(x);
+	console.log(y);
+
 
 	// clears previous image drawn when resizing the window view 
 	if (project.activeLayer.hasChildren()){
         project.activeLayer.removeChildren();
     }
-
-    if (run) drawCircuit(results, xWin, yWin);
     
-	
+    if (run) {
+    	drawCircuit(results, x, y);
+    	drawSimulator(output);
+    	// var pins = drawCircuit(results);
+    	// drawSimulator(xWin, yWin, pins);
+    }
 }
+
+function onMouseDrag(event) {
+	circuit.position += event.delta;
+}
+
+var hitOptions = {
+	segments: true,
+	stroke: true,
+	fill: true,
+	tolerance: 10
+};
+
+
+var segment, path;
+var movePath = false;
+
+function onMouseDown(event) {
+	segment = path = null;
+	var hitResult = project.hitTest(event.point, hitOptions);
+
+	if (!hitResult)
+		return;
+
+	if (event.modifiers.shift) {
+		if (hitResult.type == 'segment') {
+			hitResult.segment.remove();
+		};
+		return;
+	}
+
+	if (hitResult) {
+		path = hitResult.item;
+
+
+
+		if (path.pin == true && path.change == true) {
+			if (path.status) {
+				path.fillColor = color.off;
+				path.status = false;
+			} else {
+				path.fillColor = color.on;
+				path.status = true;
+			}
+		}
+		
+		// if (hitResult.type == 'segment') {
+		// 	segment = hitResult.segment;
+		// } else if (hitResult.type == 'stroke') {
+		// 	var location = hitResult.location;
+		// 	segment = path.insert(location.index + 1, event.point);
+		// 	path.smooth();
+		// }
+	}
+
+	movePath = hitResult.type == 'fill';
+	if (movePath)
+		project.activeLayer.addChild(hitResult.itxzem);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
