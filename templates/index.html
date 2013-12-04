@@ -1,15 +1,17 @@
 {% extends 'master.html' %}
 {% block body %}
 
+<!-- <div class="content">
 <p>
 	Type in a <a href="http://en.wikipedia.org/wiki/Logic_gate">digital logic</a> expression. Please use <code>&</code> for AND, <code>|</code> for OR, <code>~</code> for NOT, <code>^</code> for XOR.
 </p>
+</div> -->
 
 <!-- Main input bar to get expressions -->
 <form action="/" method="POST" id="expression">
 	<div class="input-group">
-		<span class="input-group-addon">f =</span>
-		<input type="text" class="form-control" name="logic-expression" placeholder="expression">
+		<span class="label">f =</span>
+		<input type="text" name="logic-expression" placeholder="expression">
 	</div>
 </form>
 

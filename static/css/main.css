@@ -25,7 +25,11 @@ form.signin input.btn {
 }
 
 p.text-expression {
-	color: #c7bebe;
+	/*color: #c7bebe;*/
+    color: #818181;
+    clear:both;
+    text-align: center;
+    padding: 10px 0;
 }
 
 .schematic {
@@ -46,5 +50,73 @@ p.text-expression {
 }
 
 .slider .slider-handle {
-    /*background: blue;*/
+    background: #0d59c3;
+}
+
+body {
+    font-family: 'Quicksand';
+    /*background: #1681f9;*/
+    background: #F0EEEE;
+    padding: 0;
+    margin: 0;
+    color: #003580
+}
+
+.top {
+    text-align: center; 
+    letter-spacing: 0.5em; 
+    font-size: 0.8em; 
+    margin: 30px 0;
+}
+
+.content {
+    text-align: center; 
+    text-transform: uppercase
+}
+
+.content p {
+    padding: 0 0 15px 0
+}
+
+div.input-group {
+    width: 888px;
+    margin: 0 auto;
+}
+
+span.label {
+    background: #0d59c3;
+    padding: 0px 25px 20px 25px;
+    font-size: 2em; 
+    color: #FFF; 
+    float: left; 
+    font-weight: bold;
+    height: 40px;
+
+}
+
+span.highlight {
+    background: #0d59c3; 
+    padding: 0 5px; 
+    color: #FFF;
+}
+
+input {
+    border: 0; 
+    padding: 20px; 
+    width: 800px; 
+    font-size: 1.5em; 
+    float: left;
+    color: #003580;
+    height: 40px;
+}
+
+button {
+    background: #0d59c3; 
+    color: #FFF; 
+    border: 0; 
+    font-size: 1.5em; 
+    font-weight: 100; 
+    letter-spacing: 0.5em; 
+    padding: 15px 65px; 
+    margin: 35px 0;
 }

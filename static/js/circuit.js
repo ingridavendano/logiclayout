@@ -15,12 +15,12 @@ var inputs = [];
 // 	wire: '#66635D'
 // };
 
-var color = {
-	on: '#E54140', 
-	off: '#6CC5C1',
-	fill: '#F7EBD5',
-	wire: '#66635D'
-};
+// var color = {
+// 	on: '#E54140', 
+// 	off: '#6CC5C1',
+// 	fill: '#F7EBD5',
+// 	wire: '#66635D'
+// };
 
 // var color = {
 // 	on: '#000000', 
@@ -29,12 +29,30 @@ var color = {
 // 	wire: '#000000'
 // };
 
+
+var color = {
+	on: 'green', 
+	off: 'E54140',
+	fill: '#F7EBD5',
+	wire: '#000000'
+};
+
+var color = {
+	// on: '#21B181', 
+	on: '#F2CB05',
+	off: '#D90404',
+	// off: '#DA462E',
+	// fill: '#F2F2F1',
+	fill: '#FFFFFF',
+	wire: '#223442'
+};
+
 /* ------------------------------------------------------------------------- */
 
 function schematicAttributes(object, gate) {
 	if (gate) object.fillColor = color.fill;
 	object.strokeColor = color.wire;
-	object.strokeWidth = 2;
+	object.strokeWidth = 3;
 	object.state = null;
 	object.pin = false;
 	object.change = true;
