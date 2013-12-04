@@ -46,14 +46,14 @@
 		run = true;
 		results = JSON.parse( '{{json | safe}}' );
 
-		$(function() {
-			$( "input[type=button], a, button" )
-			.button()
-			.click( function( event ) {
-				console.log("HELLO");
-				event.preventDefault();
-			});
-		});
+		// $(function() {
+		// 	$( "input[type=button], a, button" )
+		// 	.button()
+		// 	.click( function( event ) {
+		// 		simulate();
+		// 		event.preventDefault();
+		// 	});
+		// });
 	{% endif %}
 
 
@@ -61,5 +61,19 @@
 </script>
 <script type="text/javascript" src="/static/js/display.js"></script>
 <script type="text/paperscript" src="/static/js/circuit.js" canvas="canvas"></script>
+<script type="text/javascript">
+	// only runs compiler for proper expressions
+	{% if display is defined %}
+		// $(function() {
+		// 	$( "input[type=button], a, button" )
+		// 	.button()
+		// 	.click( function( event ) {
+		// 		window.globals.simulate();
+		// 		event.preventDefault();
+		// 	});
+		// });
+	{% endif %}
+
+</script>
  
  {% endblock %}

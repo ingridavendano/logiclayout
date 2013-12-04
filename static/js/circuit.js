@@ -35,6 +35,7 @@ function schematicAttributes(object, gate) {
 	if (gate) object.fillColor = color.fill;
 	object.strokeColor = color.wire;
 	object.strokeWidth = 2;
+	object.state = null;
 	object.pin = false;
 	object.change = false;
 
@@ -175,13 +176,13 @@ function port(s, p, size, name, direction) {
 	if (direction == 'input') {
 		s.pin = true;
 		s.change = true;
-		s.status = null;
-		
+		s.state = null;
+
 		// checks if a port is actually assigned as on or off
 		if (typeof name == 'number') {
 			s.change = false;
-			s.status = (name) ? true : false;
-			s.fillColor = (s.status) ? color.on : color.off;
+			s.state = (name) ? true : false;
+			s.fillColor = (s.state) ? color.on : color.off;
 		}
 	}
 
@@ -210,19 +211,17 @@ function drawNodes(node, xIncr, yWin, netPoints) {
 	var shape = drawShape(true);
 	var shapeNode = new Group();
 	shapeNode.image = shape;
-	shapeNode.name = node.name;
+	shapeNode.nameText = String(node.name);
 	shapeNode.kind = node.kind;
-	shapeNode.status = null;
+	shapeNode.state = null;
+
 	// shape.children = [];
 
 	// recursively go through and draw every child node
 	for (var i=0; i<node.nodes.length; i++) {
 		var child = drawNodes(node.nodes[i], xIncr, yWin, newNetPoints[i]);
-		console.log(" "+child.name);
 		shapeNode.addChild(child);
 	}
-
-	console.log(shapeNode.hasChildren());
 
 	switch (node.kind) {
 		case 'not':
@@ -251,8 +250,8 @@ function drawNodes(node, xIncr, yWin, netPoints) {
 			if (node.kind == 'input') {
 				inputs.push(shapeNode);
 
-				// sets input status if node is alreay preset
-				shapeNode.status = shape.status;
+				// sets input state if node is alreay preset
+				shapeNode.state = shape.state;
 			} else {
 				output = shapeNode;
 			}
@@ -277,9 +276,9 @@ function drawCircuit(tree, xWin, yWin) {
 	for (var i=0; i<tree.nodes.length; i++) {
 		outputPin = drawNodes(tree.nodes[i], xIncr, yWin, false);
 	}
-	console.log(outputPin.name);
+	// console.log(outputPin.nameText);
 
-	console.log(output.hasChildren());
+	// console.log(output.hasChildren());
 	return 0;
 }
 
@@ -287,23 +286,36 @@ function drawCircuit(tree, xWin, yWin) {
 
 function drawSimulator(nodeShape) {
 	var childrenValues = [];
-	console.log(nodeShape.name);
-	console.log(nodeShape.status);
-
-
+	
 	for (var i=0; i<nodeShape.children.length; i++) {
-		// console.log(nodeShape.children[i].name);
-
-		// compiles all of the status of the nodes 
 		childrenValues.push(drawSimulator(nodeShape.children[i]));
 	}
+
+
 
 	console.log(childrenValues);
 
 
-	// switch (nodeShape.kind) {
-	// 	case 'not':
-	// 		shape = notGate(shape, point, size/2);
+	switch (nodeShape.kind) {
+		case 'output':
+			nodeShape.state = childrenValues[0];
+			break;
+		case 'input':
+			nodeShape.state = nodeShape.image.state;
+			break;
+		case 'not':
+			nodeShape.state = !(childrenValues[0]);
+			break;
+		case 'and':
+			var result = nodeShape.children[0].state && nodeShape.children[1].state;
+			for (var i=2; i<nodeShape.children.length; i++) {
+				result = nodeShape.children[i].state && result;
+			}
+			console.log('result:');
+			console.log(result);
+			nodeShape.state = result;
+
+	// 		// for (var i=0; i<childrenValues.length)
 	// 		break;
 	// 	case 'and':
 	// 		shape = andGate(shape, point, gateSize);
@@ -323,17 +335,42 @@ function drawSimulator(nodeShape) {
 	// 	case 'nxor':
 	// 		shape = nxorGate(shape, point, gateSize);
 	// 		break;
+	// 	case 'input':
+	// 		node
 	// 	default: 
-	// 		shape = port(shape, point, size, node.name, node.kind);
-	// 		if (node.kind == 'input') {
-	// 			inputs.push(shapeNode);
-	// 		} else {
-	// 			output = shapeNode;
-	// 		}
-	// }
 
-	return nodeShape.status;
+	// 		// shape = port(shape, point, size, node.name, node.kind);
+	// 		// if (node.kind == 'input') {
+	// 		// 	inputs.push(shapeNode);
+	// 		// } else {
+	// 		// 	output = shapeNode;
+	// 		// }
+	}
+
+	console.log(nodeShape.nameText);
+	console.log("    "+nodeShape.state);
+
+
+	if (nodeShape.state == true || nodeShape.state == false) {
+		nodeShape.state = false;
+	}
+
+	// change the color of a shape
+	if (nodeShape.state == false) {
+		nodeShape.image.fillColor = color.off;
+		nodeShape.image.state = false;
+	} else {
+		nodeShape.image.fillColor = color.on;
+		nodeShape.image.state = true;
+	}
+
+	console.log(nodeShape.state);
+	return nodeShape.state;
 }
+
+// window.globals.simulate = function() {
+// 	// drawSimulator(output);
+// }
 
 /* ------------------------------------------------------------------------- */
 
@@ -344,17 +381,8 @@ function onResize(event) {
 	// have the scroll bar be the same height as viewing window
 	$('.slider').css('height',$(".schematic").height());
 
-	console.log(xWin);
-	console.log(yWin);
-
-
 	var x = $(".schematic").width();
-	var Y = $(".schematic").height();
-	console.log(Y);
-	// var y = $(".schematic").height()/2;
 	var y = yWin*2*0.8;
-	console.log(x);
-	console.log(y);
 
 
 	// clears previous image drawn when resizing the window view 
@@ -364,9 +392,7 @@ function onResize(event) {
     
     if (run) {
     	drawCircuit(results, x, y);
-    	drawSimulator(output);
-    	// var pins = drawCircuit(results);
-    	// drawSimulator(xWin, yWin, pins);
+    	// drawSimulator(output);
     }
 }
 
@@ -405,14 +431,15 @@ function onMouseDown(event) {
 
 
 		if (path.pin == true && path.change == true) {
-			if (path.status) {
+			if (path.state) {
 				path.fillColor = color.off;
-				path.status = false;
+				path.state = false;
 			} else {
 				path.fillColor = color.on;
-				path.status = true;
+				path.state = true;
 			}
 		}
+		
 		
 		// if (hitResult.type == 'segment') {
 		// 	segment = hitResult.segment;
@@ -422,7 +449,7 @@ function onMouseDown(event) {
 		// 	path.smooth();
 		// }
 	}
-
+	drawSimulator(output);
 	movePath = hitResult.type == 'fill';
 	if (movePath)
 		project.activeLayer.addChild(hitResult.itxzem);
