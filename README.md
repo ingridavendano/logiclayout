@@ -9,8 +9,8 @@ How it works
 User can go to the main page that is a simple flat design and type in a digital logic expression. 
 ![alt text](./static/pics/type_expr.png "before")
 
-A circuit schematic is generated using HTML canvas using [Paper.js][http://paperjs.org/].
-![alt text](./static/pics/simple_ciruit.png "after")
+A circuit schematic is generated using HTML canvas using [Paper.js](http://paperjs.org/).
+![alt text](./static/pics/simple_circuit.png "after")
 
 The inputs to the circuit schematic can set to on (1) or off (0), which will change the behavior states of logic gates based on inputs. 
 ![alt text](./static/pics/simulate.png "after2")
