@@ -11,13 +11,17 @@
 <form action="/" method="POST" id="expression">
 	<div class="input-group">
 		<span class="label">f =</span>
-		<input type="text" class="expression" name="logic-expression" placeholder="expression">
+		<input type="text" class="expression" name="logic-expression" placeholder="type expression">
 	</div>
 </form>
 
 <!-- Displays expression typed in the input bar -->
 <p class="text-expression">
-	{{ expr }}
+	{% if display is defined %}
+		{{ expr }}
+	{% else %}
+		create circuit schematics out of digital logic expressions 
+	{% endif %}
 </p>
 
 <!-- Scroll bar that displays if a circuit is created -->

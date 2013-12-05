@@ -26,7 +26,7 @@ form.signin input.btn {
 }
 
 p.text-expression {
-	/*color: #c7bebe;*/
+    /*color: #c7bebe;*/
     color: #818181;
     clear:both;
     text-align: center;
@@ -34,14 +34,14 @@ p.text-expression {
 }
 
 .schematic {
-	overflow: hidden;
-	height: 70%;
-	width: 100%;
+    overflow: hidden;
+    height: 70%;
+    width: 100%;
     /*padding-bottom: 20px;*/
 }
 
 .slider {
-	position: absolute;
+    position: absolute;
     right:0;
 }
 
