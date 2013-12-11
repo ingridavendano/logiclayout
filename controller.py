@@ -42,6 +42,11 @@ def new_logic():
 	else:
 		return render_template("index.html", expr="try again")
 
+
+@app.route("/explain", methods=["GET"])
+def explain():
+	return render_template("explain.html")
+	
 # -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
