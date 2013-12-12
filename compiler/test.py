@@ -5,7 +5,7 @@
 # Tests digital logic expression compiler.
 # -----------------------------------------------------------------------------
 
-import run
+# import run
 
 # -----------------------------------------------------------------------------
 
@@ -34,6 +34,8 @@ class TestGrammarTokens(unittest.TestCase):
 
 	def test_id_token(self):
 		""" Check id nodes represent their expression. """
+		# self.assertEqual( Id('A'), 'A')
+		# self.assertEqual( Id('z'), 'z')
 		pass
 
 	def test_delimiter_tokens(self):
@@ -82,19 +84,20 @@ class TestExpressions(unittest.TestCase):
 
 	def test_multiple_assigned_expressions(self):
 		"""  """
-		run.clear_parser()
+		# run.clear_parser()
+		# # expressions = [
+		# # 	'a = 1',
+		# # 	'b = 0',
+		# # 	'f = a * b',
+		# # 	'f'
+		# # ]
 		# expressions = [
-		# 	'a = 1',
-		# 	'b = 0',
-		# 	'f = a * b',
-		# 	'f'
+		# 	'f = a | b | c'
 		# ]
-		expressions = [
-			'f = a | b | c'
-		]
-		for expr in expressions:
-			print expr
-			run.parse_on(expr)
+		# for expr in expressions:
+		# 	print expr
+		# 	run.parse_on(expr)
+		pass
 
 	# def test_literal_expressions(self):
 	# 	""" Testing expressions that are only literals. """ 
@@ -180,19 +183,19 @@ class TestParser(unittest.TestCase):
 		""" """
 		pass
 
-	def test_layout(self):
+	# def test_layout(self):
 		
-		def print_parse_tree(root_node, indent=0):
-			""" Print node tree where each node has left and right child. """
-			print '\t'*indent, ' ', root_node
-			indent += 1
+	# 	def print_parse_tree(root_node, indent=0):
+	# 		""" Print node tree where each node has left and right child. """
+	# 		print '\t'*indent, ' ', root_node
+	# 		indent += 1
 
-			if root_node.left: 
-				print "\t"*indent, "LEFT:"
-				print_parse_tree(root_node.left, indent)
-			if root_node.right:
-				print "\t"*indent, "RIGHT:"
-				print_parse_tree(root_node.right, indent)
+	# 		if root_node.left: 
+	# 			print "\t"*indent, "LEFT:"
+	# 			print_parse_tree(root_node.left, indent)
+	# 		if root_node.right:
+	# 			print "\t"*indent, "RIGHT:"
+	# 			print_parse_tree(root_node.right, indent)
 
 
 
