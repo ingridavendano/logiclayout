@@ -1,9 +1,12 @@
 {% extends 'master.html' %}
 {% block body %}
 
+<p>
+	Here are explanations of the different digital logic gates. Gates are read as either high (on) or low (off) which can be represented with True (1) or False (0). 
 
+<h1>Not Gate</h1>
 <!-- HTML5 Canvas -->
-<canvas id="canvas" class="example1"></canvas>
+<canvas id="canvas"></canvas>
 
 <!-- JavaScript using Jinja to determine if JSON results exist -->
 <script type="text/javascript" src="/static/js/paper.js"></script>
@@ -11,8 +14,7 @@
 	// call digital logic examples
 
 </script>
-<script type="text/javascript" src="/static/js/display.js"></script>
-<script type="text/paperscript" src="/static/js/circuit.js" canvas="canvas"></script>
+<script type="text/paperscript" src="/static/js/examples.js" canvas="canvas"></script>
 
  
 {% endblock %}
