@@ -19,6 +19,10 @@ class Token(object):
 		""" What is displayed when a token is represented. """
 		return "%s(%r)" % (self.kind, self.expr)
 
+	def __str__(self):
+		""" String of how token is represented. """
+		return str(self.expr)
+
 	def __contains__(self, other):
 		""" Checks if other Node is a child 'in' this Node object. """
 		return True if other in [self.left, self.right] else False

@@ -135,3 +135,9 @@ input.expression {
   font-weight: 300;
   src: local('Quicksand Light'), local('Quicksand-Light'), url(/static/fonts/quicksand.woff) format('woff');
 }
+
+footer {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
