@@ -15,128 +15,128 @@ var color = {
 
 /* ------------------------------------------------------------------------- */
 
-function schematicAttributes(object, gate) {
-	if (gate) object.fillColor = color.fill;
-	object.strokeColor = color.wire;
-	object.strokeWidth = 2;
-	object.state = null;
-	object.pin = false;
-	object.change = true;
+// function schematicAttributes(object, gate) {
+// 	if (gate) object.fillColor = color.fill;
+// 	object.strokeColor = color.wire;
+// 	object.strokeWidth = 2;
+// 	object.state = null;
+// 	object.pin = false;
+// 	object.change = true;
 
-	// adds every item created to a group to make it easier to move around
-	circuit.addChild(object);
+// 	// adds every item created to a group to make it easier to move around
+// 	circuit.addChild(object);
 	
-	return object;
-}
+// 	return object;
+// }
 
-function drawShape(fillColor) {
-	var gate = new Path();
-	return schematicAttributes(gate, fillColor);
-}
+// function drawShape(fillColor) {
+// 	var gate = new Path();
+// 	return schematicAttributes(gate, fillColor);
+// }
 
-function drawLine(a, b) {
-	var net = new Path.Line(a, b);
-	schematicAttributes(net, false);
-}
+// function drawLine(a, b) {
+// 	var net = new Path.Line(a, b);
+// 	schematicAttributes(net, false);
+// }
 
-function drawNet(a, b) {
-	var x = a.x + (b.x - a.x)/2;
-	var _a = new Point(x, a.y);
-	var _b = new Point(x, b.y);
+// function drawNet(a, b) {
+// 	var x = a.x + (b.x - a.x)/2;
+// 	var _a = new Point(x, a.y);
+// 	var _b = new Point(x, b.y);
 
-	drawLine(a, _a);
-	drawLine(_a, _b);
-	drawLine(_b, b);
-}
+// 	drawLine(a, _a);
+// 	drawLine(_a, _b);
+// 	drawLine(_b, b);
+// }
 
 
-function port(s, p, size, name, direction) {
-	var o = size/4.0;
-	var _o = ((direction == 'input') ? o : -o)*2.0;
+// function port(s, p, size, name, direction) {
+// 	var o = size/4.0;
+// 	var _o = ((direction == 'input') ? o : -o)*2.0;
 
-	s.moveTo(new Point(p.x-_o, p.y+o));
-	s.lineTo(new Point(p.x+(_o*1.5), p.y+o));
-	s.lineTo(new Point(p.x+(_o*2.0), p.y));
-	s.lineTo(new Point(p.x+(_o*1.5), p.y-o));
-	s.lineTo(new Point(p.x-_o, p.y-o));
-	s.closePath();
+// 	s.moveTo(new Point(p.x-_o, p.y+o));
+// 	s.lineTo(new Point(p.x+(_o*1.5), p.y+o));
+// 	s.lineTo(new Point(p.x+(_o*2.0), p.y));
+// 	s.lineTo(new Point(p.x+(_o*1.5), p.y-o));
+// 	s.lineTo(new Point(p.x-_o, p.y-o));
+// 	s.closePath();
 
-	// ports are assigned spectial abilities because they alter simulations
-	if (direction == 'input') {
-		s.pin = true;
-		s.change = true;
-		s.state = null;
+// 	// ports are assigned spectial abilities because they alter simulations
+// 	if (direction == 'input') {
+// 		s.pin = true;
+// 		s.change = true;
+// 		s.state = null;
 
-		// checks if a port is actually assigned as on or off
-		if (typeof name == 'number') {
-			s.change = false;
-			s.state = (name) ? true : false;
-			s.fillColor = (s.state) ? color.on : color.off;
-		}
-	}
+// 		// checks if a port is actually assigned as on or off
+// 		if (typeof name == 'number') {
+// 			s.change = false;
+// 			s.state = (name) ? true : false;
+// 			s.fillColor = (s.state) ? color.on : color.off;
+// 		}
+// 	}
 
-	_o = ((direction == 'input') ? size : -size)*1.2 + String(name).length*4.0;
-	var text = new PointText(new Point(p.x-_o, p.y+4.0));
-	text.fillColor = color.wire;
-	text.content = String(name);
-	circuit.addChild(text);
-	return s; 
-}
+// 	_o = ((direction == 'input') ? size : -size)*1.2 + String(name).length*4.0;
+// 	var text = new PointText(new Point(p.x-_o, p.y+4.0));
+// 	text.fillColor = color.wire;
+// 	text.content = String(name);
+// 	circuit.addChild(text);
+// 	return s; 
+// }
 
 
 /* ------------------------------------------------------------------------- */
 
-function inPins(p, n, o) {
-	// lines drawn are dependent if there are even or odd number of in pins
-	var pinPoints = [];
-	var even = (n%2 == 0) ? 1 : 0; 
+// function inPins(p, n, o) {
+// 	// lines drawn are dependent if there are even or odd number of in pins
+// 	var pinPoints = [];
+// 	var even = (n%2 == 0) ? 1 : 0; 
 
-	// draws one or two lines at a time making center lines longer
-	for (var i=0; i<n/2; i++) {
-		var y = p.y + (i + 0.5*even)*o;
-		var _y = p.y - (i + 0.5*even)*o;
+// 	// draws one or two lines at a time making center lines longer
+// 	for (var i=0; i<n/2; i++) {
+// 		var y = p.y + (i + 0.5*even)*o;
+// 		var _y = p.y - (i + 0.5*even)*o;
 
-		var a = new Point(p.x+(o*((2.0*i)-n)), y);
-		var _a = new Point(p.x+(o*((2.0*i)-n)), _y);
+// 		var a = new Point(p.x+(o*((2.0*i)-n)), y);
+// 		var _a = new Point(p.x+(o*((2.0*i)-n)), _y);
 
-		drawLine(a, new Point(p.x, y));
-		if (y != _y) drawLine(_a, new Point(p.x, _y));
+// 		drawLine(a, new Point(p.x, y));
+// 		if (y != _y) drawLine(_a, new Point(p.x, _y));
 
-		pinPoints[Math.floor(n/2) + i] = a;
-		pinPoints[Math.floor(n/2) - i - even] = _a;
-	}
-	return pinPoints;
-}
+// 		pinPoints[Math.floor(n/2) + i] = a;
+// 		pinPoints[Math.floor(n/2) - i - even] = _a;
+// 	}
+// 	return pinPoints;
+// }
 
-function outPin(p, o, net) {
-	// checks to make sure that a net does exist
-	if (net) {
-		drawLine(new Point(p.x+(o*0.5), p.y), new Point(p.x+o, p.y));
-		drawNet(new Point(p.x+o, p.y), net);
-	}
-}
+// function outPin(p, o, net) {
+// 	// checks to make sure that a net does exist
+// 	if (net) {
+// 		drawLine(new Point(p.x+(o*0.5), p.y), new Point(p.x+o, p.y));
+// 		drawNet(new Point(p.x+o, p.y), net);
+// 	}
+// }
 
 
 /* -------------------------------------------------------------------------
  * all gate functions take 'p' for center point of gate and 'o' for offset
  * ------------------------------------------------------------------------- */
 
-function notCircle(p, o, gate) {
-	var radius = ((gate) ? 0.25 : 0.4)*o;
-	var point = new Point(p.x+o+radius, p.y);
-	return schematicAttributes(new Path.Circle(point, radius), true);
-}
+// function notCircle(p, o, gate) {
+// 	var radius = ((gate) ? 0.25 : 0.4)*o;
+// 	var point = new Point(p.x+o+radius, p.y);
+// 	return schematicAttributes(new Path.Circle(point, radius), true);
+// }
 
-function notGate(s, p, o) {
-	s.moveTo(new Point(p.x-o, p.y-o));
-	s.lineTo(new Point(p.x-o, p.y+o));
-	s.lineTo(new Point(p.x+o, p.y));
-	s.closePath();
+// function notGate(s, p, o) {
+// 	s.moveTo(new Point(p.x-o, p.y-o));
+// 	s.lineTo(new Point(p.x-o, p.y+o));
+// 	s.lineTo(new Point(p.x+o, p.y));
+// 	s.closePath();
 	
-	var compound = new CompoundPath(s, notCircle(p, o, false));
-	compound = schematicAttributes(compound, true);
-	return compound;
-} 
+// 	var compound = new CompoundPath(s, notCircle(p, o, false));
+// 	compound = schematicAttributes(compound, true);
+// 	return compound;
+// } 
 
 /* ------------------------------------------------------------------------- */
 
@@ -145,8 +145,7 @@ circuit = new Group()
 var size = 20;
 
 
-function newObj() {
-	var obj = new Path();
+function attr(obj) {
 	obj.fillColor = color.fill;
 	obj.strokeColor = color.wire;
 	obj.strokeWidth = 2;
@@ -157,26 +156,101 @@ function newObj() {
 	return obj
 }
 
-function notCircle(p, o, gate) {
-	var radius = ((gate) ? 0.25 : 0.4)*o;
-	var point = new Point(p.x+o+radius, p.y);
-	return schematicAttributes(new Path.Circle(point, radius), true);
+function port(x, y, dir, name) {
+	// offset 
+	var o = 5;
+
+	// direction offset
+	var _o = ((dir == 'in') ? o : -o)*2.0;
+
+	// pin body
+	var pin = attr(new Path());
+	pin.moveTo(new Point(x-_o, y+o));
+	pin.lineTo(new Point(x+(_o*1.5), y+o));
+	pin.lineTo(new Point(x+(_o*2.0), y));
+	pin.lineTo(new Point(x+(_o*1.5), y-o));
+	pin.lineTo(new Point(x-_o, y-o));
+	pin.closePath();
+
+	// _o = ((dir == 'in') ? 10 : -10)*1.2 + String(name).length*4.0;
+	// var text = new PointText(new Point(p.x-_o, p.y+4.0));
+	// text.fillColor = color.wire;
+	// text.content = String(name);
+	// circuit.addChild(text);
+	// return s; 
+
+	// display name
+	_o = ((dir == 'in') ? o : -o)*4.0 + String(name).length*4.0;
+	var text = attr(new PointText(new Point(x-_o, y+4.0)));
+	// text.fillColor = color.wire;
+	text.content = String(name);
+	circuit.addChild(text);
 }
 
 function notGate(x, y) {
+	// offset value 
 	var o = 10;
-	
-	var gate = newObj();
+
+	// triangle body of gate
+	var gate = attr(new Path());
 	gate.moveTo(new Point(x-o, y-o));
 	gate.lineTo(new Point(x-o, y+o));
 	gate.lineTo(new Point(x+o, y));
 	gate.closePath();
 
+	// circle on the right to indicate not function
+	var notCircle = attr(new Path.Circle(new Point(x+(1.4*o), y), 0.4*o));
 
+	// compounding two paths together to make not gate symbol
+	var notGate = attr(new CompoundPath(gate, notCircle));
 
+	// input and output symbols
+	var input = port(x-50, y, 'in', 'x');
+	var output = port(x+50, y, 'out', 'f');
 }
 
-var gate = newObj();
+notGate(100,50);
+
+
+
+
+
+
+
+// function port(s, p, size, name, direction) {
+// 	var o = size/4.0;
+// 	var _o = ((direction == 'input') ? o : -o)*2.0;
+
+// 	s.moveTo(new Point(p.x-_o, p.y+o));
+// 	s.lineTo(new Point(p.x+(_o*1.5), p.y+o));
+// 	s.lineTo(new Point(p.x+(_o*2.0), p.y));
+// 	s.lineTo(new Point(p.x+(_o*1.5), p.y-o));
+// 	s.lineTo(new Point(p.x-_o, p.y-o));
+// 	s.closePath();
+
+// 	// ports are assigned spectial abilities because they alter simulations
+// 	if (direction == 'input') {
+// 		s.pin = true;
+// 		s.change = true;
+// 		s.state = null;
+
+// 		// checks if a port is actually assigned as on or off
+// 		if (typeof name == 'number') {
+// 			s.change = false;
+// 			s.state = (name) ? true : false;
+// 			s.fillColor = (s.state) ? color.on : color.off;
+// 		}
+// 	}
+
+// 	_o = ((direction == 'input') ? size : -size)*1.2 + String(name).length*4.0;
+// 	var text = new PointText(new Point(p.x-_o, p.y+4.0));
+// 	text.fillColor = color.wire;
+// 	text.content = String(name);
+// 	circuit.addChild(text);
+// 	return s; 
+// }
+
+
 
 
 
@@ -188,12 +262,12 @@ var gate = newObj();
 // var gate = drawShape(true);
 // gate = notGate(gate, gatePoint, size/2);
 
-var inputPoint = new Point(50,50);
-var input = drawShape(true);
-input = port(input, inputPoint, size, 'x', 'input')
+// var inputPoint = new Point(50,50);
+// var input = drawShape(true);
+// input = port(input, inputPoint, size, 'x', 'input')
 
-var outputPoint = new Point(150,50);
-var output = drawShape(true);
-output = port(output, outputPoint, size, 'f', 'output');
+// var outputPoint = new Point(150,50);
+// var output = drawShape(true);
+// output = port(output, outputPoint, size, 'f', 'output');
 
 
