@@ -1,0 +1,146 @@
+{% extends 'master.html' %}
+{% block body %}
+<p>
+	Here are explanations of the different digital logic gates. Gates are read as either high (on) or low (off) which can be represented with True (1) or False (0). 
+</p>
+<h1>Not Gate</h1>
+<canvas width="200" height="100" id="not-example"></canvas>
+<h1>And Gate</h1>
+<canvas width="220" height="100" id="and-example"></canvas>
+<!-- JavaScript using Jinja to determine if JSON results exist -->
+<script type="text/javascript">
+
+	// paper.install(window);
+	var notinput, notoutput, notGate;
+	var xInput, yInput, gate, output;
+
+	// color setup for circuit
+	var color = { 
+		on: '#F2CB05',
+		off: '#0d59c3',
+		fill: '#FFFFFF',
+		wire: '#0d59c3'
+	};
+
+	// attributes applied for the circuit components
+	function attr(obj) {
+		obj.fillColor = color.fill;
+		obj.strokeColor = color.wire;
+		obj.strokeWidth = 2;
+		obj.state = null;
+		obj.change = false;
+		return obj
+	}
+
+	function lineAttr(obj) {
+		obj.strokeColor = color.wire;
+		obj.strokeWidth = 2;
+		return obj
+	}
+
+	var hitOptions = {
+		segments: true,
+		stroke: true,
+		fill: true,
+		tolerance: 10
+	};
+
+	function port(x, y, dir, name) {
+		// offset 
+		var o = 4;
+
+		// direction offset
+		var _o = ((dir == 'in') ? o : -o)*2.0;
+
+		// pin body
+		var pin = attr(new Path());
+		pin.moveTo(new Point(x-_o, y+o));
+		pin.lineTo(new Point(x+(_o*1.5), y+o));
+		pin.lineTo(new Point(x+(_o*2.0), y));
+		pin.lineTo(new Point(x+(_o*1.5), y-o));
+		pin.lineTo(new Point(x-_o, y-o));
+		pin.closePath();
+
+		if (dir == 'in') pin.change = true;
+
+		// display name
+		_o = ((dir == 'in') ? o : -o)*4.0 + String(name).length*4.0;
+		var text = new PointText(new Point(x-_o, y+4.0));
+		text.fillColor = color.wire;
+		text.content = String(name);
+
+		return pin;
+	}
+
+	function notGate(p, x, y) {
+		// offset value 
+		var o = 10;
+
+		// draw lines
+		var inLine = attr(new Path.Line(new Point(x, y), new Point(x-50,y)));
+		var outLine = attr(new Path.Line(new Point(x, y), new Point(x+55,y)));
+
+		// triangle body of gate
+		var gate = attr(new Path());
+		gate.moveTo(new Point(x-o, y-o));
+		gate.lineTo(new Point(x-o, y+o));
+		gate.lineTo(new Point(x+o, y));
+		gate.closePath();
+
+		// circle on the right to indicate not function
+		var notCircle = attr(new Path.Circle(new Point(x+(1.4*o), y), 0.4*o));
+
+		// compounding two paths together to make not gate symbol
+		notGate = attr(new CompoundPath(gate, notCircle));
+
+		//var port = getPortFunction().bind(this);
+
+		// input and output symbols
+		notinput = port(x-50, y, 'in', 'x');
+		notoutput = port(x+55, y, 'out', 'f');
+
+		// input = getPortFunction(notCanvas, x-50, y, 'in', 'x');
+		// output = getPortFunction(notCanvas, x+55, y, 'out', 'f');
+
+	}
+
+	function andGate(x, y) {
+		// offset value 
+		var o = 20;
+
+		// draw lines
+		var xLine = attr(new Path.Line(new Point(x, y-10), new Point(x-60,y-10)));
+		var yLine = attr(new Path.Line(new Point(x, y+10), new Point(x-60,y+10)));
+		var outLine = attr(new Path.Line(new Point(x, y), new Point(x+65,y)));
+
+		// triangle body of gate
+		gate = attr(new Path());
+		gate.moveTo(new Point(x-o, y-o));
+		gate.lineTo(new Point(x-o, y+o));
+		gate.lineTo(new Point(x, y+o));
+		gate.arcTo(new Point(x+o, y), new Point(x, y-o));
+		gate.closePath();
+
+		// var port = getPortFunction();
+		// input and output symbols
+		xInput = port(x-60, y-10, 'in', 'x');
+		yInput = port(x-60, y+10, 'in', 'y');
+		output = port(x+65, y, 'out', 'f');
+	}
+
+	// window.onload = function() {
+	// 	var currentCanvas = document.getElementById("not-example");
+	// 	paper.setup(currentCanvas);
+	// 	notGate(100,50);
+	// 	// paperPin = port(x,y,dir,name);
+	// }
+</script>
+<script type="text/javascript">
+	notGatePaper = new paper.PaperScope();
+	notGatePaper.onload = function() {
+		var currentCanvas = document.getElementById("not-example");
+		notGatePaper.setup(currentCanvas);
+		notGate(100,50);
+	}
+</script>
+{% endblock %}
