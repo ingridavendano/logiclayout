@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # serializer.py
-# Created by Ingrid Avendano 11/14/13.
+# Created by Ingrid Avendano on 11/14/13.
 # -----------------------------------------------------------------------------
 # Converts AST (abstract syntax tere) to JSON. 
 # -----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ class NodeEncoder(json.JSONEncoder):
             return {
                 'kind': node.kind,
                 'name': node.expr,
-                'weight': node.weight, 
+                'weight': node.weight,
                 'depth': node.level,
                 'inputs': len(node.children),
                 'x': node.x,
@@ -42,13 +42,15 @@ class NodeEncoder(json.JSONEncoder):
 # -----------------------------------------------------------------------------
 
 def to_json(tree, debug=False):
-    """ Converts a Node Tree to JSON. """
+    """ Converts a Node Tree to JSON. """   
 
     # if tree doesn't exist return no json
     if tree is None: return tree
 
+    # encodes AST to JSON
     json_string = json.dumps(tree, cls=NodeEncoder)
 
+    # debug mode
     if debug: print json_string
     
     return json_string
