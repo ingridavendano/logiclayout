@@ -17,17 +17,15 @@ yacc = parser.run_yacc
 
 # -----------------------------------------------------------------------------
 
-def compiler(data, debug=False):
-    """ Run compiler on a logic expression. """
-
-    # empties the root of pre-exisiting root tokens
+def compiler(data, debug=0):
+    # empties root of pre-exisiting tokens
     parser.root = []
 
-    # run parser on data
+    # run parser
     yacc.parse(data)
-    
-    # catches errors of bad data expressions
+
     try:
+        # catches errors of bad data expressions
         parser.root[0]
         tree = Tree(parser.root[0], data)
 
@@ -39,8 +37,8 @@ def compiler(data, debug=False):
         # second catch for bad data of a list of literals
         if len(tree.nodes) == 1: tree = None
 
-    # return an empty tree so that it doesn't print
-    except IndexError: 
+    except IndexError:
+        # return an empty tree if the parser is empty
         print "Error: expression is bad"
         tree = None
 
