@@ -17,31 +17,31 @@ yacc = parser.run_yacc
 
 # -----------------------------------------------------------------------------
 
-def clear_parser():
-	""" Empties root of pre-exisiting root tokens. """
-	parser.root = []
+def compiler(data, debug=False):
+    """ Run compiler on a logic expression. """
 
-def compiler(data, debug=0):
-	""" Run compiler on a logic expression. """
-	clear_parser()
-	yacc.parse(data)
-	
-	# catches errors of bad data expressions
-	try:
-		parser.root[0]
-		tree = Tree(parser.root[0], data)
+    # empties the root of pre-exisiting root tokens
+    parser.root = []
 
-		# print working tree in debug mode
-		if debug:
-			tree.print_tree()
-			tree.print_nodes()
+    # run parser on data
+    yacc.parse(data)
+    
+    # catches errors of bad data expressions
+    try:
+        parser.root[0]
+        tree = Tree(parser.root[0], data)
 
-		# second catch for bad data of a list of literals
-		if len(tree.nodes) == 1:
-			tree = None
-	# return an empty tree so that it doesn't print
-	except IndexError: 
-		print "Error: expression is bad"
-		tree = None
+        # print working tree in debug mode
+        if debug:
+            tree.print_tree()
+            tree.print_nodes()
 
-	return serializer.to_json(tree, debug=debug)
+        # second catch for bad data of a list of literals
+        if len(tree.nodes) == 1: tree = None
+
+    # return an empty tree so that it doesn't print
+    except IndexError: 
+        print "Error: expression is bad"
+        tree = None
+
+    return serializer.to_json(tree, debug=debug)
