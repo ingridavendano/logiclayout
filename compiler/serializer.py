@@ -11,54 +11,44 @@ from optimizer import *
 # -----------------------------------------------------------------------------
 
 class NodeEncoder(json.JSONEncoder):
-	""" Encode Node class objects to JSON. """
-	
-	def default(self, tree):
-		def unknown_node(node):
-			return {
-				'kind': node.kind,
-				'name': node.expr,
-				'weight': node.weight, 
-				'depth': node.level,
-				'inputs': len(node.children),
-				'x': node.x,
-				'y': node.y, 
-				'nodes': [
-					unknown_node(child) for child in node.children
-				]
-			}
+    """ Encode Node class objects to JSON. """
+    
+    def default(self, tree):
+        def unknown_node(node):
+            return {
+                'kind': node.kind,
+                'name': node.expr,
+                'weight': node.weight, 
+                'depth': node.level,
+                'inputs': len(node.children),
+                'x': node.x,
+                'y': node.y,
+                'nodes': [
+                    unknown_node(child) for child in node.children
+                ]
+            }
 
-		if isinstance(tree, Tree):
-			return {
-				'depth': tree.depth,
-				'weight': tree.root.weight,
-				'nodes': [
-					unknown_node(tree.root)
-				]
-				
-			}	
-		else:
-			return json.JSONEncoder.default(self, tree)
+        if isinstance(tree, Tree):
+            return {
+                'depth': tree.depth,
+                'weight': tree.root.weight,
+                'nodes': [
+                    unknown_node(tree.root)
+                ]
+            }
+        else:
+            return json.JSONEncoder.default(self, tree)
 
 # -----------------------------------------------------------------------------
 
 def to_json(tree, debug=False):
-	""" Converts a Node Tree to JSON. """
+    """ Converts a Node Tree to JSON. """
 
-	# checks if tree exists
-	if tree is None:
-		return tree;
+    # if tree doesn't exist return no json
+    if tree is None: return tree
 
-	json_string = json.dumps(
-		tree, 
-		cls=NodeEncoder, 
-		# sort_keys=True, 
-		# indent=4,
-		# separators=(',', ': ')
-		)
+    json_string = json.dumps(tree, cls=NodeEncoder)
 
-
-	if debug:
-		print json_string
-
-	return json_string
+    if debug: print json_string
+    
+    return json_string
