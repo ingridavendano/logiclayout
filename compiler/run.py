@@ -15,7 +15,7 @@ from optimizer import Tree
 
 yacc = parser.run_yacc
 
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------- 
 
 def compiler(data, debug=0):
     # empties root of pre-exisiting tokens
