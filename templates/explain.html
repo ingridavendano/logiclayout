@@ -21,10 +21,6 @@
 <!-- JavaScript using Jinja to determine if JSON results exist -->
 <script type="text/javascript">
 
-	// paper.install(window);
-	var notinput, notoutput, notGate;
-	var xInput, yInput, gate, output;
-
 	// color setup for circuit
 	var color = { 
 		on: '#F2CB05',
@@ -49,6 +45,16 @@
 		return obj
 	}
 
+	function textAttr(obj, name) {
+		obj.fillColor = color.wire;
+		obj.content = String(name);
+		return obj
+	}
+
+	function textDir(dir, name) {
+		return ((dir == 'in') ? 1 : -1.1)*18.0 + String(name).length*4.0;
+	}
+
 	function pin(x, y, dir, obj) {
 		// offset 
 		var o = 4;
@@ -69,12 +75,20 @@
 		return body;	
 	}
 
+	function setState(state) {
+		return state ? color.on : color.off;
+	}
+
 	var hitOptions = {
 		segments: true,
 		stroke: true,
 		fill: true,
 		tolerance: 10
 	};
+
+	var segment, path;
+
+
 
 	// window.onload = function() {
 	// 	var currentCanvas = document.getElementById("not-example");
@@ -89,13 +103,8 @@
 	var notCanvas = "not-example"
 
 
-	function port(x, y, dir, name) {
-		// display name
-		 o = ((dir == 'in') ? 1 : -1)*16.0 + String(name).length*4.0;
-		var text = new PointText(new Point(x-o, y+4.0));
-		text.fillColor = color.wire;
-		text.content = String(name);
-
+	function port(x, y, dir, name) {	
+		var text = textAttr(new PointText(x-textDir(dir,name), y+4.0), name);
 		return pin(x, y, dir, new Path());
 	}
 
@@ -109,14 +118,13 @@
 
 		// circle on the right to indicate not function
 		var notCircle = attr(new Path.Circle(x+(1.4*o), y, 0.4*o));
-		
+
 		// triangle body of gate
 		var gate = attr(new Path());
 		gate.moveTo(x-o, y-o);
 		gate.lineTo(x-o, y+o);
 		gate.lineTo(x+o, y);
 		gate.closePath();
-
 
 		// compounding two paths together to make not gate symbol
 		notGate = attr(new CompoundPath(gate, notCircle));
@@ -126,442 +134,317 @@
 		output = port(x+55, y, 'out', 'f');
 	}
 
-	// /* --------------------------------------------------------------------- */
-
+	/* --------------------------------------------------------------------- */
 
 	notGate(100,50);
 
-	// /* --------------------------------------------------------------------- */
-
-
-	var segment, path;
-	var movePath = false;
+	/* --------------------------------------------------------------------- */
 
 	function onMouseDown(event) {
 		segment = path = null;
 		var hitResult = project.hitTest(event.point, hitOptions);
 
-		if (!hitResult)
-			return;
+		if (!hitResult) return;
 
 		if (hitResult) {
 			path = hitResult.item;
 
 			if (path.change == true) {
-				if (path.state) {
-					path.fillColor = color.off;
-					notGate.fillColor = color.on;
-					output.fillColor = color.on;
-					path.state = false;
-				} else {
-					path.fillColor = color.on;
-					notGate.fillColor = color.off;
-					output.fillColor = color.off;
-					path.state = true;
-				}
+				path.state = !path.state;
+				path.fillColor = setState(path.state);
+				notGate.fillColor = setState(!path.state);
+				output.fillColor = setState(!path.state);
 			}
 		}
 	}
 </script>
+
 <script type="text/paperscript" canvas="and-example">
-	// var xInput, yInput, gate, output;
+	var xInput, yInput, gate, output;
 
-	// /* --------------------------------------------------------------------- */
-	// // function getPortFunction(){
-	// // 	return function port(x, y, dir, name) {
-	// // 		// offset 
-	// // 		var o = 4;
+	function port(x, y, dir, name) {
+		var text = textAttr(new PointText(x-textDir(dir,name), y+4.0), name);
+		return pin(x, y, dir, new Path());
+	}
 
-	// // 		// direction offset
-	// // 		var _o = ((dir == 'in') ? o : -o)*2.0;
+	function andGate(x, y) {
+		// offset value 
+		var o = 20;
 
-	// // 		// pin body
-	// // 		var pin = attr(new Path());
-	// // 		pin.moveTo(new Point(x-_o, y+o));
-	// // 		pin.lineTo(new Point(x+(_o*1.5), y+o));
-	// // 		pin.lineTo(new Point(x+(_o*2.0), y));
-	// // 		pin.lineTo(new Point(x+(_o*1.5), y-o));
-	// // 		pin.lineTo(new Point(x-_o, y-o));
-	// // 		pin.closePath();
+		// draw lines
+		var xLine = attr(new Path.Line(x, y-10, x-60, y-10));
+		var yLine = attr(new Path.Line(x, y+10, x-60, y+10));
+		var outLine = attr(new Path.Line(x, y, x+65, y));
 
-	// // 		if (dir == 'in') pin.change = true;
+		// triangle body of gate
+		gate = attr(new Path());
+		gate.moveTo(x-o, y-o);
+		gate.lineTo(x-o, y+o);
+		gate.lineTo(x, y+o);
+		gate.arcTo(x+o, y, x, y-o);
+		gate.closePath();
 
-	// // 		// display name
-	// // 		_o = ((dir == 'in') ? o : -o)*4.0 + String(name).length*4.0;
-	// // 		var text = new PointText(new Point(x-_o, y+4.0));
-	// // 		text.fillColor = color.wire;
-	// // 		text.content = String(name);
+		// input and output symbols
+		xInput = port(x-60, y-10, 'in', 'x');
+		yInput = port(x-60, y+10, 'in', 'y');
+		output = port(x+65, y, 'out', 'f');
+	}
 
-	// // 		return pin;
-	// // 	}
-	// // }
-	// // var port = getPortFunction();
-	// // port(fsdfsdds)
+	/* --------------------------------------------------------------------- */
 
-	// function andGate(x, y) {
-	// 	// offset value 
-	// 	var o = 20;
+	andGate(110,50);
 
-	// 	// draw lines
-	// 	var xLine = attr(new Path.Line(new Point(x, y-10), new Point(x-60,y-10)));
-	// 	var yLine = attr(new Path.Line(new Point(x, y+10), new Point(x-60,y+10)));
-	// 	var outLine = attr(new Path.Line(new Point(x, y), new Point(x+65,y)));
+	/* --------------------------------------------------------------------- */
 
-	// 	// triangle body of gate
-	// 	gate = attr(new Path());
-	// 	gate.moveTo(new Point(x-o, y-o));
-	// 	gate.lineTo(new Point(x-o, y+o));
-	// 	gate.lineTo(new Point(x, y+o));
-	// 	gate.arcTo(new Point(x+o, y), new Point(x, y-o));
-	// 	gate.closePath();
+	function onMouseDown(event) {
+		var hitResult = project.hitTest(event.point, hitOptions);
 
-	// 	var port = getPortFunction();
-	// 	// input and output symbols
-	// 	xInput = port(x-60, y-10, 'in', 'x');
-	// 	yInput = port(x-60, y+10, 'in', 'y');
-	// 	output = port(x+65, y, 'out', 'f');
-	// }
+		if (!hitResult) return;
 
-	// /* --------------------------------------------------------------------- */
+		if (hitResult) {
+			path = hitResult.item;
 
-	// andGate(110,50);
+			if (path.change == true) {
+				path.state = !path.state;
 
-	// /* --------------------------------------------------------------------- */
+				// changes the state of the inputs, gate and output
+				gate.state = xInput.state & yInput.state;
 
-	// function onMouseDown(event) {
-	// 	var hitResult = project.hitTest(event.point, hitOptions);
-
-	// 	if (!hitResult)
-	// 		return;
-
-	// 	if (hitResult) {
-	// 		path = hitResult.item;
-
-	// 		if (path.change == true) {
-	// 			path.state = (path.state) ? false : true;
-
-	// 			// changes the state of the inputs, gate and output
-	// 			gate.state = xInput.state & yInput.state;
-	// 			xInput.fillColor = (xInput.state) ? color.on : color.off;
-	// 			yInput.fillColor = (yInput.state) ? color.on : color.off;
-	// 			gate.fillColor = (gate.state) ? color.on : color.off;
-	// 			output.fillColor = (gate.state) ? color.on : color.off;
-	// 		}
-	// 	}
-	// }
+				xInput.fillColor = setState(xInput.state);
+				yInput.fillColor = setState(yInput.state);
+				gate.fillColor = setState(gate.state);
+				output.fillColor = setState(gate.state);
+			}
+		}
+	}
 </script>
 
 <!--////////////////////////////////////////////////////////////////////////-->
 
-// <script type="text/paperscript" canvas="nand-example">
-// 	var xInput, yInput, gate, output;
-
-// 	function port(x, y, dir, name) {
-// 		// offset 
-// 		var o = 4;
-
-// 		// direction offset
-// 		var _o = ((dir == 'in') ? o : -o)*2.0;
-
-// 		// pin body
-// 		var pin = attr(new Path());
-// 		pin.moveTo(new Point(x-_o, y+o));
-// 		pin.lineTo(new Point(x+(_o*1.5), y+o));
-// 		pin.lineTo(new Point(x+(_o*2.0), y));
-// 		pin.lineTo(new Point(x+(_o*1.5), y-o));
-// 		pin.lineTo(new Point(x-_o, y-o));
-// 		pin.closePath();
-
-// 		if (dir == 'in') pin.change = true;
-
-// 		// display name
-// 		_o = ((dir == 'in') ? o : -o)*4.0 + String(name).length*4.0;
-// 		var text = new PointText(new Point(x-_o, y+4.0));
-// 		text.fillColor = color.wire;
-// 		text.content = String(name);
-
-// 		return pin;
-// 	}
-
-// 	function nandGate(x, y) {
-// 		// offset value 
-// 		var o = 20;
-
-// 		// draw lines
-// 		var xLine = attr(new Path.Line(new Point(x, y-10), new Point(x-60,y-10)));
-// 		var yLine = attr(new Path.Line(new Point(x, y+10), new Point(x-60,y+10)));
-// 		var outLine = attr(new Path.Line(new Point(x, y), new Point(x+65,y)));
-
-// 		// body of gate
-// 		var body = attr(new Path());
-// 		body.moveTo(new Point(x-o, y-o));
-// 		body.lineTo(new Point(x-o, y+o));
-// 		body.lineTo(new Point(x, y+o));
-// 		body.arcTo(new Point(x+o, y), new Point(x, y-o));
-// 		body.closePath();
-
-// 		// circle on the right to indicate not part
-// 		var circle = attr(new Path.Circle(new Point(x+(1.25*o), y), 0.25*o));
-
-// 		// compounding two paths together to make not gate symbol
-// 		gate = attr(new CompoundPath(body, circle));
-
-// 		// input and output symbols
-// 		xInput = port(x-60, y-10, 'in', 'x');
-// 		yInput = port(x-60, y+10, 'in', 'y');
-// 		output = port(x+65, y, 'out', 'f');
-// 	}
-
-// 	/* --------------------------------------------------------------------- */
-
-// 	nandGate(110,50);
-
-// 	function onMouseDown(event) {
-// 		var hitResult = project.hitTest(event.point, hitOptions);
-
-// 		if (!hitResult) return;
-
-// 		if (hitResult) {
-// 			path = hitResult.item;
-
-// 			if (path.change == true) {
-// 				path.state = (path.state) ? false : true;
-
-// 				// changes the state of the inputs, gate and output
-// 				gate.state = !(xInput.state & yInput.state);
-// 				xInput.fillColor = (xInput.state) ? color.on : color.off;
-// 				yInput.fillColor = (yInput.state) ? color.on : color.off;
-// 				gate.fillColor = (gate.state) ? color.on : color.off;
-// 				output.fillColor = (gate.state) ? color.on : color.off;
-// 			}
-// 		}
-// 	}
-// </script>
-// <!--////////////////////////////////////////////////////////////////////////-->
-// <script type="text/paperscript" canvas="or-example">
-// 	var xInput, yInput, gate, output;
-
-// 	function port(x, y, dir, name) {
-// 		// offset 
-// 		var o = 4;
-
-// 		// direction offset
-// 		var _o = ((dir == 'in') ? o : -o)*2.0;
-
-// 		// pin body
-// 		var pin = attr(new Path());
-// 		pin.moveTo(new Point(x-_o, y+o));
-// 		pin.lineTo(new Point(x+(_o*1.5), y+o));
-// 		pin.lineTo(new Point(x+(_o*2.0), y));
-// 		pin.lineTo(new Point(x+(_o*1.5), y-o));
-// 		pin.lineTo(new Point(x-_o, y-o));
-// 		pin.closePath();
-
-// 		if (dir == 'in') pin.change = true;
-
-// 		// display name
-// 		_o = ((dir == 'in') ? o : -o)*4.0 + String(name).length*4.0;
-// 		var text = new PointText(new Point(x-_o, y+4.0));
-// 		text.fillColor = color.wire;
-// 		text.content = String(name);
-
-// 		return pin;
-// 	}
-
-// 	function orGate(x, y) {
-// 		// offset value 
-// 		var o = 20;
-
-// 		// draw lines
-// 		var xLine = attr(new Path.Line(new Point(x, y-10), new Point(x-60,y-10)));
-// 		var yLine = attr(new Path.Line(new Point(x, y+10), new Point(x-60,y+10)));
-// 		var outLine = attr(new Path.Line(new Point(x, y), new Point(x+65,y)));
-
-// 		// body of gate
-// 		gate = attr(new Path());
-// 		gate.moveTo(new Point(x-o, y-o));
-// 		gate.curveTo(new Point(x-(o*0.5), y), new Point(x-o, y+o));
-// 		gate.quadraticCurveTo(new Point(x+(o*0.5), y+o), new Point(x+o, y));
-// 		gate.quadraticCurveTo(new Point(x+(o*0.5), y-o), new Point(x-o, y-o));
-// 		gate.closePath();
-
-// 		// input and output symbols
-// 		xInput = port(x-60, y-10, 'in', 'x');
-// 		yInput = port(x-60, y+10, 'in', 'y');
-// 		output = port(x+65, y, 'out', 'f');
-// 	}
-
-// 	/* --------------------------------------------------------------------- */
-
-// 	orGate(110,50);
-
-// 	function onMouseDown(event) {
-// 		var hitResult = project.hitTest(event.point, hitOptions);
-
-// 		if (!hitResult) return;
-
-// 		if (hitResult) {
-// 			path = hitResult.item;
-
-// 			if (path.change == true) {
-// 				path.state = (path.state) ? false : true;
-
-// 				// changes the state of the inputs, gate and output
-// 				gate.state = xInput.state | yInput.state;
-// 				xInput.fillColor = (xInput.state) ? color.on : color.off;
-// 				yInput.fillColor = (yInput.state) ? color.on : color.off;
-// 				gate.fillColor = (gate.state) ? color.on : color.off;
-// 				output.fillColor = (gate.state) ? color.on : color.off;
-// 			}
-// 		}
-// 	}
-// </script>
-// <!--////////////////////////////////////////////////////////////////////////-->
-// <script type="text/paperscript" canvas="nor-example">
-// 	var xInput, yInput, gate, output;
-
-// 	function port(x, y, dir, name) {
-// 		// offset 
-// 		var o = 4;
-
-// 		// direction offset
-// 		var _o = ((dir == 'in') ? o : -o)*2.0;
-
-// 		// pin body
-// 		var pin = attr(new Path());
-// 		pin.moveTo(new Point(x-_o, y+o));
-// 		pin.lineTo(new Point(x+(_o*1.5), y+o));
-// 		pin.lineTo(new Point(x+(_o*2.0), y));
-// 		pin.lineTo(new Point(x+(_o*1.5), y-o));
-// 		pin.lineTo(new Point(x-_o, y-o));
-// 		pin.closePath();
-
-// 		if (dir == 'in') pin.change = true;
-
-// 		// display name
-// 		_o = ((dir == 'in') ? o : -o)*4.0 + String(name).length*4.0;
-// 		var text = new PointText(new Point(x-_o, y+4.0));
-// 		text.fillColor = color.wire;
-// 		text.content = String(name);
-
-// 		return pin;
-// 	}
-
-// 	function norGate(x, y) {
-// 		// offset value 
-// 		var o = 20;
-
-// 		// draw lines
-// 		var xLine = attr(new Path.Line(new Point(x, y-10), new Point(x-60,y-10)));
-// 		var yLine = attr(new Path.Line(new Point(x, y+10), new Point(x-60,y+10)));
-// 		var outLine = attr(new Path.Line(new Point(x, y), new Point(x+65,y)));
-
-// 		// body of gate
-// 		var body = attr(new Path());
-// 		body.moveTo(new Point(x-o, y-o));
-// 		body.curveTo(new Point(x-(o*0.5), y), new Point(x-o, y+o));
-// 		body.quadraticCurveTo(new Point(x+(o*0.5), y+o), new Point(x+o, y));
-// 		body.quadraticCurveTo(new Point(x+(o*0.5), y-o), new Point(x-o, y-o));
-// 		body.closePath();
-
-// 		// circle on the right to indicate not part
-// 		var circle = attr(new Path.Circle(new Point(x+(1.25*o), y), 0.25*o));
-
-// 		// compounding two paths together to make not gate symbol
-// 		gate = attr(new CompoundPath(body, circle));
-
-// 		// input and output symbols
-// 		xInput = port(x-60, y-10, 'in', 'x');
-// 		yInput = port(x-60, y+10, 'in', 'y');
-// 		output = port(x+65, y, 'out', 'f');
-// 	}
-
-// 	/* --------------------------------------------------------------------- */
-
-// 	norGate(110,50);
-
-// 	function onMouseDown(event) {
-// 		var hitResult = project.hitTest(event.point, hitOptions);
-
-// 		if (!hitResult) return;
-
-// 		if (hitResult) {
-// 			path = hitResult.item;
-
-// 			if (path.change == true) {
-// 				path.state = (path.state) ? false : true;
-
-// 				// changes the state of the inputs, gate and output
-// 				gate.state = !(xInput.state | yInput.state);
-// 				xInput.fillColor = (xInput.state) ? color.on : color.off;
-// 				yInput.fillColor = (yInput.state) ? color.on : color.off;
-// 				gate.fillColor = (gate.state) ? color.on : color.off;
-// 				output.fillColor = (gate.state) ? color.on : color.off;
-// 			}
-// 		}
-// 	}
-// </script>
-// <!--////////////////////////////////////////////////////////////////////////-->
-// <script type="text/paperscript" canvas="xor-example">
-// 	var xInput, yInput, gate, output;
-
-// 	function port(x, y, dir, name) {
-// 		// offset 
-// 		var o = 4;
-
-// 		// direction offset
-// 		var _o = ((dir == 'in') ? o : -o)*2.0;
-
-// 		// pin body
-// 		var pin = attr(new Path());
-// 		pin.moveTo(new Point(x-_o, y+o));
-// 		pin.lineTo(new Point(x+(_o*1.5), y+o));
-// 		pin.lineTo(new Point(x+(_o*2.0), y));
-// 		pin.lineTo(new Point(x+(_o*1.5), y-o));
-// 		pin.lineTo(new Point(x-_o, y-o));
-// 		pin.closePath();
-
-// 		if (dir == 'in') pin.change = true;
-
-// 		// display name
-// 		_o = ((dir == 'in') ? o : -o)*4.0 + String(name).length*4.0;
-// 		var text = new PointText(new Point(x-_o, y+4.0));
-// 		text.fillColor = color.wire;
-// 		text.content = String(name);
-
-// 		return pin;
-// 	}
-
-// 	function xorGate(x, y) {
-// 		// offset value 
-// 		var o = 20;
-
-// 		// draw lines
-// 		var xLine = attr(new Path.Line(new Point(x, y-10), new Point(x-60,y-10)));
-// 		var yLine = attr(new Path.Line(new Point(x, y+10), new Point(x-60,y+10)));
-// 		var outLine = attr(new Path.Line(new Point(x, y), new Point(x+65,y)));
-
-// 		// body of gate
-// 		gate = attr(new Path());
-// 		gate.moveTo(new Point(x-o, y-o));
-// 		gate.curveTo(new Point(x-(o*0.5), y), new Point(x-o, y+o));
-// 		gate.quadraticCurveTo(new Point(x+(o*0.5), y+o), new Point(x+o, y));
-// 		gate.quadraticCurveTo(new Point(x+(o*0.5), y-o), new Point(x-o, y-o));
-// 		gate.closePath();
-
-// 		var l = lineAttr(new Path());
-// 		l.moveTo(new Point(x-(o*1.4), y-o));
-// 		l.curveTo(new Point(x-(o*0.9), y), new Point(x-(o*1.4), y+o));
-
-// 		// input and output symbols
-// 		xInput = port(x-60, y-10, 'in', 'x');
-// 		yInput = port(x-60, y+10, 'in', 'y');
-// 		output = port(x+65, y, 'out', 'f');
-// 	}
-
-// 	/* --------------------------------------------------------------------- */
-
-// 	xorGate(110,50);
+<script type="text/paperscript" canvas="nand-example">
+	var xInput, yInput, gate, output;
+
+	function port(x, y, dir, name) {
+		var text = textAttr(new PointText(x-textDir(dir,name), y+4.0), name);
+		return pin(x, y, dir, new Path());
+	}
+
+	function nandGate(x, y) {
+		// offset value 
+		var o = 20;
+
+		// draw lines
+		var xLine = attr(new Path.Line(x, y-10, x-60, y-10));
+		var yLine = attr(new Path.Line(x, y+10, x-60, y+10));
+		var outLine = attr(new Path.Line(x, y, x+65, y));
+
+		// body of gate
+		var body = attr(new Path());
+		body.moveTo(x-o, y-o);
+		body.lineTo(x-o, y+o);
+		body.lineTo(x, y+o);
+		body.arcTo(x+o, y, x, y-o);
+		body.closePath();
+
+		// circle on the right to indicate not part
+		var circle = attr(new Path.Circle(new Point(x+(1.25*o), y), 0.25*o));
+
+		// compounding two paths together to make not gate symbol
+		gate = attr(new CompoundPath(body, circle));
+
+		// input and output symbols
+		xInput = port(x-60, y-10, 'in', 'x');
+		yInput = port(x-60, y+10, 'in', 'y');
+		output = port(x+65, y, 'out', 'f');
+	}
+
+	/* --------------------------------------------------------------------- */
+
+	nandGate(110,50);
+
+	function onMouseDown(event) {
+		var hitResult = project.hitTest(event.point, hitOptions);
+
+		if (!hitResult) return;
+
+		if (hitResult) {
+			path = hitResult.item;
+
+			if (path.change == true) {
+				path.state = !path.state;
+
+				// changes the state of the inputs, gate and output
+				gate.state = !(xInput.state & yInput.state);
+
+				xInput.fillColor = setState(xInput.state);
+				yInput.fillColor = setState(yInput.state);
+				gate.fillColor = setState(gate.state);
+				output.fillColor = setState(gate.state);
+			}
+		}
+	}
+</script>
+<!--////////////////////////////////////////////////////////////////////////-->
+<script type="text/paperscript" canvas="or-example">
+	var xInput, yInput, gate, output;
+
+	function port(x, y, dir, name) {
+		var text = textAttr(new PointText(x-textDir(dir,name), y+4.0), name);
+		return pin(x, y, dir, new Path());
+	}
+
+	function orGate(x, y) {
+		// offset value 
+		var o = 20;
+
+		// draw lines
+		var xLine = attr(new Path.Line(x, y-10, x-60, y-10));
+		var yLine = attr(new Path.Line(x, y+10, x-60, y+10));
+		var outLine = attr(new Path.Line(x, y, x+65, y));
+
+		// body of gate
+		gate = attr(new Path());
+		gate.moveTo(x-o, y-o);
+		gate.curveTo(x-(o*0.5), y, x-o, y+o);
+		gate.quadraticCurveTo(x+(o*0.5), y+o, x+o, y);
+		gate.quadraticCurveTo(x+(o*0.5), y-o, x-o, y-o);
+		gate.closePath();
+
+		// input and output symbols
+		xInput = port(x-60, y-10, 'in', 'x');
+		yInput = port(x-60, y+10, 'in', 'y');
+		output = port(x+65, y, 'out', 'f');
+	}
+
+	/* --------------------------------------------------------------------- */
+
+	orGate(110,50);
+
+	function onMouseDown(event) {
+		var hitResult = project.hitTest(event.point, hitOptions);
+
+		if (!hitResult) return;
+
+		if (hitResult) {
+			path = hitResult.item;
+
+			if (path.change == true) {
+				path.state = !path.state;
+
+				// changes the state of the inputs, gate and output
+				gate.state = xInput.state | yInput.state;
+
+				xInput.fillColor = setState(xInput.state);
+				yInput.fillColor = setState(yInput.state);
+				gate.fillColor = setState(gate.state);
+				output.fillColor = setState(gate.state);
+			}
+		}
+	}
+</script>
+<!--////////////////////////////////////////////////////////////////////////-->
+<script type="text/paperscript" canvas="nor-example">
+	var xInput, yInput, gate, output;
+
+	function port(x, y, dir, name) {
+		var text = textAttr(new PointText(x-textDir(dir,name), y+4.0), name);
+		return pin(x, y, dir, new Path());
+	}
+
+	function norGate(x, y) {
+		// offset value 
+		var o = 20;
+
+		// draw lines
+		var xLine = attr(new Path.Line(x, y-10, x-60, y-10));
+		var yLine = attr(new Path.Line(x, y+10, x-60, y+10));
+		var outLine = attr(new Path.Line(x, y, x+65, y));
+
+		// body of gate
+		gate = attr(new Path());
+		gate.moveTo(x-o, y-o);
+		gate.curveTo(x-(o*0.5), y, x-o, y+o);
+		gate.quadraticCurveTo(x+(o*0.5), y+o, x+o, y);
+		gate.quadraticCurveTo(x+(o*0.5), y-o, x-o, y-o);
+		gate.closePath();
+
+		// circle on the right to indicate not part
+		var circle = attr(new Path.Circle(x+(1.25*o), y, 0.25*o));
+
+		// compounding two paths together to make not gate symbol
+		gate = attr(new CompoundPath(gate, circle));
+
+		// input and output symbols
+		xInput = port(x-60, y-10, 'in', 'x');
+		yInput = port(x-60, y+10, 'in', 'y');
+		output = port(x+65, y, 'out', 'f');
+	}
+
+	/* --------------------------------------------------------------------- */
+
+	norGate(110,50);
+
+	function onMouseDown(event) {
+		var hitResult = project.hitTest(event.point, hitOptions);
+
+		if (!hitResult) return;
+
+		if (hitResult) {
+			path = hitResult.item;
+
+			if (path.change == true) {
+				path.state = !path.state;
+
+				// changes the state of the inputs, gate and output
+				gate.state = !(xInput.state | yInput.state);
+
+				xInput.fillColor = setState(xInput.state);
+				yInput.fillColor = setState(yInput.state);
+				gate.fillColor = setState(gate.state);
+				output.fillColor = setState(gate.state);
+			}
+		}
+	}
+</script>
+<!--////////////////////////////////////////////////////////////////////////-->
+<script type="text/paperscript" canvas="xor-example">
+	var xInput, yInput, gate, output;
+
+	function port(x, y, dir, name) {
+		var text = textAttr(new PointText(x-textDir(dir,name), y+4.0), name);
+		return pin(x, y, dir, new Path());
+	}
+
+	function xorGate(x, y) {
+		// offset value 
+		var o = 20;
+
+		// draw lines
+		var xLine = attr(new Path.Line(x, y-10, x-60, y-10));
+		var yLine = attr(new Path.Line(x, y+10, x-60, y+10));
+		var outLine = attr(new Path.Line(x, y, x+65, y));
+
+		// body of gate
+		gate = attr(new Path());
+		gate.moveTo(x-o, y-o);
+		gate.curveTo(x-(o*0.5), y, x-o, y+o);
+		gate.quadraticCurveTo(x+(o*0.5), y+o, x+o, y);
+		gate.quadraticCurveTo(x+(o*0.5), y-o, x-o, y-o);
+		gate.closePath();
+
+		var l = lineAttr(new Path());
+		l.moveTo(new Point(x-(o*1.4), y-o));
+		l.curveTo(new Point(x-(o*0.9), y), new Point(x-(o*1.4), y+o));
+
+		// input and output symbols
+		xInput = port(x-60, y-10, 'in', 'x');
+		yInput = port(x-60, y+10, 'in', 'y');
+		output = port(x+65, y, 'out', 'f');
+	}
+
+	/* --------------------------------------------------------------------- */
+
+	xorGate(110,50);
 
 // 	function onMouseDown(event) {
 // 		var hitResult = project.hitTest(event.point, hitOptions);
