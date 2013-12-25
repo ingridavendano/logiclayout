@@ -20,7 +20,6 @@
 
 <!-- JavaScript using Jinja to determine if JSON results exist -->
 <script type="text/javascript">
-
 	// color setup for circuit
 	var color = { 
 		on: '#F2CB05',
@@ -97,7 +96,6 @@
 	// 	// paperPin = port(x,y,dir,name);
 	// }
 </script>
-
 <script type="text/paperscript" canvas="not-example">
 	var input, output, notGate;
 	var notCanvas = "not-example"
@@ -158,7 +156,6 @@
 		}
 	}
 </script>
-
 <script type="text/paperscript" canvas="and-example">
 	var xInput, yInput, gate, output;
 
@@ -218,9 +215,7 @@
 		}
 	}
 </script>
-
 <!--////////////////////////////////////////////////////////////////////////-->
-
 <script type="text/paperscript" canvas="nand-example">
 	var xInput, yInput, gate, output;
 
@@ -502,8 +497,8 @@
 		// circle on the right to indicate not part
 		var circle = attr(new Path.Circle(x+(1.25*o), y, 0.25*o));
 
-		// // compounding two paths together to make not gate symbol
-		// gate = attr(new CompoundPath(gate, circle));
+		// compounding two paths together to make not gate symbol
+		gate = attr(new CompoundPath(gate, circle));
 
 		// input and output symbols
 		xInput = port(x-60, y-10, 'in', 'x');
@@ -515,26 +510,26 @@
 
 	nxorGate(110,50);
 
-// 	function onMouseDown(event) {
-// 		var hitResult = project.hitTest(event.point, hitOptions);
+	function onMouseDown(event) {
+		var hitResult = project.hitTest(event.point, hitOptions);
 
-// 		if (!hitResult) return;
+		if (!hitResult) return;
 
-// 		if (hitResult) {
-// 			path = hitResult.item;
+		if (hitResult) {
+			path = hitResult.item;
 
-// 			if (path.change == true) {
-// 				path.state = (path.state) ? false : true;
+			if (path.change == true) {
+				path.state = (path.state) ? false : true;
 
-// 				// changes the state of the inputs, gate and output
-// 				gate.state = !(xInput.state | yInput.state);
-// 				xInput.fillColor = (xInput.state) ? color.on : color.off;
-// 				yInput.fillColor = (yInput.state) ? color.on : color.off;
-// 				gate.fillColor = (gate.state) ? color.on : color.off;
-// 				output.fillColor = (gate.state) ? color.on : color.off;
-// 			}
-// 		}
-// 	}
-// </script>
+				// changes the state of the inputs, gate and output
+				gate.state = !(xInput.state ^ yInput.state);
+				xInput.fillColor = (xInput.state) ? color.on : color.off;
+				yInput.fillColor = (yInput.state) ? color.on : color.off;
+				gate.fillColor = (gate.state) ? color.on : color.off;
+				output.fillColor = (gate.state) ? color.on : color.off;
+			}
+		}
+	}
+</script>
  
 {% endblock %}
