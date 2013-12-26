@@ -28,6 +28,22 @@
 		wire: '#0d59c3'
 	};
 
+	// offset for making circuit gates
+	var o = 20;
+
+	// options for interacting with circuit gates
+	var hitOptions = {
+		segments: true,
+		stroke: true,
+		fill: true,
+		tolerance: 10
+	};
+
+	// identifying paths
+	var segment, path;
+
+	/* --------------------------------------------------------------------- */
+	
 	// attributes applied for the circuit components
 	function attr(obj) {
 		obj.fillColor = color.fill;
@@ -54,78 +70,89 @@
 		return ((dir == 'in') ? 1 : -1.1)*18.0 + String(name).length*4.0;
 	}
 
-	function pin(x, y, dir, obj) {
+	/* --------------------------------------------------------------------- */
+
+	function pin(x, y, dir, path) {
 		// offset 
 		var o = 4;
 		var _o = ((dir == 'in') ? o : -o)*2.0;
 
 		// pin body
-		var body = attr(obj);
-		body.moveTo(x-_o, y+o);
-		body.lineTo(x+(_o*1.5), y+o);
-		body.lineTo(x+(_o*2.0), y);
-		body.lineTo(x+(_o*1.5), y-o);
-		body.lineTo(x-_o, y-o);
-		body.closePath();
+		var obj = attr(path);
+		obj.moveTo(x-_o, y+o);
+		obj.lineTo(x+(_o*1.5), y+o);
+		obj.lineTo(x+(_o*2.0), y);
+		obj.lineTo(x+(_o*1.5), y-o);
+		obj.lineTo(x-_o, y-o);
+		obj.closePath();
 
 		// determines direction
-		if (dir == 'in') body.change = true;	
+		if (dir == 'in') obj.change = true;	
 
-		return body;	
+		return obj;	
 	}
+
+	function notGateBody(x, y, path) {
+		obj = attr(path);
+		obj.moveTo(x-o/2, y-o/2);
+		obj.lineTo(x-o/2, y+o/2);
+		obj.lineTo(x+o/2, y);
+		obj.closePath();
+		return obj;
+	}
+
+	function andGateBody(x, y, path) {
+		obj = attr(path);
+		obj.moveTo(x-o, y-o);
+		obj.lineTo(x-o, y+o);
+		obj.lineTo(x, y+o);
+		obj.arcTo(x+o, y, x, y-o);
+		obj.closePath();
+		return obj;
+	}
+
+	function orGateBody(x, y, path) {
+		obj = attr(path);
+		obj.moveTo(x-o, y-o);
+		obj.curveTo(x-(o*0.5), y, x-o, y+o);
+		obj.quadraticCurveTo(x+(o*0.5), y+o, x+o, y);
+		obj.quadraticCurveTo(x+(o*0.5), y-o, x-o, y-o);
+		obj.closePath();
+		return obj;
+	}
+	/* --------------------------------------------------------------------- */
 
 	function setState(state) {
 		return state ? color.on : color.off;
 	}
 
-	var hitOptions = {
-		segments: true,
-		stroke: true,
-		fill: true,
-		tolerance: 10
-	};
-
-	var segment, path;
-
-
-
-	// window.onload = function() {
-	// 	var currentCanvas = document.getElementById("not-example");
-	// 	paper.setup(currentCanvas);
-	// 	notGate(100,50);
-	// 	// paperPin = port(x,y,dir,name);
-	// }
+	function changeStates(xInput, yInput, gate, output) {
+		xInput.fillColor = setState(xInput.state);
+		yInput.fillColor = setState(yInput.state);
+		gate.fillColor = setState(gate.state);
+		output.fillColor = setState(gate.state);
+	}
 </script>
 <script type="text/paperscript" canvas="not-example">
 	var input, output, notGate;
-	var notCanvas = "not-example"
-
-
 	function port(x, y, dir, name) {	
 		var text = textAttr(new PointText(x-textDir(dir,name), y+4.0), name);
 		return pin(x, y, dir, new Path());
 	}
 
-	function notGate(x, y) {
-		// offset value 
-		var o = 10;
-
+	function gate(x, y) {
 		// draw lines
 		var inLine = lineAttr(new Path.Line(x, y, x-50, y));
 		var outLine = lineAttr(new Path.Line(x, y, x+55, y));
 
 		// circle on the right to indicate not function
-		var notCircle = attr(new Path.Circle(x+(1.4*o), y, 0.4*o));
+		var notCircle = attr(new Path.Circle(x+(1.4*o/2), y, 0.4*o/2));
 
 		// triangle body of gate
-		var gate = attr(new Path());
-		gate.moveTo(x-o, y-o);
-		gate.lineTo(x-o, y+o);
-		gate.lineTo(x+o, y);
-		gate.closePath();
+		var body = notGateBody(x, y, new Path());
 
 		// compounding two paths together to make not gate symbol
-		notGate = attr(new CompoundPath(gate, notCircle));
+		notGate = attr(new CompoundPath(body, notCircle));
 
 		// input and output symbols
 		input = port(x-50, y, 'in', 'x');
@@ -134,9 +161,7 @@
 
 	/* --------------------------------------------------------------------- */
 
-	notGate(100,50);
-
-	/* --------------------------------------------------------------------- */
+	gate(100,50);
 
 	function onMouseDown(event) {
 		segment = path = null;
@@ -173,13 +198,8 @@
 		var yLine = attr(new Path.Line(x, y+10, x-60, y+10));
 		var outLine = attr(new Path.Line(x, y, x+65, y));
 
-		// triangle body of gate
-		gate = attr(new Path());
-		gate.moveTo(x-o, y-o);
-		gate.lineTo(x-o, y+o);
-		gate.lineTo(x, y+o);
-		gate.arcTo(x+o, y, x, y-o);
-		gate.closePath();
+		// body
+		gate = andGateBody(x, y, new Path());
 
 		// input and output symbols
 		xInput = port(x-60, y-10, 'in', 'x');
@@ -190,8 +210,6 @@
 	/* --------------------------------------------------------------------- */
 
 	andGate(110,50);
-
-	/* --------------------------------------------------------------------- */
 
 	function onMouseDown(event) {
 		var hitResult = project.hitTest(event.point, hitOptions);
@@ -206,16 +224,11 @@
 
 				// changes the state of the inputs, gate and output
 				gate.state = xInput.state & yInput.state;
-
-				xInput.fillColor = setState(xInput.state);
-				yInput.fillColor = setState(yInput.state);
-				gate.fillColor = setState(gate.state);
-				output.fillColor = setState(gate.state);
+				changeStates(xInput, yInput, gate, output);
 			}
 		}
 	}
 </script>
-<!--////////////////////////////////////////////////////////////////////////-->
 <script type="text/paperscript" canvas="nand-example">
 	var xInput, yInput, gate, output;
 
@@ -234,15 +247,10 @@
 		var outLine = attr(new Path.Line(x, y, x+65, y));
 
 		// body of gate
-		var body = attr(new Path());
-		body.moveTo(x-o, y-o);
-		body.lineTo(x-o, y+o);
-		body.lineTo(x, y+o);
-		body.arcTo(x+o, y, x, y-o);
-		body.closePath();
+		var body = andGateBody(x, y, new Path());
 
 		// circle on the right to indicate not part
-		var circle = attr(new Path.Circle(new Point(x+(1.25*o), y), 0.25*o));
+		var circle = attr(new Path.Circle(x+(1.25*o), y, 0.25*o));
 
 		// compounding two paths together to make not gate symbol
 		gate = attr(new CompoundPath(body, circle));
@@ -270,16 +278,11 @@
 
 				// changes the state of the inputs, gate and output
 				gate.state = !(xInput.state & yInput.state);
-
-				xInput.fillColor = setState(xInput.state);
-				yInput.fillColor = setState(yInput.state);
-				gate.fillColor = setState(gate.state);
-				output.fillColor = setState(gate.state);
+				changeStates(xInput, yInput, gate, output);
 			}
 		}
 	}
 </script>
-<!--////////////////////////////////////////////////////////////////////////-->
 <script type="text/paperscript" canvas="or-example">
 	var xInput, yInput, gate, output;
 
@@ -298,12 +301,7 @@
 		var outLine = attr(new Path.Line(x, y, x+65, y));
 
 		// body of gate
-		gate = attr(new Path());
-		gate.moveTo(x-o, y-o);
-		gate.curveTo(x-(o*0.5), y, x-o, y+o);
-		gate.quadraticCurveTo(x+(o*0.5), y+o, x+o, y);
-		gate.quadraticCurveTo(x+(o*0.5), y-o, x-o, y-o);
-		gate.closePath();
+		gate = orGateBody(x, y, new Path());
 
 		// input and output symbols
 		xInput = port(x-60, y-10, 'in', 'x');
@@ -328,16 +326,11 @@
 
 				// changes the state of the inputs, gate and output
 				gate.state = xInput.state | yInput.state;
-
-				xInput.fillColor = setState(xInput.state);
-				yInput.fillColor = setState(yInput.state);
-				gate.fillColor = setState(gate.state);
-				output.fillColor = setState(gate.state);
+				changeStates(xInput, yInput, gate, output);
 			}
 		}
 	}
 </script>
-<!--////////////////////////////////////////////////////////////////////////-->
 <script type="text/paperscript" canvas="nor-example">
 	var xInput, yInput, gate, output;
 
@@ -356,12 +349,7 @@
 		var outLine = attr(new Path.Line(x, y, x+65, y));
 
 		// body of gate
-		gate = attr(new Path());
-		gate.moveTo(x-o, y-o);
-		gate.curveTo(x-(o*0.5), y, x-o, y+o);
-		gate.quadraticCurveTo(x+(o*0.5), y+o, x+o, y);
-		gate.quadraticCurveTo(x+(o*0.5), y-o, x-o, y-o);
-		gate.closePath();
+		gate = orGateBody(x, y, new Path());
 
 		// circle on the right to indicate not part
 		var circle = attr(new Path.Circle(x+(1.25*o), y, 0.25*o));
@@ -392,16 +380,11 @@
 
 				// changes the state of the inputs, gate and output
 				gate.state = !(xInput.state | yInput.state);
-
-				xInput.fillColor = setState(xInput.state);
-				yInput.fillColor = setState(yInput.state);
-				gate.fillColor = setState(gate.state);
-				output.fillColor = setState(gate.state);
+				changeStates(xInput, yInput, gate, output);
 			}
 		}
 	}
 </script>
-<!--////////////////////////////////////////////////////////////////////////-->
 <script type="text/paperscript" canvas="xor-example">
 	var xInput, yInput, gate, output;
 
@@ -420,12 +403,7 @@
 		var outLine = attr(new Path.Line(x, y, x+65, y));
 
 		// body of gate
-		gate = attr(new Path());
-		gate.moveTo(x-o, y-o);
-		gate.curveTo(x-(o*0.5), y, x-o, y+o);
-		gate.quadraticCurveTo(x+(o*0.5), y+o, x+o, y);
-		gate.quadraticCurveTo(x+(o*0.5), y-o, x-o, y-o);
-		gate.closePath();
+		gate = orGateBody(x, y, new Path());
 
 		// xor line
 		var l = lineAttr(new Path());
@@ -455,15 +433,11 @@
 
 				// changes the state of the inputs, gate and output
 				gate.state = xInput.state ^ yInput.state;
-				xInput.fillColor = (xInput.state) ? color.on : color.off;
-				yInput.fillColor = (yInput.state) ? color.on : color.off;
-				gate.fillColor = (gate.state) ? color.on : color.off;
-				output.fillColor = (gate.state) ? color.on : color.off;
+				changeStates(xInput, yInput, gate, output);
 			}
 		}
 	}
 </script>
-<!--////////////////////////////////////////////////////////////////////////-->
 <script type="text/paperscript" canvas="nxor-example">
 	var xInput, yInput, gate, output;
 
@@ -482,12 +456,7 @@
 		var outLine = attr(new Path.Line(x, y, x+65, y));
 
 		// body of gate
-		gate = attr(new Path());
-		gate.moveTo(x-o, y-o);
-		gate.curveTo(x-(o*0.5), y, x-o, y+o);
-		gate.quadraticCurveTo(x+(o*0.5), y+o, x+o, y);
-		gate.quadraticCurveTo(x+(o*0.5), y-o, x-o, y-o);
-		gate.closePath();
+		gate = orGateBody(x, y, new Path());
 
 		// xor line
 		var l = lineAttr(new Path());
@@ -523,13 +492,13 @@
 
 				// changes the state of the inputs, gate and output
 				gate.state = !(xInput.state ^ yInput.state);
-				xInput.fillColor = (xInput.state) ? color.on : color.off;
-				yInput.fillColor = (yInput.state) ? color.on : color.off;
-				gate.fillColor = (gate.state) ? color.on : color.off;
-				output.fillColor = (gate.state) ? color.on : color.off;
+				changeStates(xInput, yInput, gate, output);
 			}
 		}
 	}
+</script>
+<script type="text/javascript">
+	
 </script>
  
 {% endblock %}
