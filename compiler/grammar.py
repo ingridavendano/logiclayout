@@ -106,3 +106,8 @@ class Literal(Token):
     def __iter__(self):
         """ iter(self): returns the value/expression of the literal node. """
         return iter(self.expr)
+
+class Broken(Token):
+    """ Meant to catch bad errors. """
+    kind = 'BREAK'
+    

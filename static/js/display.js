@@ -9,22 +9,22 @@
 $("logic-expression").bind("keypress", {}, keypressInBox);
 
 function keypressInBox(event) {
-	var code = (event.keyCode ? event.keyCode : event.which);
+    var code = (event.keyCode ? event.keyCode : event.which);
 
-	// enter button keycode is 13
-	if (code == 13) {
-		alert('works!');
-		event.preventDefault();
+    // enter button keycode is 13
+    if (code == 13) {
+        alert('works!');
+        event.preventDefault();
 
-		$("logic-expression").submit();
-	}
+        $("logic-expression").submit();
+    }
 };
 
 // zooms the project window view of the circuit schematic
 var zoom = $('.slider').slider().on('slide', zoomCanvas).data('slider');
 
 function zoomCanvas(event) {
-	paper.project.view.zoom = zoom.getValue();
+    paper.project.view.zoom = zoom.getValue();
 }
 
 window.globals = {};

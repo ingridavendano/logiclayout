@@ -20,39 +20,36 @@ app.secret_key = "honeybooboochild"
 
 @app.route("/", methods=["GET"])
 def index():
-	return render_template("index.html")
+    return render_template("index.html")
 
 @app.route("/", methods=["POST"])
 def new_logic():
-	data = request.form["logic-expression"]
+    data = request.form["logic-expression"]
 
-	# in case an empty expression was passed
-	if data.strip() == "":
-		return render_template("index.html")
+    # in case an empty expression was passed
+    if data.strip() == "":
+        return render_template("index.html")
 
-	data = str("f = " + data)
-	json = model.compile_expr(data)
+    data = str("f = " + data)
+    json = model.compile_expr(data)
 
-	if json is not None:
-		return render_template(
-			"index.html",
-			expr=data,
-			display=True, 
-			json=json)
-	else:
-		return render_template("index.html", expr="try again")
+    if json is not None:
+        return render_template(
+            "index.html",
+            expr=data,
+            display=True, 
+            json=json)
+    else:
+        return render_template("index.html", expr="try again")
 
 
 @app.route("/explain", methods=["GET"])
 def explain():
-	return render_template("explain.html")
+    return render_template("explain.html")
 
-@app.route("/explain2", methods=["GET"])
-def explain2():
-	return render_template("explain2.html")
 # -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
 
-	port = int(os.getenv('CIRCUIT_PORT', 5000))
-	app.run(host='0.0.0.0', port=port)
+    port = int(os.getenv('CIRCUIT_PORT', 5000))
+    app.run(host='0.0.0.0', port=port)

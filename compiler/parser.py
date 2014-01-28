@@ -27,6 +27,7 @@ root = [ ]
 
 def p_statement_assign(t):
     'statement : ID EQUALS expression'
+    print "issue5"
     if type(t[1]) == str:
         id_node = Id(t[1])
         equals_node = Equals(id_node, t[3])
@@ -39,6 +40,7 @@ def p_statement_assign(t):
 
 def p_statement_expr(t):
     'statement : expression'
+    print "issue3"
     root.append(t[1])
 
 def p_expression_not(t):
@@ -53,6 +55,7 @@ def p_expression_nand(t):
 def p_expression_and(t):
     '''expression : expression AND expression
                   | ID AND expression'''
+    print "issue4"
     t[0] = And(t[1], t[3])
 
 def p_expression_nor(t):
@@ -90,12 +93,19 @@ def p_expression_literal(t):
 
 def p_expression_id(t):
     'expression : ID'
+    print "issue1"
     try:
         variable = ids[t[1]]
     except LookupError:
         variable = Literal()
+        print "issue2"
     id_node = Id(t[1], variable)
     t[0] = id_node
+
+def p_expression_broken(t):
+    '''expression : expression AND'''
+    print "BREAK"
+    t[0] = ''
 
 def p_error(t):
     print "Syntax error at '%s'." % t.value
