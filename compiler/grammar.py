@@ -107,7 +107,8 @@ class Literal(Token):
         """ iter(self): returns the value/expression of the literal node. """
         return iter(self.expr)
 
-class Broken(Token):
+class Break(Token):
     """ Meant to catch bad errors. """
     kind = 'BREAK'
-    
+    expr = "error"
+
