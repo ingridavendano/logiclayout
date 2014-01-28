@@ -23,9 +23,10 @@ def compiler(data, debug=0):
 
     # run parser
     yacc.parse(data)
+    tree = None
 
+    # catches errors of bad data expressions
     try:
-        # catches errors of bad data expressions
         parser.root[0]
         tree = Tree(parser.root[0], data)
 
@@ -37,9 +38,8 @@ def compiler(data, debug=0):
         # second catch for bad data of a list of literals
         if len(tree.nodes) == 1: tree = None
 
+    # return an empty tree if the parser is empty
     except IndexError:
-        # return an empty tree if the parser is empty
         print "Error: expression is bad"
-        tree = None
 
     return serializer.to_json(tree, debug=debug)
