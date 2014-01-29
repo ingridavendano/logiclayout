@@ -2,7 +2,7 @@
 # parser.py
 # Created by Ingrid Avendano 11/11/13.
 # -----------------------------------------------------------------------------
-# Functions of grammar parameters for how to stack digital logic tokens. 
+# Grammar functions highlighted for how digital logic tokens are stacked. 
 # -----------------------------------------------------------------------------
 
 import lexer 
@@ -49,34 +49,27 @@ def p_expression_not(t):
     t[0] = Not(t[2])
 
 def p_expression_nand(t):
-    '''expression : expression NAND expression
-                  | ID NAND expression'''
+    'expression : expression NAND expression'
     t[0] = Nand(t[1], t[3])
 
 def p_expression_and(t):
-    # '''expression : expression AND expression
-    #               | ID AND expression'''
     'expression : expression AND expression'
     t[0] = And(t[1], t[3])
 
 def p_expression_nor(t):
-    '''expression : expression NOR expression
-                  | ID NOR expression'''
+    'expression : expression NOR expression'
     t[0] = Nor(t[1], t[3])
 
 def p_expression_or(t):
-    '''expression : expression OR expression
-                  | ID OR expression'''
+    'expression : expression OR expression'
     t[0] = Or(t[1], t[3])
 
 def p_expression_nxor(t):
-    '''expression : expression NXOR expression  
-                  | ID NXOR expression'''
+    'expression : expression NXOR expression'
     t[0] = Nxor(t[1], t[3])
 
 def p_expression_xor(t):
-    '''expression : expression XOR expression   
-                  | ID XOR expression'''
+    'expression : expression XOR expression'
     t[0] = Xor(t[1], t[3])
 
 def p_expression_group(t):
