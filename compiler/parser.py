@@ -20,8 +20,8 @@ precedence = (
 )
 
 # dictionary of id names and root list to hold the root tokens 
-ids  = { }
-root = [ ]
+ids  = {}
+root = []
 
 # -----------------------------------------------------------------------------
 
@@ -36,7 +36,6 @@ def p_statement_assign(t):
         else:
             equals_node = Equals(t[1], t[3])
         root.append(equals_node)
-
     ids[t[1]] = t[3]
     t[0] = equals_node
 
