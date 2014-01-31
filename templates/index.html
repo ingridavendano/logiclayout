@@ -1,17 +1,11 @@
 {% extends 'master.html' %}
 {% block body %}
 
-<!-- <div class="content">
-<p>
-    Type in a <a href="http://en.wikipedia.org/wiki/Logic_gate">digital logic</a> expression. Please use <code>&</code> for AND, <code>|</code> for OR, <code>~</code> for NOT, <code>^</code> for XOR.
-</p>
-</div> -->
-
 <!-- Main input bar to get expressions -->
 <form action="/" method="POST" id="expression">
     <div class="input-group">
-        <span class="label">f =</span>
-        <input type="text" class="expression" name="logic-expression" placeholder="type expression">
+        <span class="label col-lg-1">f =</span>
+        <input type="text" class="expression col-lg-11" name="logic-expression" placeholder="type expression">
     </div>
 </form>
 
@@ -27,13 +21,18 @@
 <!-- Scroll bar that displays if a circuit is created -->
 {% if display is defined %}
     <input type="text" class="slider" value="" data-slider-min="0.4" data-slider-max="3" data-slider-step=".01" data-slider-value="1.7" data-slider-orientation="vertical" data-slider-selection="before" data-slider-tooltip="hide">
-{% endif %}
+
 
 <!-- HTML5 Canvas -->
 <div class="schematic">
     <canvas id="canvas" resize></canvas>
 </div>
 
+{% else %}
+
+<div class="col-md-12 empty-space"></div>
+
+{% endif %}
 <!-- JavaScript using Jinja to determine if JSON results exist -->
 <script type="text/javascript" src="/static/js/paper.js"></script>
 <script type="text/javascript">
@@ -55,6 +54,8 @@
 <script type="text/javascript" src="/static/js/display.js"></script>
 <script type="text/paperscript" src="/static/js/circuit.js" canvas="canvas"></script>
 
+
+{% if display is not defined %}
 <h2>Examples</h2>
 <div class="examples">
 <form action="/" method="POST">
@@ -76,7 +77,8 @@
     </div>
 </div>
 </form>
+{% endif %}
  
  
  
- {% endblock %}
+{% endblock %}

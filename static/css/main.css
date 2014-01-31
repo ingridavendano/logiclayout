@@ -80,19 +80,20 @@ body {
 }
 
 div.input-group {
-    width: 888px;
+    /*width: 888px;*/
     margin: 0 auto;
 }
 
 span.label {
     background: #0d59c3;
-    padding: 0px 25px 20px 25px;
+    /*padding: 0px 15px 20px 15px;*/
+    padding-bottom: 20px; 
     font-size: 2em; 
     color: #FFF; 
     float: left; 
     font-weight: bold;
     height: 40px;
-
+    text-align: right;
 }
 
 span.highlight {
@@ -104,11 +105,12 @@ span.highlight {
 input.expression {
     border: 0; 
     padding: 20px; 
-    width: 800px; 
+    /*width: 800px; */
     font-size: 1.5em; 
-    float: left;
+    /*float: left;*/
     color: #003580;
     height: 40px;
+    /*width: 72%;*/
 }
 
 .example-submit {
@@ -140,4 +142,17 @@ footer {
     position: absolute;
     width: 100%;
     bottom: 0;
+}
+
+.empty-space {
+    background-color: red;
+    height: 45%;
+}
+
+#expression {
+    float: center;
+    margin: auto;
+    width: 80%;
+
+    /*position: relative;*/
 }
