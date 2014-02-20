@@ -151,6 +151,7 @@
         gate.fillColor = setState(gate.state);
         output.fillColor = setState(gate.state);
     }
+
     /* --------------------------------------------------------------------- */
 </script>
 <script type="text/paperscript" canvas="not-example">
@@ -250,7 +251,7 @@
         output = port(x+65, y, 'out', 'f');
     }
 
-    function truthTable(x, y) {
+    function truthTable(x, y, xState, yState, fState) {
         var middle = lineAttr(new Path.Line(x, y-15, x, y+20));
         var variableDivide = lineAttr(new Path.Line(x-50, y, x+30, y));
 
@@ -258,13 +259,13 @@
         var yInputText = textAttr(new PointText(x-20, y-5), 'Y');
         var outputText = textAttr(new PointText(x+13, y-5), 'F');
 
-        xInputState = textAttr(new PointText(x-40, y+15), '-');
-        yInputState = textAttr(new PointText(x-20, y+15), '-');
-        outputState = textAttr(new PointText(x+13, y+15), '-');
+        xInputState = textAttr(new PointText(x-40, y+15), xState);
+        yInputState = textAttr(new PointText(x-20, y+15), yState);
+        outputState = textAttr(new PointText(x+13, y+15), fState);
     }
 
     gate(110,50);
-    truthTable(300,50);
+    truthTable(300, 50, '-', '-', '-');
 
     function onMouseDown(event) {
         var hitResult = project.hitTest(event.point, hitOptions);
@@ -280,6 +281,7 @@
                 // changes the state of the inputs, gate and output
                 gate.state = xInput.state & yInput.state;
                 changeStates(xInput, yInput, gate, output);
+                truthTable(300, 50, xInput.state, yInput.state, gate.state)
             }
         }
     }
