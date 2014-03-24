@@ -15,7 +15,6 @@ from optimizer import Tree
 
 yacc = parser.run_yacc
 
-# ----------------------------------------------------------------------------- 
 
 def compiler(data, debug=0):
     # empties root of pre-exisiting tokens
@@ -36,7 +35,8 @@ def compiler(data, debug=0):
             tree.print_nodes()
 
         # second catch for bad data of a list of literals
-        if len(tree.nodes) == 1: tree = None
+        if len(tree.nodes) == 1:
+            tree = None
 
     # return an empty tree if the parser is empty
     except IndexError:

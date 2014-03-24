@@ -15,12 +15,14 @@ app = Flask(__name__)
 app.secret_key = "honeybooboochild"
 
 # -----------------------------------------------------------------------------
-# Run main view of website showing no sublinks. 
+# Run main view of website showing no sublinks.
 # -----------------------------------------------------------------------------
+
 
 @app.route("/", methods=["GET"])
 def index():
     return render_template("index.html")
+
 
 @app.route("/", methods=["POST"])
 def new_logic():
@@ -37,7 +39,7 @@ def new_logic():
         return render_template(
             "index.html",
             expr=data,
-            display=True, 
+            display=True,
             json=json)
     else:
         return render_template("index.html", expr="try again")
