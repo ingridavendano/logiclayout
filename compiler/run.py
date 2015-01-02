@@ -1,10 +1,6 @@
 # -----------------------------------------------------------------------------
-# run.py
-# Created by Ingrid Avendano 11/14/13.
-# -----------------------------------------------------------------------------
 # Run compiler file by sending it a digital logic expression.
 # -----------------------------------------------------------------------------
-
 import parser
 import serializer
 from optimizer import Tree
@@ -12,7 +8,6 @@ from optimizer import Tree
 # -----------------------------------------------------------------------------
 # Run PLY yacc in the parser module.
 # -----------------------------------------------------------------------------
-
 yacc = parser.run_yacc
 
 

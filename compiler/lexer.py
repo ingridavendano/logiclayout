@@ -1,26 +1,18 @@
 # -----------------------------------------------------------------------------
-# lexer.py
-# Created by Ingrid Avendano 11/11/13.
-# -----------------------------------------------------------------------------
 # Defined tokens and functions for digital logic expression using regex.
 # -----------------------------------------------------------------------------
-
 tokens = [
     # identifier
     'ID',
-
     # logic operatiors
     'NOT', 'NAND', 'AND', 'NOR', 'OR', 'NXOR', 'XOR',
-
     # assigments
     'EQUALS',
-
     # delimiters
     'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'LBRACE', 'RBRACE',
-
     # binary numbers, integers, booleans
     'BIN', 'INT', 'TRUE', 'FALSE'
-    ]
+]
 
 # -----------------------------------------------------------------------------
 
@@ -126,9 +118,9 @@ def t_error(t):
     print "Illegal character '%s'!" % t.value[0]
     t.lexer.skip(1)
 
+
 # -----------------------------------------------------------------------------
 # Run PLY lex module that uses above functions to define tokens.
 # -----------------------------------------------------------------------------
-
 import ply.lex as lex
 lexer = lex.lex()

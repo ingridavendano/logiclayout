@@ -3,82 +3,75 @@
 
 <!-- Main input bar to get expressions -->
 <form action="/" method="POST" id="expression">
-    <div class="input-group">
-        <span class="label col-lg-1">f =</span>
-        <input type="text" class="expression col-lg-11" name="logic-expression" placeholder="type expression">
-    </div>
+  <div class="input-group">
+    <span class="label col-lg-1">f =</span>
+    <input type="text" class="expression col-lg-11" name="logic-expression" placeholder="type expression">
+  </div>
 </form>
 
 <!-- Displays expression typed in the input bar -->
 <p class="text-expression">
-    {% if display is defined %}
-        {{ expr }}
-    {% else %}
-        create circuit schematics out of digital logic expressions 
-    {% endif %}
+  {% if display is defined %}
+    {{ expr }}
+  {% else %}
+    create circuit schematics out of digital logic expressions 
+  {% endif %}
 </p>
 
 <!-- Scroll bar that displays if a circuit is created -->
 {% if display is defined %}
-    <input type="text" class="slider" value="" data-slider-min="0.4" data-slider-max="3" data-slider-step=".01" data-slider-value="1.7" data-slider-orientation="vertical" data-slider-selection="before" data-slider-tooltip="hide">
-
+<input type="text" class="slider" value="" data-slider-min="0.4" data-slider-max="3" data-slider-step=".01" data-slider-value="1.7" data-slider-orientation="vertical" data-slider-selection="before" data-slider-tooltip="hide">
 
 <!-- HTML5 Canvas -->
 <div class="schematic">
-    <canvas id="canvas" resize></canvas>
+  <canvas id="canvas" resize></canvas>
 </div>
 
 {% else %}
-
 <div class="col-md-12 empty-space">type in an expression to display a circuit</div>
 
 {% endif %}
+
 <!-- JavaScript using Jinja to determine if JSON results exist -->
 <script type="text/javascript" src="/static/js/paper.js"></script>
 <script type="text/javascript">
+  var run = false;
+  var results = "";
+  var runSimulator = "";
 
-    var run = false;
-    var results = "";
-    var runSimulator = "";
+  // only runs compiler for proper expressions
+  {% if display is defined %}
+    run = true;
+    results = JSON.parse( '{{json | safe}}' );
+  {% endif %}
 
-    // only runs compiler for proper expressions
-    {% if display is defined %}
-        run = true;
-        results = JSON.parse( '{{json | safe}}' );
-    {% endif %}
-
-    if (!run) { $('.schematic').css('display','none')}
-
-
+  if (!run) { $('.schematic').css('display','none')}
 </script>
 <script type="text/javascript" src="/static/js/display.js"></script>
 <script type="text/paperscript" src="/static/js/circuit.js" canvas="canvas"></script>
-
 
 {% if display is not defined %}
 <h2>Examples</h2>
 <div class="examples">
 <form action="/" method="POST">
-    <div class="input-group">
-        <input type="hidden" name="logic-expression" value="(a | b | c)">
-        <input class="example-submit" type="submit" value="Simple">
-    </div>
+  <div class="input-group">
+    <input type="hidden" name="logic-expression" value="(a | b | c)">
+    <input class="example-submit" type="submit" value="Simple">
+  </div>
 </form>
 <form action="/" method="POST">
-    <div class="input-group">
-        <input type="hidden" name="logic-expression" value="a * (b OR c) xor (d | c | g) xor (s nand t)">
-        <input class="example-submit" type="submit" value="Complex">
-    </div>
+  <div class="input-group">
+    <input type="hidden" name="logic-expression" value="a * (b OR c) xor (d | c | g) xor (s nand t)">
+    <input class="example-submit" type="submit" value="Complex">
+  </div>
 </form>
 <form action="/" method="POST">
-    <div class="input-group">
-        <input type="hidden" name="logic-expression" value="a * (b OR (NOT (c * (NOT i)))) xor (d | c | g) xor (s OR t) xor (NOT (a OR (NOT (u and p)))) and f">
-        <input class="example-submit" type="submit" value="Woah!">
-    </div>
+  <div class="input-group">
+    <input type="hidden" name="logic-expression" value="a * (b OR (NOT (c * (NOT i)))) xor (d | c | g) xor (s OR t) xor (NOT (a OR (NOT (u and p)))) and f">
+    <input class="example-submit" type="submit" value="Woah!">
+  </div>
 </div>
 </form>
+
 {% endif %}
- 
- 
- 
 {% endblock %}

@@ -1,11 +1,6 @@
 # -----------------------------------------------------------------------------
-# grammar.py
-# Created by Ingrid Avendano 11/17/13.
-# -----------------------------------------------------------------------------
 # General token class for boolean algebra tokens with left and right children.
 # -----------------------------------------------------------------------------
-
-
 class Token(object):
     """Basic node class for tokens."""
     terminal = True
@@ -38,8 +33,6 @@ class Token(object):
 # -----------------------------------------------------------------------------
 # List of specified tokens classes below based on grammar for each token.
 # -----------------------------------------------------------------------------
-
-
 class Equals(Token):
     """Equals node."""
     kind = 'EQUALS'
