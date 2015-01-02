@@ -1,11 +1,6 @@
 # -----------------------------------------------------------------------------
-# optimizer.py
-# Created by Ingrid Avendano 11/17/13.
-# -----------------------------------------------------------------------------
 # Node class and Tree made from Tokens defined in grammar module.
 # -----------------------------------------------------------------------------
-
-
 class Node(object):
     """Nodes are created from Tokens."""
 
@@ -55,8 +50,6 @@ class Node(object):
 # -----------------------------------------------------------------------------
 # Cluster and Level hold Nodes that are at the same level in AST.
 # -----------------------------------------------------------------------------
-
-
 class Cell(object):
     """Cluster is a group of children of a Node."""
 
@@ -101,7 +94,6 @@ class Level(object):
 # -----------------------------------------------------------------------------
 # Tree that holds all Nodes and has extra attributes listed about the tree.
 # -----------------------------------------------------------------------------
-
 class Tree(object):
     """ Tree of Nodes that is created from a root Token. """
 
@@ -112,7 +104,6 @@ class Tree(object):
         # ---------------------------------------------------------------------
         # Go through Tokens and converts them to Nodes, find depth of tree.
         # ---------------------------------------------------------------------
-
         def convert(token, depth=1):
             """Organize tree of Nodes out of tokens and gives depth."""
 
@@ -172,7 +163,6 @@ class Tree(object):
         # ---------------------------------------------------------------------
         # Calculates the x and y values for each node.
         # ---------------------------------------------------------------------
-
         def find_cells(node, depth, y_min, y_max, debug=False):
             """ Determine which cells each node belongs in. """
 
